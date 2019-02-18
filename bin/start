@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+/* eslint strict: 0 */
+
+'use strict';
+
+// enables ES6 ('import'.. etc) in Node
+require('@babel/register');
+require('@babel/polyfill');
+
+const app = require('../app').default;
+const port = process.env.PORT || 3000;
+
+app.listen(port);
