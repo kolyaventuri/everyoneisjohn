@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node ./bin/start",
     "dev": "nodemon --ignore src/ --ignore static/javascripts/ --exec node ./bin/start",
+    "build": "parcel build src/app.js -d static/javascripts --out-file bundle.js",
     "test": "flow && xo && ava",
     "flow": "flow",
     "lint": "flow && xo",
