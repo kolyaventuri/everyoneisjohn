@@ -62,3 +62,4 @@ typings/
 
 # parcel cache
 .cache/
+static/javascripts/

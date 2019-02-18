@@ -1,10 +1,17 @@
 // @flow
 
 import Koa from 'koa';
+import serve from 'koa-static';
+import send from 'koa-send';
 
 import logger from './lib/logger';
 
 const app = new Koa();
+
+if (process.env.NODE_ENV !== 'production') {
+  /* eslint-disable-next-line import/no-unassigned-import */
+  require('./middleware/hot-bundle');
+}
 
 app.use(async (ctx, next) => {
   await next();
@@ -19,10 +26,17 @@ app.use(async (ctx, next) => {
   ctx.set('X-Response-Time', `${ms}ms`);
 });
 
+app.use(serve('./static'));
+
 app.use(async ctx => {
-  ctx.body = 'Hello world';
+  await send(ctx, 'views/index.html');
 });
 
-app.on('error', (err, ctx) => logger.logError('Server Error', err, ctx));
+app.on('error', (err, ctx) => {
+  const context = ctx ? ctx.toString() : '';
+  const error = `Server Error:\n${err.stack}${context}`;
+
+  logger.logError(new Error(error));
+});
 
 export default app;

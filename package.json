@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./bin/start",
-    "dev": "nodemon --ignore src/ --exec node ./bin/start",
+    "dev": "nodemon --ignore src/ --ignore static/javascripts/ --exec node ./bin/start",
     "test": "flow && xo && ava",
     "flow": "flow",
     "lint": "flow && xo",
@@ -53,6 +53,8 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "koa": "^2.7.0",
+    "koa-send": "^5.0.0",
+    "koa-static": "^5.0.0",
     "quickstring": "^1.1.0",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
@@ -86,8 +88,7 @@
       "node"
     ],
     "ignore": [
-      "webpack/**/*.js",
-      "jest.config.js"
+      "static/javascripts/**/*.js"
     ],
     "overrides": [
       {
