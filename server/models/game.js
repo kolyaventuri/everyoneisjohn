@@ -18,7 +18,9 @@ const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
 export default class Game {
   __STATICS__: StaticsType;
 
-  constructor(owner) {
+  __players: Array<Player>;
+
+  constructor(owner: Player) {
     const id = chance.string({length: 5, pool});
     const slug = Slug.random();
 
