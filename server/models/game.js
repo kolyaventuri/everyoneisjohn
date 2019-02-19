@@ -3,12 +3,14 @@
 import Chance from 'chance';
 
 import Slug from '../lib/slug';
+import Player from './player';
 
 const chance = new Chance();
 
 type StaticsType = {
   id: string,
-  slug: string
+  slug: string,
+  owner: Player
 };
 
 const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
@@ -16,14 +18,17 @@ const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
 export default class Game {
   __STATICS__: StaticsType;
 
-  constructor() {
+  constructor(owner) {
     const id = chance.string({length: 5, pool});
     const slug = Slug.random();
 
     this.__STATICS__ = {
       id,
-      slug
+      slug,
+      owner
     };
+
+    this.__players = [];
   }
 
   get id(): string {
@@ -32,5 +37,13 @@ export default class Game {
 
   get slug(): string {
     return this.__STATICS__.slug;
+  }
+
+  get owner(): Player {
+    return this.__STATICS__.owner;
+  }
+
+  get players(): Array<Player> {
+    return this.__players;
   }
 }
