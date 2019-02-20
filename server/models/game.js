@@ -33,6 +33,25 @@ export default class Game {
     this.__players = [];
   }
 
+  addPlayer(player: Player) {
+    const players = this.__players;
+
+    if (players.includes(player)) {
+      return;
+    }
+
+    players.push(player);
+  }
+
+  removePlayer(player: Player) {
+    const players = this.__players;
+    const index = players.indexOf(player);
+
+    if (index > -1) {
+      players.splice(index, 1);
+    }
+  }
+
   get id(): string {
     return this.__STATICS__.id;
   }
