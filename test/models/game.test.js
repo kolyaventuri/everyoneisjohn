@@ -1,8 +1,13 @@
 import test from 'ava';
+import proxyquire from 'proxyquire';
 
-import Game from '../../server/models/game';
 import Player from '../../server/models/player';
-import {socket} from '../mocks';
+import {socket, repositories} from '../mocks';
+
+const Game = proxyquire('../../server/models/game', {
+  '../repositories': repositories
+}).default;
+const {gameRepository} = repositories;
 
 const genGame = owner => new Game(owner);
 const genPlayer = () => new Player(socket);
@@ -43,8 +48,8 @@ test('can add players', t => {
 
   t.is(game.players.length, 2);
 
-  t.true(game.players.includes(players[0]));
-  t.true(game.players.includes(players[1]));
+  t.true(game.players.includes(players[0].id));
+  t.true(game.players.includes(players[1].id));
 });
 
 test('cannot add duplicate players', t => {
@@ -67,4 +72,10 @@ test('can remove players', t => {
 
   t.is(game.players.length, 0);
   t.false(game.players.includes(player));
+});
+
+test('gets stored in the game repository during the constructor', t => {
+  const game = genGame();
+
+  t.true(gameRepository.insert.calledWith(game));
 });

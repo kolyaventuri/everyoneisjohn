@@ -3,6 +3,8 @@
 import uuid from 'uuid/v1';
 import Chance from 'chance';
 
+import {playerRepository} from '../repositories';
+
 const chance = new Chance();
 
 type Socket = {[string]: any};
@@ -28,6 +30,8 @@ export default class Player {
     };
 
     this.name = chance.name({middle: true, prefix: true});
+
+    playerRepository.insert(this);
   }
 
   deactivate() {

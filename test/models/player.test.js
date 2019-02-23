@@ -1,9 +1,12 @@
 import test from 'ava';
+import proxyquire from 'proxyquire';
 
-import Player from '../../server/models/player';
-import * as mocks from '../mocks';
+import {socket, repositories} from '../mocks';
 
-const {socket} = mocks;
+const Player = proxyquire('../../server/models/player', {
+  '../repositories': repositories
+}).default;
+const {playerRepository} = repositories;
 
 const genPlayer = () => new Player(socket);
 
@@ -56,4 +59,10 @@ test('has a socket', t => {
   const player = genPlayer();
 
   t.is(player.socket, socket);
+});
+
+test('gets stored in the repository', t => {
+  const player = genPlayer();
+
+  t.true(playerRepository.insert.calledWith(player));
 });

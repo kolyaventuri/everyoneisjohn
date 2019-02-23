@@ -3,6 +3,7 @@
 import Chance from 'chance';
 
 import Slug from '../lib/slug';
+import {gameRepository, playerRepository} from '../repositories';
 import Player from './player';
 
 const chance = new Chance();
@@ -18,7 +19,7 @@ const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
 export default class Game {
   __STATICS__: StaticsType;
 
-  __players: Array<Player>;
+  __players: Array<string>;
 
   constructor(owner: Player) {
     const id = chance.string({length: 5, pool});
@@ -31,21 +32,23 @@ export default class Game {
     };
 
     this.__players = [];
+
+    gameRepository.insert(this);
   }
 
-  addPlayer(player: Player) {
+  addPlayer({id}: Player) {
     const players = this.__players;
 
-    if (players.includes(player)) {
+    if (players.includes(id)) {
       return;
     }
 
-    players.push(player);
+    players.push(id);
   }
 
-  removePlayer(player: Player) {
+  removePlayer({id}: Player) {
     const players = this.__players;
-    const index = players.indexOf(player);
+    const index = players.indexOf(id);
 
     if (index > -1) {
       players.splice(index, 1);
@@ -65,6 +68,6 @@ export default class Game {
   }
 
   get players(): Array<Player> {
-    return this.__players;
+    return this.__players.map(playerId => playerRepository.find(playerId));
   }
 }
