@@ -5,6 +5,7 @@ import Chance from 'chance';
 
 import {gameRepository, playerRepository} from '../repositories';
 import Game from './game';
+import Stats from './stats';
 
 const chance = new Chance();
 
@@ -25,6 +26,8 @@ export default class Player {
 
   __game: string;
 
+  stats: Stats;
+
   constructor(socket: Socket, id: IdType = null) {
     this.__STATICS__ = {
       socket,
@@ -33,6 +36,8 @@ export default class Player {
     };
 
     this.name = chance.name({middle: true, prefix: true});
+
+    this.stats = new Stats();
 
     playerRepository.insert(this);
   }

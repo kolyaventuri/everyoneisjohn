@@ -2,6 +2,7 @@ import test from 'ava';
 import proxyquire from 'proxyquire';
 
 import {socket, repositories} from '../mocks';
+import Stats from '../../server/models/stats';
 
 const Player = proxyquire('../../server/models/player', {
   '../repositories': repositories
@@ -74,4 +75,10 @@ test('can hold a game objet', t => {
   player.setGame(game);
 
   t.is(player.game, game.id);
+});
+
+test('has stats', t => {
+  const player = genPlayer();
+
+  t.true(player.stats instanceof Stats);
 });
