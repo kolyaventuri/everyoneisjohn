@@ -63,3 +63,6 @@ typings/
 # parcel cache
 .cache/
 static/javascripts/
+
+# Temp files
+.#*

@@ -3,6 +3,10 @@
 import uuid from 'uuid/v1';
 import Chance from 'chance';
 
+import {gameRepository, playerRepository} from '../repositories';
+import Game from './game';
+import Stats from './stats';
+
 const chance = new Chance();
 
 type Socket = {[string]: any};
@@ -20,6 +24,10 @@ export default class Player {
 
   name: string;
 
+  __game: string;
+
+  stats: Stats;
+
   constructor(socket: Socket, id: IdType = null) {
     this.__STATICS__ = {
       socket,
@@ -28,10 +36,38 @@ export default class Player {
     };
 
     this.name = chance.name({middle: true, prefix: true});
+
+    this.stats = new Stats();
+
+    playerRepository.insert(this);
   }
 
   deactivate() {
     this.__STATICS__.active = false;
+  }
+
+  joinGame(id: string) {
+    const game = gameRepository.find(id);
+
+    if (game) {
+      game.addPlayer(this);
+    }
+  }
+
+  leaveGame() {
+    if (this.game) {
+      this.game.removePlayer(this);
+    }
+
+    this.__game = '';
+  }
+
+  setGame({id}: Game) {
+    this.__game = id;
+  }
+
+  destroy() {
+    playerRepository.destroy(this);
   }
 
   get id(): string {
@@ -44,5 +80,9 @@ export default class Player {
 
   get socket(): Socket {
     return this.__STATICS__.socket;
+  }
+
+  get game(): Game {
+    return gameRepository.find(this.__game);
   }
 }

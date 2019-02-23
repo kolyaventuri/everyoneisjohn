@@ -1,11 +1,18 @@
 import test from 'ava';
+import proxyquire from 'proxyquire';
+import {stub} from 'sinon';
 
-import Player from '../../server/models/player';
-import * as mocks from '../mocks';
+import {socket, repositories} from '../mocks';
+import Stats from '../../server/models/stats';
+import Game from '../../server/models/game';
 
-const {socket} = mocks;
+const Player = proxyquire('../../server/models/player', {
+  '../repositories': repositories
+}).default;
+const {gameRepository, playerRepository} = repositories;
 
 const genPlayer = () => new Player(socket);
+const genGame = () => new Game(genPlayer());
 
 test('it has an ID', t => {
   const player = genPlayer();
@@ -56,4 +63,54 @@ test('has a socket', t => {
   const player = genPlayer();
 
   t.is(player.socket, socket);
+});
+
+test('gets stored in the repository', t => {
+  const player = genPlayer();
+
+  t.true(playerRepository.insert.calledWith(player));
+});
+
+test('can hold a game objet', t => {
+  const player = genPlayer();
+  const game = {id: 'ABCDE'};
+
+  player.setGame(game);
+
+  t.is(player.game, game.id);
+});
+
+test('has stats', t => {
+  const player = genPlayer();
+
+  t.true(player.stats instanceof Stats);
+});
+
+test('can be destroyed', t => {
+  const player = genPlayer();
+
+  player.destroy();
+
+  t.true(playerRepository.destroy.calledWith(player));
+});
+
+test('can join a game', t => {
+  const game = genGame();
+  const player = genPlayer();
+
+  gameRepository.find = stub().returns(game);
+  player.joinGame(game.id);
+
+  t.is(player.game, game);
+});
+
+test('can leave a game', t => {
+  const game = genGame();
+  const player = genPlayer();
+  gameRepository.find = stub().onCall(0).returns(game).returns(null);
+  player.joinGame(game.id);
+
+  player.leaveGame();
+
+  t.is(player.game, null);
 });
