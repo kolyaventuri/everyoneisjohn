@@ -11,7 +11,7 @@ const chance = new Chance();
 type StaticsType = {
   id: string,
   slug: string,
-  owner: Player
+  owner: string
 };
 
 const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
@@ -28,7 +28,7 @@ export default class Game {
     this.__STATICS__ = {
       id,
       slug,
-      owner
+      owner: owner.id
     };
 
     this.__players = [];
@@ -64,7 +64,7 @@ export default class Game {
   }
 
   get owner(): Player {
-    return this.__STATICS__.owner;
+    return playerRepository.find(this.__STATICS__.owner);
   }
 
   get players(): Array<Player> {

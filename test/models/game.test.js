@@ -9,7 +9,7 @@ const Game = proxyquire('../../server/models/game', {
 }).default;
 const {gameRepository} = repositories;
 
-const genGame = owner => new Game(owner);
+const genGame = owner => new Game(owner || genPlayer());
 const genPlayer = () => new Player(socket);
 const genPlayers = num => new Array(num).fill(1).map(_ => genPlayer());
 
@@ -30,7 +30,7 @@ test('has an owner', t => {
   const owner = genPlayer();
   const game = genGame(owner);
 
-  t.is(game.owner, owner);
+  t.is(game.owner, owner.id);
 });
 
 test('can hold players', t => {
