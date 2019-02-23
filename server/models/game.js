@@ -36,7 +36,8 @@ export default class Game {
     gameRepository.insert(this);
   }
 
-  addPlayer({id}: Player) {
+  addPlayer(player: Player) {
+    const {id} = player;
     const players = this.__players;
 
     if (players.includes(id)) {
@@ -44,6 +45,7 @@ export default class Game {
     }
 
     players.push(id);
+    player.setGame(this);
   }
 
   removePlayer({id}: Player) {

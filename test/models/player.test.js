@@ -66,3 +66,12 @@ test('gets stored in the repository', t => {
 
   t.true(playerRepository.insert.calledWith(player));
 });
+
+test('can hold a game objet', t => {
+  const player = genPlayer();
+  const game = {id: 'ABCDE'};
+
+  player.setGame(game);
+
+  t.is(player.game, game.id);
+});

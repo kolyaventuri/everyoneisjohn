@@ -3,7 +3,8 @@
 import uuid from 'uuid/v1';
 import Chance from 'chance';
 
-import {playerRepository} from '../repositories';
+import {gameRepository, playerRepository} from '../repositories';
+import Game from './game';
 
 const chance = new Chance();
 
@@ -38,6 +39,10 @@ export default class Player {
     this.__STATICS__.active = false;
   }
 
+  setGame({id}: Game) {
+    this.__game = id;
+  }
+
   get id(): string {
     return this.__STATICS__.id;
   }
@@ -48,5 +53,9 @@ export default class Player {
 
   get socket(): Socket {
     return this.__STATICS__.socket;
+  }
+
+  get game(): Game {
+    return gameRepository.find(this.__game);
   }
 }

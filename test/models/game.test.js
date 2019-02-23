@@ -79,3 +79,12 @@ test('gets stored in the game repository during the constructor', t => {
 
   t.true(gameRepository.insert.calledWith(game));
 });
+
+test('ties player to game', t => {
+  const game = genGame();
+  const player = genPlayer();
+
+  game.addPlayer(player);
+
+  t.is(player.__game, game.id);
+});
