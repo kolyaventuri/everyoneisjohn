@@ -9,5 +9,7 @@ export default class MockRepo {
 
   all = stub();
 
+  destroy = stub();
+
   count = 0;
 }

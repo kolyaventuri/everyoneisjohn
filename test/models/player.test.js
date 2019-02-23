@@ -82,3 +82,11 @@ test('has stats', t => {
 
   t.true(player.stats instanceof Stats);
 });
+
+test('can be destroyed', t => {
+  const player = genPlayer();
+
+  player.destroy();
+
+  t.true(playerRepository.destroy.calledWith(player));
+});

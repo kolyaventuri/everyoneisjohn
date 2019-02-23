@@ -76,3 +76,19 @@ test('it can retieve an array of all the objects', t => {
 
   t.deepEqual(result, items);
 });
+
+test('it can destroy an object in the repo', t => {
+  const repo = genRepo();
+  const item1 = genItem(1);
+  const item2 = genItem(2);
+  const items = [item2];
+
+  repo.insert(item1);
+  repo.insert(item2);
+
+  repo.destroy(item1);
+
+  const result = repo.all();
+
+  t.deepEqual(result, items);
+});

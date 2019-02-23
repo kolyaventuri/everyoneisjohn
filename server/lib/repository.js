@@ -40,6 +40,12 @@ export default class Repository {
     return Object.values(this.__STATICS__.items);
   }
 
+  destroy(item: any) {
+    if (this.__STATICS__.items[item.id]) {
+      delete this.__STATICS__.items[item.id];
+    }
+  }
+
   get count(): number {
     const {items} = this.__STATICS__;
 

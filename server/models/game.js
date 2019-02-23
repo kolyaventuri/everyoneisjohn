@@ -72,6 +72,10 @@ export default class Game {
     }
   }
 
+  destroy() {
+    gameRepository.destroy(this);
+  }
+
   get id(): string {
     return this.__STATICS__.id;
   }

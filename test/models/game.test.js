@@ -152,3 +152,11 @@ test('#addBid does nothing if not in voting stage', t => {
 
   t.false(mockBid.calledWith(player, 3));
 });
+
+test('can be destroyed', t => {
+  const game = genGame();
+
+  game.destroy();
+
+  t.true(gameRepository.destroy.calledWith(game));
+});

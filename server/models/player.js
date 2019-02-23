@@ -50,6 +50,10 @@ export default class Player {
     this.__game = id;
   }
 
+  destroy() {
+    playerRepository.destroy(this);
+  }
+
   get id(): string {
     return this.__STATICS__.id;
   }
