@@ -1,12 +1,19 @@
 import test from 'ava';
 import proxyquire from 'proxyquire';
+import {stub} from 'sinon';
 
 import Player from '../../server/models/player';
 import {socket, repositories} from '../mocks';
 import * as GameMode from '../../server/lib/game-mode';
 
+const mockBid = stub();
+class Auction {
+  bid = mockBid;
+}
+
 const Game = proxyquire('../../server/models/game', {
-  '../repositories': repositories
+  '../repositories': repositories,
+  './auction': {default: Auction}
 }).default;
 const {gameRepository} = repositories;
 
@@ -110,4 +117,38 @@ test('cannot set invalid modes', t => {
   game.mode = 123;
 
   t.is(game.mode, GameMode.SETUP);
+});
+
+test('starts an auction during VOTING stage', t => {
+  const game = genGame();
+  game.mode = GameMode.VOTING;
+
+  t.true(game.__auction instanceof Auction);
+});
+
+test('clears out of the action during any other stage', t => {
+  const game = genGame();
+  game.mode = GameMode.VOTING;
+  game.mode = GameMode.SETUP;
+
+  t.is(game.__auction, null);
+});
+
+test('#addBid adds a bid for the given player', t => {
+  const game = genGame();
+  const player = genPlayer();
+  game.mode = GameMode.VOTING;
+
+  game.addBid(player, 3);
+
+  t.true(mockBid.calledWith(player, 3));
+});
+
+test('#addBid does nothing if not in voting stage', t => {
+  const game = genGame();
+  const player = genPlayer();
+
+  game.addBid(player, 3);
+
+  t.false(mockBid.calledWith(player, 3));
 });

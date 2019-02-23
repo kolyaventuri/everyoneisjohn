@@ -6,6 +6,7 @@ import Slug from '../lib/slug';
 import * as GameModes from '../lib/game-mode';
 import {gameRepository, playerRepository} from '../repositories';
 import Player from './player';
+import Auction from './auction';
 
 const chance = new Chance();
 
@@ -25,6 +26,8 @@ export default class Game {
 
   __mode: GameMode;
 
+  __auction: Auction | null;
+
   constructor(owner: Player) {
     const id = chance.string({length: 5, pool});
     const slug = Slug.random();
@@ -37,6 +40,7 @@ export default class Game {
 
     this.__players = [];
     this.__mode = GameModes.SETUP;
+    this.__auction = null;
 
     gameRepository.insert(this);
   }
@@ -59,6 +63,12 @@ export default class Game {
 
     if (index > -1) {
       players.splice(index, 1);
+    }
+  }
+
+  addBid(player: Player, amount: number) {
+    if (this.mode === GameModes.VOTING && this.__auction) {
+      this.__auction.bid(player, amount);
     }
   }
 
@@ -90,5 +100,11 @@ export default class Game {
     }
 
     this.__mode = mode;
+
+    if (mode === GameModes.VOTING) {
+      this.__auction = new Auction(this.players);
+    } else {
+      this.__auction = null;
+    }
   }
 }
