@@ -3,11 +3,13 @@
 import Chance from 'chance';
 
 import Slug from '../lib/slug';
+import * as GameModes from '../lib/game-mode';
 import {gameRepository, playerRepository} from '../repositories';
 import Player from './player';
 
 const chance = new Chance();
 
+type GameMode = GameModes.GameMode;
 type StaticsType = {
   id: string,
   slug: string,
@@ -21,6 +23,8 @@ export default class Game {
 
   __players: Array<string>;
 
+  __mode: GameMode;
+
   constructor(owner: Player) {
     const id = chance.string({length: 5, pool});
     const slug = Slug.random();
@@ -32,6 +36,7 @@ export default class Game {
     };
 
     this.__players = [];
+    this.__mode = GameModes.SETUP;
 
     gameRepository.insert(this);
   }
@@ -71,5 +76,19 @@ export default class Game {
 
   get players(): Array<Player> {
     return this.__players.map(playerId => playerRepository.find(playerId));
+  }
+
+  get mode(): GameMode {
+    return this.__mode;
+  }
+
+  set mode(mode: GameMode) {
+    const newMode = Object.values(GameModes).find(m => m === mode);
+
+    if (!newMode || typeof newMode !== 'symbol') {
+      return;
+    }
+
+    this.__mode = mode;
   }
 }

@@ -23,6 +23,8 @@ export default class Player {
 
   name: string;
 
+  __game: string;
+
   constructor(socket: Socket, id: IdType = null) {
     this.__STATICS__ = {
       socket,

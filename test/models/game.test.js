@@ -3,6 +3,7 @@ import proxyquire from 'proxyquire';
 
 import Player from '../../server/models/player';
 import {socket, repositories} from '../mocks';
+import * as GameMode from '../../server/lib/game-mode';
 
 const Game = proxyquire('../../server/models/game', {
   '../repositories': repositories
@@ -87,4 +88,26 @@ test('ties player to game', t => {
   game.addPlayer(player);
 
   t.is(player.__game, game.id);
+});
+
+test('has a game mode', t => {
+  const game = genGame();
+
+  t.is(game.mode, GameMode.SETUP);
+});
+
+test('can change modes', t => {
+  const game = genGame();
+
+  game.mode = GameMode.VOTING;
+
+  t.is(game.mode, GameMode.VOTING);
+});
+
+test('cannot set invalid modes', t => {
+  const game = genGame();
+
+  game.mode = 123;
+
+  t.is(game.mode, GameMode.SETUP);
 });
