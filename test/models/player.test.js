@@ -1,15 +1,18 @@
 import test from 'ava';
 import proxyquire from 'proxyquire';
+import {stub} from 'sinon';
 
 import {socket, repositories} from '../mocks';
 import Stats from '../../server/models/stats';
+import Game from '../../server/models/game';
 
 const Player = proxyquire('../../server/models/player', {
   '../repositories': repositories
 }).default;
-const {playerRepository} = repositories;
+const {gameRepository, playerRepository} = repositories;
 
 const genPlayer = () => new Player(socket);
+const genGame = () => new Game(genPlayer());
 
 test('it has an ID', t => {
   const player = genPlayer();
@@ -89,4 +92,25 @@ test('can be destroyed', t => {
   player.destroy();
 
   t.true(playerRepository.destroy.calledWith(player));
+});
+
+test('can join a game', t => {
+  const game = genGame();
+  const player = genPlayer();
+
+  gameRepository.find = stub().returns(game);
+  player.joinGame(game.id);
+
+  t.is(player.game, game);
+});
+
+test('can leave a game', t => {
+  const game = genGame();
+  const player = genPlayer();
+  gameRepository.find = stub().onCall(0).returns(game).returns(null);
+  player.joinGame(game.id);
+
+  player.leaveGame();
+
+  t.is(player.game, null);
 });

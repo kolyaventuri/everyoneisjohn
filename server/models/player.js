@@ -46,6 +46,22 @@ export default class Player {
     this.__STATICS__.active = false;
   }
 
+  joinGame(id: string) {
+    const game = gameRepository.find(id);
+
+    if (game) {
+      game.addPlayer(this);
+    }
+  }
+
+  leaveGame() {
+    if (this.game) {
+      this.game.removePlayer(this);
+    }
+
+    this.__game = '';
+  }
+
   setGame({id}: Game) {
     this.__game = id;
   }
