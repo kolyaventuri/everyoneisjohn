@@ -2,16 +2,16 @@ import test from 'ava';
 import proxyquire from 'proxyquire';
 import {stub} from 'sinon';
 
-import Player from '../../server/models/player';
+import Player from '../../../server/models/player';
 import {socket, repositories} from '../mocks';
-import * as GameMode from '../../server/lib/game-mode';
+import * as GameMode from '../../../server/lib/game-mode';
 
 const mockBid = stub();
 class Auction {
   bid = mockBid;
 }
 
-const Game = proxyquire('../../server/models/game', {
+const Game = proxyquire('../../../server/models/game', {
   '../repositories': repositories,
   './auction': {default: Auction}
 }).default;

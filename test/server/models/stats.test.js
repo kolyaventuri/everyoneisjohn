@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import Stats from '../../server/models/stats';
+import Stats from '../../../server/models/stats';
 
 const genStats = () => new Stats();
 

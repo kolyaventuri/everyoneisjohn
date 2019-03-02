@@ -3,10 +3,10 @@ import proxyquire from 'proxyquire';
 import {stub} from 'sinon';
 
 import {socket, repositories} from '../mocks';
-import Stats from '../../server/models/stats';
-import Game from '../../server/models/game';
+import Stats from '../../../server/models/stats';
+import Game from '../../../server/models/game';
 
-const Player = proxyquire('../../server/models/player', {
+const Player = proxyquire('../../../server/models/player', {
   '../repositories': repositories
 }).default;
 const {gameRepository, playerRepository} = repositories;

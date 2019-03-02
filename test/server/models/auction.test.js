@@ -1,7 +1,7 @@
 import test from 'ava';
 
-import Auction from '../../server/models/auction';
-import Player from '../../server/models/player';
+import Auction from '../../../server/models/auction';
+import Player from '../../../server/models/player';
 
 const genAuction = () => {
   const players = new Array(3).fill(0).map(_ => new Player());

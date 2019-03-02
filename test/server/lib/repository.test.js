@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import Repository from '../../server/lib/repository';
+import Repository from '../../../server/lib/repository';
 
 const genRepo = () => {
   return new Repository();
