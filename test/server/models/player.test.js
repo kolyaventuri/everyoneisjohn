@@ -119,7 +119,7 @@ test('can leave a game', t => {
 test('is subscribed to the public game room upon joining the game', t => {
   const owner = new Player(socket, 'id');
   const player = new Player(new MockSocket(), 'id');
-  const game = new Game(socket, owner);
+  const game = new Game(owner);
 
   gameRepository.find = stub().returns(game);
 
