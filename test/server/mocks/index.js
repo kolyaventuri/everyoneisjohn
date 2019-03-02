@@ -1,8 +1,16 @@
+import {spy, stub} from 'sinon';
 import MockRepo from './repo';
-import {spy} from 'sinon';
+
+export const socketToMocks = {
+  emit: spy()
+};
 
 export class MockSocket {
   join = spy();
+
+  to = stub().returns(socketToMocks);
+
+  emit = spy();
 }
 
 export const repositories = {

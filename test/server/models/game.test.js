@@ -3,17 +3,19 @@ import proxyquire from 'proxyquire';
 import {stub} from 'sinon';
 
 import Player from '../../../server/models/player';
-import {MockSocket, repositories} from '../mocks';
+import {MockSocket, socketToMocks, repositories} from '../mocks';
 import * as GameMode from '../../../server/lib/game-mode';
 
 const mockBid = stub();
 class Auction {
   bid = mockBid;
 }
+const globalSocket = new MockSocket();
 
 const Game = proxyquire('../../../server/models/game', {
   '../repositories': repositories,
-  './auction': {default: Auction}
+  './auction': {default: Auction},
+  '../socket': {default: globalSocket}
 }).default;
 const {gameRepository} = repositories;
 
@@ -171,4 +173,31 @@ test('joins a user to the public room upon joining the game', t => {
   game.addPlayer(player);
 
   t.true(player.socket.join.calledWith(room));
-})
+});
+
+test('joins a user to the private room upon joining', t => {
+  const game = genGame();
+  const player = new Player(new MockSocket(), 'id');
+
+  const room = `game/${game.id}/player/${player.id}`;
+
+  game.addPlayer(player);
+
+  t.true(player.socket.join.calledWith(room));
+});
+
+test('can emit to all players in the game', t => {
+  const game = genGame();
+
+  const event = 'event';
+  const payload = 'payload';
+
+  game.emit({
+    channel: 'all',
+    event,
+    payload
+  });
+
+  t.true(globalSocket.to.calledWith(`game/${game.id}/all`));
+  t.true(socketToMocks.emit.calledWith(event, payload));
+});

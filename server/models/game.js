@@ -5,6 +5,7 @@ import Chance from 'chance';
 import Slug from '../lib/slug';
 import * as GameModes from '../lib/game-mode';
 import {gameRepository, playerRepository} from '../repositories';
+import socket from '../socket';
 import Player from './player';
 import Auction from './auction';
 
@@ -15,6 +16,12 @@ type StaticsType = {
   id: string,
   slug: string,
   owner: string
+};
+
+type EmitType = {
+  channel: string,
+  event: string,
+  payload?: string
 };
 
 const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
@@ -78,6 +85,13 @@ export default class Game {
 
   destroy() {
     gameRepository.destroy(this);
+  }
+
+  emit({channel, event, payload}: EmitType) {
+    const prefix = `game/${this.id}`;
+    channel = `${prefix}/${channel}`;
+
+    socket.to(channel).emit(event, payload);
   }
 
   get id(): string {
