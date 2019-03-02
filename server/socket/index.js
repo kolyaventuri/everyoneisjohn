@@ -8,4 +8,4 @@ import server from './server';
   of the app.
 */
 
-export default server;
+export default server();
