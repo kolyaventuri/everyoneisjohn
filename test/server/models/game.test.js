@@ -201,3 +201,12 @@ test('can emit to all players in the game', t => {
   t.true(globalSocket.to.calledWith(`game/${game.id}/all`));
   t.true(socketToMocks.emit.calledWith(event, payload));
 });
+
+test('subscribes owner to GM and "all" rooms', t => {
+  const owner = new Player(new MockSocket());
+
+  const game = new Game(owner);
+
+  t.true(owner.socket.join.calledWith(`game/${game.id}/gm`));
+  t.true(owner.socket.join.calledWith(`game/${game.id}/all`));
+});

@@ -15,7 +15,8 @@ type GameMode = GameModes.GameMode;
 type StaticsType = {
   id: string,
   slug: string,
-  owner: string
+  owner: string,
+  prefix: string
 };
 
 type EmitType = {
@@ -38,10 +39,12 @@ export default class Game {
   constructor(owner: Player) {
     const id = chance.string({length: 5, pool});
     const slug = Slug.random();
+    const prefix = `game/${id}`;
 
     this.__STATICS__ = {
       id,
       slug,
+      prefix,
       owner: owner.id
     };
 
@@ -50,6 +53,9 @@ export default class Game {
     this.__auction = null;
 
     gameRepository.insert(this);
+
+    owner.socket.join(`${prefix}/gm`);
+    owner.socket.join(`${prefix}/all`);
   }
 
   addPlayer(player: Player) {
@@ -63,7 +69,7 @@ export default class Game {
     players.push(id);
     player.setGame(this);
 
-    const prefix = `game/${this.id}`;
+    const {prefix} = this.__STATICS__;
     player.socket.join(`${prefix}/all`);
     player.socket.join(`${prefix}/player/${player.id}`);
   }
@@ -88,7 +94,7 @@ export default class Game {
   }
 
   emit({channel, event, payload}: EmitType) {
-    const prefix = `game/${this.id}`;
+    const {prefix} = this.__STATICS__;
     channel = `${prefix}/${channel}`;
 
     socket.to(channel).emit(event, payload);
