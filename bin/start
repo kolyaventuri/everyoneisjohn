@@ -11,6 +11,6 @@ const app = require('../app').default;
 const port = process.env.PORT || 3000;
 
 /* eslint-disable-next-line import/no-unassigned */
-require('../server/socket/server')(app);
+require('../server/socket/server').default(app);
 
 app.listen(port);
