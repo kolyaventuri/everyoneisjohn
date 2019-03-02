@@ -55,6 +55,10 @@ export default class Game {
 
     players.push(id);
     player.setGame(this);
+
+    const prefix = `game/${this.id}`;
+    player.socket.join(`${prefix}/all`);
+    player.socket.join(`${prefix}/player/${player.id}`);
   }
 
   removePlayer({id}: Player) {

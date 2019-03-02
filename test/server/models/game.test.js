@@ -3,7 +3,7 @@ import proxyquire from 'proxyquire';
 import {stub} from 'sinon';
 
 import Player from '../../../server/models/player';
-import {socket, repositories} from '../mocks';
+import {MockSocket, repositories} from '../mocks';
 import * as GameMode from '../../../server/lib/game-mode';
 
 const mockBid = stub();
@@ -17,6 +17,7 @@ const Game = proxyquire('../../../server/models/game', {
 }).default;
 const {gameRepository} = repositories;
 
+const socket = new MockSocket();
 const genGame = owner => new Game(owner || genPlayer());
 const genPlayer = () => new Player(socket);
 const genPlayers = num => new Array(num).fill(1).map(_ => genPlayer());
@@ -160,3 +161,14 @@ test('can be destroyed', t => {
 
   t.true(gameRepository.destroy.calledWith(game));
 });
+
+test('joins a user to the public room upon joining the game', t => {
+  const game = genGame();
+  const player = new Player(new MockSocket(), 'id');
+
+  const room = `game/${game.id}/all`;
+
+  game.addPlayer(player);
+
+  t.true(player.socket.join.calledWith(room));
+})

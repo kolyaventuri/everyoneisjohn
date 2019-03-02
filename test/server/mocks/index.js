@@ -1,6 +1,9 @@
 import MockRepo from './repo';
+import {spy} from 'sinon';
 
-export const socket = {data: Symbol('Socket')};
+export class MockSocket {
+  join = spy();
+}
 
 export const repositories = {
   gameRepository: new MockRepo(),
