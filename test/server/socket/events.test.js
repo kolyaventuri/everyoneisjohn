@@ -33,7 +33,7 @@ test('"initPlayer" retrieves an existing player if the player is reconnecting', 
 
   const socket = new MockSocket();
 
-  events.initPlayer(socket);
+  events.initPlayer(socket, player.id);
 
   t.is(socket.playerId, player.id);
   t.true(socket.emit.calledWith('setPlayerId', player.id));
