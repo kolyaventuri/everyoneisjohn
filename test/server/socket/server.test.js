@@ -2,7 +2,7 @@ import test from 'ava';
 import proxyquire from 'proxyquire';
 import {spy, match} from 'sinon';
 
-import {MockSocket} from '../mocks';
+import {MockSocket} from '../mocks/socket';
 
 const globalSocket = new MockSocket();
 const handlers = {

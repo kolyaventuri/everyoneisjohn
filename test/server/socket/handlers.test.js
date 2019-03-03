@@ -1,7 +1,7 @@
 import test from 'ava';
 import proxyquire from 'proxyquire';
 
-import {MockSocket} from '../mocks';
+import {MockSocket} from '../mocks/socket';
 
 const mockEvents = [
   {

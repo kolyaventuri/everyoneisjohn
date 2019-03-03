@@ -3,7 +3,8 @@ import proxyquire from 'proxyquire';
 import {stub} from 'sinon';
 
 import Player from '../../../server/models/player';
-import {MockSocket, socketToMocks, repositories} from '../mocks';
+import {repositories} from '../mocks';
+import {MockSocket, socketToMocks} from '../mocks/socket';
 import * as GameMode from '../../../server/lib/game-mode';
 
 const mockBid = stub();

@@ -2,7 +2,8 @@ import test from 'ava';
 import proxyquire from 'proxyquire';
 import {stub} from 'sinon';
 
-import {MockSocket, repositories} from '../mocks';
+import {repositories} from '../mocks';
+import {MockSocket} from '../mocks/socket';
 import Stats from '../../../server/models/stats';
 import Game from '../../../server/models/game';
 
