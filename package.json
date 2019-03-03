@@ -95,21 +95,6 @@
     ],
     "ignore": [
       "static/javascripts/**/*.js"
-    ],
-    "overrides": [
-      {
-        "files": "spec/**/*.js",
-        "globals": [
-          "jest",
-          "test",
-          "expect",
-          "describe",
-          "beforeAll",
-          "afterAll",
-          "beforeEach",
-          "afterEach"
-        ]
-      }
     ]
   },
   "ava": {

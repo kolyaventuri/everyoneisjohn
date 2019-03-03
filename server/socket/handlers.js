@@ -16,6 +16,6 @@ export const applyHandlers = (socket: SocketType) => {
   });
 
   for (const {name, handler} of events) {
-    socket.on(name, handler);
+    socket.on(name, handler.bind(socket));
   }
 };

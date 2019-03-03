@@ -1,6 +1,6 @@
 // @flow
 
-import server from './server';
+import server from './socket-server';
 
 /*
   This whole file is effectively a proxy between

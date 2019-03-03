@@ -25,6 +25,8 @@ test('autobinds events', t => {
   const socket = new MockSocket();
   const {name, handler} = mockEvents[0];
 
+  handler.bind = stub().withArgs(socket).returns(handler);
+
   applyHandlers(socket);
 
   t.true(socket.on.calledWith(name, handler));
