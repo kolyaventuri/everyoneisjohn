@@ -9,7 +9,7 @@ const handlers = {
   applyHandlers: spy()
 };
 
-const server = proxyquire('../../../server/socket/server', {
+const server = proxyquire('../../../server/socket/socket-server', {
   'socket.io': () => globalSocket,
   './handlers': handlers
 }).default;

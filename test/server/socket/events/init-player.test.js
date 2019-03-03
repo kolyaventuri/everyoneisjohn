@@ -2,11 +2,11 @@ import test from 'ava';
 import proxyquire from 'proxyquire';
 import {stub, match} from 'sinon';
 
-import {MockSocket} from '../mocks/socket';
-import {repositories} from '../mocks';
-import Player from '../../../server/models/player';
+import {MockSocket} from '../../mocks/socket';
+import {repositories} from '../../mocks';
+import Player from '../../../../server/models/player';
 
-const eventsArray = proxyquire('../../../server/socket/events', {
+const eventsArray = proxyquire('../../../../server/socket/events', {
   '../repositories': repositories
 }).default;
 const {playerRepository} = repositories;
@@ -17,7 +17,7 @@ for (const event of eventsArray) {
   events[event.name] = event.handler;
 }
 
-test('"initPlayer" creates a new player if none exists', t => {
+test('creates a new player if none exists', t => {
   const socket = new MockSocket();
 
   events.initPlayer(socket);
@@ -26,7 +26,7 @@ test('"initPlayer" creates a new player if none exists', t => {
   t.true(socket.emit.calledWith('setPlayerId', match.string));
 });
 
-test('"initPlayer" retrieves an existing player if the player is reconnecting', t => {
+test('retrieves an existing player if the player is reconnecting', t => {
   const originalSocket = new MockSocket();
   const player = new Player(originalSocket);
   playerRepository.find = stub().withArgs(player.id).returns(player);
