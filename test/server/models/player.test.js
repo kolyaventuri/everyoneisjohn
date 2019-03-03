@@ -23,6 +23,12 @@ test('it has an ID', t => {
   t.true(player.id.length > 0);
 });
 
+test('it appends the ID to the socket', t => {
+  const player = new Player(new MockSocket());
+
+  t.is(player.socket.playerId, player.id);
+});
+
 test('it has a default name', t => {
   const player = genPlayer();
 

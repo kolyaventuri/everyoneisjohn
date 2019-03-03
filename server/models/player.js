@@ -29,9 +29,12 @@ export default class Player {
   stats: Stats;
 
   constructor(socket: Socket, id: IdType = null) {
+    id = id || uuid();
+    socket.playerId = socket.playerId || id;
+
     this.__STATICS__ = {
       socket,
-      id: id || uuid(),
+      id,
       active: true
     };
 

@@ -1,10 +1,11 @@
 import test from 'ava';
 
+import {MockSocket} from '../mocks/socket';
 import Auction from '../../../server/models/auction';
 import Player from '../../../server/models/player';
 
 const genAuction = () => {
-  const players = new Array(3).fill(0).map(_ => new Player());
+  const players = new Array(3).fill(0).map(_ => new Player(new MockSocket()));
   const auction = new Auction(players);
 
   return {players, auction};
