@@ -2,7 +2,7 @@ import test from 'ava';
 import proxyquire from 'proxyquire';
 import {stub} from 'sinon';
 
-import {socket, repositories} from '../mocks';
+import {MockSocket, repositories} from '../mocks';
 import Stats from '../../../server/models/stats';
 import Game from '../../../server/models/game';
 
@@ -11,6 +11,7 @@ const Player = proxyquire('../../../server/models/player', {
 }).default;
 const {gameRepository, playerRepository} = repositories;
 
+const socket = new MockSocket();
 const genPlayer = () => new Player(socket);
 const genGame = () => new Game(genPlayer());
 
@@ -113,4 +114,31 @@ test('can leave a game', t => {
   player.leaveGame();
 
   t.is(player.game, null);
+});
+
+test('is subscribed to the public game room upon joining the game', t => {
+  const owner = new Player(socket, 'id');
+  const player = new Player(new MockSocket(), 'id');
+  const game = new Game(owner);
+
+  gameRepository.find = stub().returns(game);
+
+  const room = `game/${game.id}/all`;
+
+  player.joinGame(game.id);
+
+  t.true(player.socket.join.calledWith(room));
+});
+
+test('is subscribed to the private channel upon joining the game', t => {
+  const game = genGame();
+  const player = new Player(new MockSocket(), 'id');
+
+  gameRepository.find = stub().returns(game);
+
+  const room = `game/${game.id}/player/${player.id}`;
+
+  game.addPlayer(player);
+
+  t.true(player.socket.join.calledWith(room));
 });
