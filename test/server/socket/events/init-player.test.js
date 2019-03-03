@@ -7,6 +7,9 @@ import {repositories} from '../../mocks';
 import Player from '../../../../server/models/player';
 
 const eventsArray = proxyquire('../../../../server/socket/events', {
+  'socket.io': () => {
+    return new MockSocket();
+  },
   '../repositories': repositories
 }).default;
 const {playerRepository} = repositories;

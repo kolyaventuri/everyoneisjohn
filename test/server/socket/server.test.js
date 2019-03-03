@@ -9,13 +9,15 @@ const handlers = {
   applyHandlers: spy()
 };
 
-const server = proxyquire('../../../server/socket/socket-server', {
-  'socket.io': () => globalSocket,
+proxyquire.noCallThru();
+
+const server = proxyquire('../../../server/socket/server', {
+  '../../test/server/mocks/global-socket': () => globalSocket,
   './handlers': handlers
 }).default;
 
 test('binds the incoming socket to an instance of SocketHandler', t => {
-  server({});
+  server();
   const socket = new MockSocket();
 
   globalSocket.__invoke('on', 'connection', socket);

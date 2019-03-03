@@ -1,6 +1,6 @@
 // @flow
 
-import server from './socket-server';
+import server from './server';
 
 /*
   This whole file is effectively a proxy between
@@ -8,4 +8,6 @@ import server from './socket-server';
   of the app.
 */
 
-export default server();
+const instance = typeof server === 'function' ? server() : server;
+
+export default instance;

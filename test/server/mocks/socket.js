@@ -31,6 +31,8 @@ export class MockSocket {
     stubEvent('use', handler);
   });
 
+  listen = stub().returns(this);
+
   __invoke = (name, event, data) => {
     const handler = stubCache[name];
     if (name === 'use') {

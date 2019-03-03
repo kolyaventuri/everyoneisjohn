@@ -14,12 +14,13 @@ const socketBuilder = (app?: {[string]: any}): SocketType => {
     return socket;
   }
 
+  const port = process.env.SOCKET_SERVER || 8301;
   socket = io(app);
   socket.on('connection', client => {
+    logInfo('Client connected');
     applyHandlers(client);
   });
 
-  const port = process.env.PORT || 3000;
   logInfo(`Sockets listening on ${port}`);
 
   return socket;
