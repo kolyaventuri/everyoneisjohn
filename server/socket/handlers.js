@@ -3,7 +3,7 @@
 import {playerRepository} from '../repositories';
 import events from './events';
 
-type SocketType = {[string]: any};
+import type {SocketType} from '.';
 
 export const applyHandlers = (socket: SocketType) => {
   socket.use((socket, next) => {

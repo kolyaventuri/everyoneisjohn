@@ -10,4 +10,5 @@ import server from './server';
 
 const instance = typeof server === 'function' ? server() : server;
 
+export type SocketType = {[string]: any};
 export default instance;
