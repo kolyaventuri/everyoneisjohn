@@ -9,6 +9,7 @@ import startBidding from './actions/start-bidding';
 import startPlaying from './actions/start-playing';
 import giveWillpower from './actions/give-willpower';
 import givePoints from './actions/give-points';
+import setGoalLevel from './actions/set-goal-level';
 
 const events = [
   // Generic server events
@@ -21,7 +22,8 @@ const events = [
   {name: 'startBidding', handler: startBidding},
   {name: 'startPlaying', handler: startPlaying},
   {name: 'giveWillpower', handler: giveWillpower},
-  {name: 'givePoints', handler: givePoints}
+  {name: 'givePoints', handler: givePoints},
+  {name: 'setGoalLevel', handler: setGoalLevel}
 ];
 
 export default events;
