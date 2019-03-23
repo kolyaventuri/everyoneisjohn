@@ -16,7 +16,8 @@ type IdType = string | null;
 type StaticsType = {
   socket: Socket,
   id: string,
-  active: boolean
+  active: boolean,
+  disconnectTimer: ?TimeoutID
 };
 
 export default class Player {
@@ -35,7 +36,8 @@ export default class Player {
     this.__STATICS__ = {
       socket,
       id,
-      active: true
+      active: true,
+      disconnectTimer: null
     };
 
     this.name = chance.name({middle: true, prefix: true});
@@ -67,6 +69,21 @@ export default class Player {
 
   setGame({id}: Game) {
     this.__game = id;
+  }
+
+  disconnect() {
+    this.deactivate();
+
+    this.__STATICS__.disconnectTimer = setTimeout(() => {
+      this.leaveGame();
+      this.destroy();
+    }, 60 * 1000);
+  }
+
+  reconnect() {
+    this.__STATICS__.active = true;
+
+    clearTimeout(this.__STATICS__.disconnectTimer);
   }
 
   destroy() {

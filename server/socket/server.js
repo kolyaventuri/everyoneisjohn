@@ -2,10 +2,9 @@
 
 import {applyHandlers} from './handlers';
 import logger from './logger';
+import type {SocketType} from '.';
 
 let io = require('socket.io');
-
-type SocketType = {[string]: any};
 
 const {logInfo} = logger;
 let socket = null;
