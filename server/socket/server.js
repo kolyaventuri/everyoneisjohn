@@ -1,26 +1,31 @@
 // @flow
 
-import io from 'socket.io';
 import {applyHandlers} from './handlers';
 import logger from './logger';
+import type {SocketType} from '.';
 
-type SocketType = {[string]: any};
+let io = require('socket.io');
 
 const {logInfo} = logger;
 let socket = null;
 
-const socketBuilder = (app?: {[string]: any}): SocketType => {
+const socketBuilder = (port?: number): SocketType => {
   if (socket) {
     return socket;
   }
 
-  socket = io(app);
+  if (process.env.NODE_ENV === 'test') {
+    io = require('../../test/server/mocks/global-socket');
+  }
+
+  socket = io().listen(port);
+
   socket.on('connection', client => {
+    logInfo('Client connected');
     applyHandlers(client);
   });
 
-  const port = process.env.PORT || 3000;
-  logInfo(`Sockets listening on ${port}`);
+  logInfo(`Sockets listening on ${port || ''}`);
 
   return socket;
 };

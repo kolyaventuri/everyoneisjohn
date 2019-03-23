@@ -2,20 +2,22 @@ import test from 'ava';
 import proxyquire from 'proxyquire';
 import {spy, match} from 'sinon';
 
-import {MockSocket} from '../mocks';
+import {MockSocket} from '../mocks/socket';
 
 const globalSocket = new MockSocket();
 const handlers = {
   applyHandlers: spy()
 };
 
+proxyquire.noCallThru();
+
 const server = proxyquire('../../../server/socket/server', {
-  'socket.io': () => globalSocket,
+  '../../test/server/mocks/global-socket': () => globalSocket,
   './handlers': handlers
 }).default;
 
 test('binds the incoming socket to an instance of SocketHandler', t => {
-  server({});
+  server();
   const socket = new MockSocket();
 
   globalSocket.__invoke('on', 'connection', socket);

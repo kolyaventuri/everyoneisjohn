@@ -1,8 +1,9 @@
 import test from 'ava';
 import proxyquire from 'proxyquire';
-import {stub} from 'sinon';
+import sinon, {stub} from 'sinon';
 
-import {MockSocket, repositories} from '../mocks';
+import {repositories} from '../mocks';
+import {MockSocket} from '../mocks/socket';
 import Stats from '../../../server/models/stats';
 import Game from '../../../server/models/game';
 
@@ -20,6 +21,12 @@ test('it has an ID', t => {
 
   t.is(typeof player.id, 'string');
   t.true(player.id.length > 0);
+});
+
+test('it appends the ID to the socket', t => {
+  const player = new Player(new MockSocket());
+
+  t.is(player.socket.playerId, player.id);
 });
 
 test('it has a default name', t => {
@@ -141,4 +148,50 @@ test('is subscribed to the private channel upon joining the game', t => {
   game.addPlayer(player);
 
   t.true(player.socket.join.calledWith(room));
+});
+
+test('has a disconnect timeout set if they leave', t => {
+  const game = genGame();
+  const player = new Player(new MockSocket(), 'id');
+
+  player.leaveGame = stub();
+  player.destroy = stub();
+  gameRepository.find = stub().returns(game);
+
+  game.addPlayer(player);
+
+  const clock = sinon.useFakeTimers();
+
+  player.disconnect();
+
+  t.false(player.active);
+  clock.tick(60 * 1000);
+
+  t.true(player.leaveGame.called);
+  t.true(player.destroy.called);
+
+  clock.restore();
+});
+
+test('has the discount timeout cleared if they return within the time allowed', t => {
+  const game = genGame();
+  const player = new Player(new MockSocket(), 'id');
+
+  player.leaveGame = stub();
+  gameRepository.find = stub().returns(game);
+
+  game.addPlayer(player);
+  const clock = sinon.useFakeTimers();
+  player.disconnect();
+  clock.tick(30 * 1000);
+
+  player.reconnect();
+  t.true(player.active);
+
+  clock.tick(40 * 1000);
+  t.true(player.active);
+
+  t.false(player.leaveGame.called);
+
+  clock.restore();
 });

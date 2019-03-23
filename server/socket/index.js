@@ -8,4 +8,7 @@ import server from './server';
   of the app.
 */
 
-export default server();
+const instance = typeof server === 'function' ? server() : server;
+
+export type SocketType = {[string]: any};
+export default instance;
