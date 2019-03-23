@@ -6,6 +6,7 @@ import Chance from 'chance';
 import {gameRepository, playerRepository} from '../repositories';
 import Game from './game';
 import Stats from './stats';
+import type {StatsUpdateType} from './stats';
 
 const chance = new Chance();
 
@@ -44,7 +45,7 @@ export default class Player {
       name
     };
 
-    this.stats = new Stats();
+    this.stats = new Stats(this);
 
     playerRepository.insert(this);
   }
@@ -90,6 +91,13 @@ export default class Player {
 
   destroy() {
     playerRepository.destroy(this);
+  }
+
+  handleUpdateStats(stats: StatsUpdateType) {
+    this.socket.emit('updateStats', stats);
+    if (this.game) {
+      this.game.owner.socket.emit('updateStats', {player: this.id, ...stats});
+    }
   }
 
   get id(): string {

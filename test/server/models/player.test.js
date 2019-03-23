@@ -217,3 +217,19 @@ test('has the discount timeout cleared if they return within the time allowed', 
 
   clock.restore();
 });
+
+test('handleUpdateStats emits to both player and GM', t => {
+  const owner = genPlayer();
+  const game = genGame(owner);
+  const player = genPlayer();
+  const stats = {willpower: 10};
+
+  stub(game, 'owner').get(() => owner);
+  stub(player, 'game').get(() => game);
+
+  game.addPlayer(player);
+  player.handleUpdateStats(stats);
+
+  t.true(player.socket.emit.calledWith('updateStats', stats));
+  t.true(game.owner.socket.emit.calledWith('updateStats', {player: player.id, ...stats}));
+});
