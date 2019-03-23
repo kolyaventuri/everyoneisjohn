@@ -7,6 +7,7 @@ import updatePlayer from './actions/update-player';
 import createGame from './actions/create-game';
 import startBidding from './actions/start-bidding';
 import startPlaying from './actions/start-playing';
+import giveWillpower from './actions/give-willpower';
 
 const events = [
   // Generic server events
@@ -14,10 +15,11 @@ const events = [
   {name: 'disconnect', handler: disconnect},
   {name: 'updatePlayer', handler: updatePlayer},
 
-  // Game events
+  // GM Events
   {name: 'createGame', handler: createGame},
   {name: 'startBidding', handler: startBidding},
-  {name: 'startPlaying', handler: startPlaying}
+  {name: 'startPlaying', handler: startPlaying},
+  {name: 'giveWillpower', handler: giveWillpower}
 ];
 
 export default events;
