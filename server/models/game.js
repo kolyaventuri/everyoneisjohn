@@ -127,6 +127,12 @@ export default class Game {
       return;
     }
 
+    if (this.__mode === GameModes.SETUP && mode !== GameModes.SETUP) {
+      for (const player of this.players) {
+        player.stats.freeze();
+      }
+    }
+
     this.__mode = mode;
 
     if (mode === GameModes.VOTING) {
