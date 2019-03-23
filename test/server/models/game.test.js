@@ -18,7 +18,7 @@ const Game = proxyquire('../../../server/models/game', {
   './auction': {default: Auction},
   '../socket': {default: globalSocket}
 }).default;
-const {gameRepository} = repositories;
+const {gameRepository, playerRepository} = repositories;
 
 const socket = new MockSocket();
 const genGame = owner => new Game(owner || genPlayer());
@@ -136,6 +136,18 @@ test('clears out of the action during any other stage', t => {
   game.mode = GameMode.SETUP;
 
   t.is(game.__auction, null);
+});
+
+test('freezes stats when game starts', t => {
+  const game = genGame();
+  const player = genPlayer();
+  game.addPlayer(player);
+
+  playerRepository.find = stub().returns(player);
+
+  game.mode = GameMode.VOTING;
+
+  t.true(player.stats.__STATICS__.frozen);
 });
 
 test('#addBid adds a bid for the given player', t => {

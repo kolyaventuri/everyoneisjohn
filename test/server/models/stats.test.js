@@ -1,13 +1,32 @@
 import test from 'ava';
+import {stub} from 'sinon';
 
 import Stats from '../../../server/models/stats';
+import Player from '../../../server/models/player';
+import {MockSocket} from '../mocks/socket';
 
-const genStats = () => new Stats();
+const genPlayer = () => {
+  const player = new Player(new MockSocket());
+  player.handleUpdateStats = stub();
+
+  return player;
+};
+
+const genStats = player => new Stats(player || genPlayer());
 
 test('has points that start at 0', t => {
   const stats = genStats();
 
   t.is(stats.points, 0);
+});
+
+test('emits new points', t => {
+  const player = genPlayer();
+  const stats = genStats(player);
+
+  stats.points += 3;
+
+  t.true(player.handleUpdateStats.calledWith({points: 3}));
 });
 
 test('has willpower that starts at 10', t => {
@@ -26,6 +45,15 @@ test('can add / subtract willpower', t => {
   stats.willpower -= 2;
 
   t.is(stats.willpower, 9);
+});
+
+test('emits new willpower', t => {
+  const player = genPlayer();
+  const stats = genStats(player);
+
+  stats.willpower += 1;
+
+  t.true(player.handleUpdateStats.calledWith({willpower: 11}));
 });
 
 test('can have a goal', t => {
@@ -56,6 +84,15 @@ test('goal can have a point value [1-3]', t => {
   t.is(stats.goalLevel, 1);
 });
 
+test('emits new goal level', t => {
+  const player = genPlayer();
+  const stats = genStats(player);
+
+  stats.goalLevel = 2;
+
+  t.true(player.handleUpdateStats.calledWith({goalLevel: 2}));
+});
+
 test('can set the 3 skills', t => {
   const stats = genStats();
 
@@ -83,7 +120,8 @@ test('spends 3 willpower if the 3rd skill is set', t => {
 });
 
 test('skills and goals cannot be set once they are frozen', t => {
-  const stats = genStats();
+  const player = genPlayer();
+  const stats = genStats(player);
   const goal = 'Some goal';
 
   stats.freeze();
@@ -93,10 +131,12 @@ test('skills and goals cannot be set once they are frozen', t => {
 
   t.deepEqual(stats.skills, []);
   t.not(stats.goal, goal);
+  t.true(player.handleUpdateStats.calledWith({frozen: true}));
 });
 
 test('skills  / goals can be thawed for editing', t => {
-  const stats = genStats();
+  const player = genPlayer();
+  const stats = genStats(player);
   const goal = 'Some goal';
 
   stats.freeze();
@@ -105,4 +145,5 @@ test('skills  / goals can be thawed for editing', t => {
   stats.goal = goal;
 
   t.is(stats.goal, goal);
+  t.true(player.handleUpdateStats.calledWith({frozen: false}));
 });

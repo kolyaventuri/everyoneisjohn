@@ -6,6 +6,7 @@ import Chance from 'chance';
 import {gameRepository, playerRepository} from '../repositories';
 import Game from './game';
 import Stats from './stats';
+import type {StatsUpdateType} from './stats';
 
 const chance = new Chance();
 
@@ -17,6 +18,7 @@ type StaticsType = {
   socket: Socket,
   id: string,
   active: boolean,
+  name: string,
   disconnectTimer: ?TimeoutID
 };
 
@@ -33,16 +35,17 @@ export default class Player {
     id = id || uuid();
     socket.playerId = socket.playerId || id;
 
+    const name = chance.name({middle: true, prefix: true});
+
     this.__STATICS__ = {
       socket,
       id,
       active: true,
-      disconnectTimer: null
+      disconnectTimer: null,
+      name
     };
 
-    this.name = chance.name({middle: true, prefix: true});
-
-    this.stats = new Stats();
+    this.stats = new Stats(this);
 
     playerRepository.insert(this);
   }
@@ -90,6 +93,13 @@ export default class Player {
     playerRepository.destroy(this);
   }
 
+  handleUpdateStats(stats: StatsUpdateType) {
+    this.socket.emit('updateStats', stats);
+    if (this.game) {
+      this.game.owner.socket.emit('updateStats', {player: this.id, ...stats});
+    }
+  }
+
   get id(): string {
     return this.__STATICS__.id;
   }
@@ -104,5 +114,22 @@ export default class Player {
 
   get game(): Game {
     return gameRepository.find(this.__game);
+  }
+
+  get name(): string {
+    return this.__STATICS__.name;
+  }
+
+  set name(newName: string): string {
+    this.__STATICS__.name = newName;
+
+    if (this.game) {
+      this.game.owner.socket.emit('playerUpdated', {
+        id: this.id,
+        name: newName
+      });
+    }
+
+    return this.__STATICS__.name;
   }
 }

@@ -1,6 +1,7 @@
 import test from 'ava';
 import proxyquire from 'proxyquire';
 import sinon, {stub} from 'sinon';
+import uuid from 'uuid/v4';
 
 import {repositories} from '../mocks';
 import {MockSocket} from '../mocks/socket';
@@ -47,6 +48,26 @@ test('name can change', t => {
   t.is(player.name, newName);
 });
 
+test('if player is in a game, the name change is sent to the GM', t => {
+  const player = genPlayer();
+  const ownerSocket = new MockSocket();
+  const owner = new Player(ownerSocket);
+  const game = new Game(owner);
+
+  game.addPlayer(player);
+  gameRepository.find = stub().returns(game);
+  stub(game, 'owner').get(() => owner);
+
+  const name = uuid();
+
+  player.name = name;
+
+  t.true(ownerSocket.emit.calledWith('playerUpdated', {
+    id: player.id,
+    name
+  }));
+});
+
 test('has an active flag', t => {
   const player = genPlayer();
 
@@ -84,6 +105,7 @@ test('can hold a game objet', t => {
   const game = {id: 'ABCDE'};
 
   player.setGame(game);
+  gameRepository.find = stub().returns(game.id);
 
   t.is(player.game, game.id);
 });
@@ -194,4 +216,20 @@ test('has the discount timeout cleared if they return within the time allowed', 
   t.false(player.leaveGame.called);
 
   clock.restore();
+});
+
+test('handleUpdateStats emits to both player and GM', t => {
+  const owner = genPlayer();
+  const game = genGame(owner);
+  const player = genPlayer();
+  const stats = {willpower: 10};
+
+  stub(game, 'owner').get(() => owner);
+  stub(player, 'game').get(() => game);
+
+  game.addPlayer(player);
+  player.handleUpdateStats(stats);
+
+  t.true(player.socket.emit.calledWith('updateStats', stats));
+  t.true(game.owner.socket.emit.calledWith('updateStats', {player: player.id, ...stats}));
 });
