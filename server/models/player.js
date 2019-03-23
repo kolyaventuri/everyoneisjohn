@@ -17,6 +17,7 @@ type StaticsType = {
   socket: Socket,
   id: string,
   active: boolean,
+  name: string,
   disconnectTimer: ?TimeoutID
 };
 
@@ -40,7 +41,7 @@ export default class Player {
       disconnectTimer: null
     };
 
-    this.name = chance.name({middle: true, prefix: true});
+    this.__STATICS__.name = chance.name({middle: true, prefix: true});
 
     this.stats = new Stats();
 
@@ -104,5 +105,22 @@ export default class Player {
 
   get game(): Game {
     return gameRepository.find(this.__game);
+  }
+
+  get name(): string {
+    return this.__STATICS__.name;
+  }
+
+  set name(newName: string): string {
+    this.__STATICS__.name = newName;
+
+    if (this.game) {
+      this.game.owner.socket.emit('playerUpdated', {
+        id: this.id,
+        name: newName
+      });
+    }
+
+    return this.__STATICS__.name;
   }
 }

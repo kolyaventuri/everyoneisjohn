@@ -1,6 +1,7 @@
 import test from 'ava';
 import proxyquire from 'proxyquire';
 import sinon, {stub} from 'sinon';
+import uuid from 'uuid/v4';
 
 import {repositories} from '../mocks';
 import {MockSocket} from '../mocks/socket';
@@ -47,6 +48,26 @@ test('name can change', t => {
   t.is(player.name, newName);
 });
 
+test('if player is in a game, the name change is sent to the GM', t => {
+  const player = genPlayer();
+  const ownerSocket = new MockSocket();
+  const owner = new Player(ownerSocket);
+  const game = new Game(owner);
+
+  game.addPlayer(player);
+  gameRepository.find = stub().returns(game);
+  stub(game, 'owner').get(() => owner);
+
+  const name = uuid();
+
+  player.name = name;
+
+  t.true(ownerSocket.emit.calledWith('playerUpdated', {
+    id: player.id,
+    name
+  }));
+});
+
 test('has an active flag', t => {
   const player = genPlayer();
 
@@ -84,6 +105,7 @@ test('can hold a game objet', t => {
   const game = {id: 'ABCDE'};
 
   player.setGame(game);
+  gameRepository.find = stub().returns(game.id);
 
   t.is(player.game, game.id);
 });
