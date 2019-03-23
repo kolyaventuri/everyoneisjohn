@@ -22,22 +22,35 @@ const gameMethods = [
   'emit'
 ];
 
-const setup = (createGame = true) => {
-  const game = new Game(new Player(new MockSocket()));
+const stubAndCallThrough = (obj, func) => {
+  const original = obj[func].bind(obj);
+  return stub(obj, func).callsFake((...args) => {
+    original(...args);
+  });
+};
+
+const setup = (createGame = true, playerIsOwner = false) => {
+  const owner = new Player(new MockSocket());
   const socket = new MockSocket();
   const player = new Player(socket);
+  let game;
 
-  for (const m of methods) {
-    player[m] = stub();
+  if (playerIsOwner) {
+    game = new Game(player);
+  } else {
+    game = new Game(owner);
+    game.addPlayer(player);
   }
 
-  game.addPlayer(player);
+  for (const m of methods) {
+    stubAndCallThrough(player, m);
+  }
 
   socket.player = player;
 
   if (createGame) {
     for (const m of gameMethods) {
-      game[m] = stub();
+      stubAndCallThrough(game, m);
     }
 
     socket.game = game;

@@ -34,14 +34,15 @@ export default class Player {
     id = id || uuid();
     socket.playerId = socket.playerId || id;
 
+    const name = chance.name({middle: true, prefix: true});
+
     this.__STATICS__ = {
       socket,
       id,
       active: true,
-      disconnectTimer: null
+      disconnectTimer: null,
+      name
     };
-
-    this.__STATICS__.name = chance.name({middle: true, prefix: true});
 
     this.stats = new Stats();
 

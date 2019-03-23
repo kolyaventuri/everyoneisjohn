@@ -5,7 +5,8 @@ import disconnect from './actions/disconnect';
 import updatePlayer from './actions/update-player';
 
 import createGame from './actions/create-game';
-import startRound from './actions/start-round';
+import startBidding from './actions/start-bidding';
+import startPlaying from './actions/start-playing';
 
 const events = [
   // Generic server events
@@ -15,7 +16,8 @@ const events = [
 
   // Game events
   {name: 'createGame', handler: createGame},
-  {name: 'startRound', handler: startRound}
+  {name: 'startBidding', handler: startBidding},
+  {name: 'startPlaying', handler: startPlaying}
 ];
 
 export default events;
