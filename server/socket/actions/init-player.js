@@ -8,6 +8,7 @@ const initPlayer = (socket: SocketType, id?: string) => {
   let player;
   if (id) {
     player = playerRepository.find(id);
+    player.reconnect();
   }
 
   if (player) {

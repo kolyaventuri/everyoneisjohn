@@ -32,6 +32,7 @@ test('creates a new player if none exists', t => {
 test('retrieves an existing player if the player is reconnecting', t => {
   const originalSocket = new MockSocket();
   const player = new Player(originalSocket);
+  player.reconnect = stub();
   playerRepository.find = stub().withArgs(player.id).returns(player);
 
   const socket = new MockSocket();
@@ -40,4 +41,5 @@ test('retrieves an existing player if the player is reconnecting', t => {
 
   t.is(socket.playerId, player.id);
   t.true(socket.emit.calledWith('setPlayerId', player.id));
+  t.true(player.reconnect.called);
 });
