@@ -8,10 +8,10 @@ type Props = {
   match: MatchType
 };
 
-const Game = ({match: {params: {id}}}: Props) => {
+const GMPanel = ({match: {params: {id}}}: Props) => {
   return (
-    <p>{id}</p>
+    <p>GM: {id}</p>
   );
 };
 
-export default Game;
+export default GMPanel;

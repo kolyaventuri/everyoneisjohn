@@ -7,6 +7,7 @@ import Home from '../routes/home';
 
 import Game from '../routes/game';
 import CreateGame from '../routes/game/create';
+import GMPanel from '../routes/game/gm-panel';
 
 const Main = () => (
   <main>
@@ -14,6 +15,7 @@ const Main = () => (
       <Route exact path="/" component={Home}/>
 
       <Route exact path="/game/create" component={CreateGame}/>
+      <Route path="/game/:id/gm" component={GMPanel}/>
       <Route path="/game/:id" component={Game}/>
     </Switch>
   </main>
