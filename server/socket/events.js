@@ -24,7 +24,7 @@ const events = [
   {name: 'joinGame', handler: joinGame},
 
   // GM Events
-  {name: 'createGame', handler: createGame, isGM: true},
+  {name: 'createGame', handler: createGame},
   {name: 'startGame', handler: startGame, isGM: true},
   {name: 'startBidding', handler: startBidding, isGM: true},
   {name: 'startPlaying', handler: startPlaying, isGM: true},

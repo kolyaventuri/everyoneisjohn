@@ -7,7 +7,7 @@ const disconnect = (socket: SocketType) => {
 
   if (game) {
     player.disconnect();
-  } else {
+  } else if (player) {
     player.destroy();
   }
 };

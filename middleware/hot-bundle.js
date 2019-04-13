@@ -7,7 +7,8 @@ const dir = path.join(__dirname, '../src');
 
 const options = {
   outDir: path.join(__dirname, '../static/javascripts'),
-  outFile: 'bundle.js'
+  outFile: 'bundle.js',
+  publicUrl: '/javascripts'
 };
 
 const bundler = new Bundler(path.join(dir, 'app.js'), options);
