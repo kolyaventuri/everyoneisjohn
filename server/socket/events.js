@@ -13,6 +13,7 @@ import givePoints from './actions/give-points';
 import setGoalLevel from './actions/set-goal-level';
 
 import submitBid from './actions/submit-bid';
+import updateStats from './actions/update-stats';
 
 const events = [
   // Generic server events
@@ -30,7 +31,8 @@ const events = [
   {name: 'setGoalLevel', handler: setGoalLevel, isGM: true},
 
   // Player events
-  {name: 'submitBid', handler: submitBid}
+  {name: 'submitBid', handler: submitBid},
+  {name: 'updateStats', handler: updateStats}
 ];
 
 export default events;
