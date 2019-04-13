@@ -27,7 +27,7 @@ class CreateGame extends React.Component<Props, State> {
 
   constructor(...args) {
     super(...args);
-    this.state = {waiting: false};
+    this.state = {waiting: true};
 
     this.createGame();
   }

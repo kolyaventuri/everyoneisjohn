@@ -28,6 +28,7 @@
     "ava": "^1.2.1",
     "babel-eslint": "^10.0.1",
     "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.12.1",
     "eslint": "^5.14.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-xo": "^0.26.0",
@@ -39,6 +40,7 @@
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.12.4",
     "flow-bin": "^0.93.0",
+    "jsdom": "^14.0.0",
     "nodemon": "^1.18.10",
     "parcel-bundler": "^1.11.0",
     "postcss-modules": "^1.4.1",
@@ -109,7 +111,9 @@
     ],
     "require": [
       "@babel/register",
-      "@babel/polyfill"
+      "@babel/polyfill",
+      "./test/helpers/setup-jsdom",
+      "./test/helpers/setup-enzyme"
     ]
   }
 }
