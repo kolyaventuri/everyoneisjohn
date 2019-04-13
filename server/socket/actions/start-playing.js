@@ -4,15 +4,13 @@ import * as GameModes from '../../lib/game-mode';
 import type {SocketType} from '..';
 
 const startPlaying = (socket: SocketType) => {
-  const {game, player} = socket;
+  const {game} = socket;
 
-  if (game.owner === player) {
-    game.mode = GameModes.PLAYING;
-    game.emit({
-      channel: 'all',
-      event: 'startPlaying'
-    });
-  }
+  game.mode = GameModes.PLAYING;
+  game.emit({
+    channel: 'all',
+    event: 'startPlaying'
+  });
 };
 
 export default startPlaying;

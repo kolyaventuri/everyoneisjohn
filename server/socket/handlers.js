@@ -5,6 +5,12 @@ import events from './events';
 
 import type {SocketType} from '.';
 
+type EventType = {|
+  name: string,
+  handler: Function,
+  isGM?: boolean
+|};
+
 export const applyHandlers = (socket: SocketType) => {
   socket.use((socket, next) => {
     const player = playerRepository.find(socket.playerId);
@@ -15,7 +21,18 @@ export const applyHandlers = (socket: SocketType) => {
     next();
   });
 
-  for (const {name, handler} of events) {
-    socket.on(name, handler.bind(socket));
+  for (const event: EventType of events) {
+    const {name, handler, isGM} = event;
+    const fn = handler.bind(socket);
+    socket.on(name, (...args) => {
+      const {game, player} = socket;
+      if (isGM) {
+        if (!game || game.owner !== player) {
+          return;
+        }
+      }
+
+      fn(...args);
+    });
   }
 };

@@ -6,11 +6,13 @@ import {MockSocket} from '../mocks/socket';
 import {repositories} from '../mocks';
 import Player from '../../../server/models/player';
 import Game from '../../../server/models/game';
+import createSocket from '../stubs/create-socket';
 
+const stubbedEvent = stub();
 const mockEvents = [
   {
     name: 'turtle',
-    handler: () => {}
+    handler: () => stubbedEvent()
   }
 ];
 
@@ -29,7 +31,7 @@ test('autobinds events', t => {
 
   applyHandlers(socket);
 
-  t.true(socket.on.calledWith(name, handler));
+  t.true(socket.on.calledWith(name, match.func));
 });
 
 test('binds middleware to resolve game / player on every event', t => {
@@ -54,4 +56,40 @@ test('middleware finds game and player for given socket', t => {
 
   t.is(socket.player, player);
   t.is(socket.game, game);
+});
+
+test('if isGM is true, allows event to execute if player is a GM', t => {
+  const {socket} = createSocket(true, true);
+  stubbedEvent.reset();
+  mockEvents[0].isGM = true;
+
+  applyHandlers(socket);
+
+  socket.__invoke('on', mockEvents[0].name);
+
+  t.true(stubbedEvent.called);
+});
+
+test('if isGM is true, AND player is not GM, it does NOT allow the event to execute', t => {
+  const {socket} = createSocket(true, false);
+  stubbedEvent.reset();
+  mockEvents[0].isGM = true;
+
+  applyHandlers(socket);
+
+  socket.__invoke('on', mockEvents[0].name);
+
+  t.false(stubbedEvent.called);
+});
+
+test('is isGM is false, anyone can execute event', t => {
+  const {socket} = createSocket(false, false);
+  stubbedEvent.reset();
+  mockEvents[0].isGM = false;
+
+  applyHandlers(socket);
+
+  socket.__invoke('on', mockEvents[0].name);
+
+  t.true(stubbedEvent.called);
 });

@@ -19,13 +19,13 @@ const events = [
   {name: 'updatePlayer', handler: updatePlayer},
 
   // GM Events
-  {name: 'createGame', handler: createGame},
-  {name: 'startGame', handler: startGame},
-  {name: 'startBidding', handler: startBidding},
-  {name: 'startPlaying', handler: startPlaying},
-  {name: 'giveWillpower', handler: giveWillpower},
-  {name: 'givePoints', handler: givePoints},
-  {name: 'setGoalLevel', handler: setGoalLevel}
+  {name: 'createGame', handler: createGame, isGM: true},
+  {name: 'startGame', handler: startGame, isGM: true},
+  {name: 'startBidding', handler: startBidding, isGM: true},
+  {name: 'startPlaying', handler: startPlaying, isGM: true},
+  {name: 'giveWillpower', handler: giveWillpower, isGM: true},
+  {name: 'givePoints', handler: givePoints, isGM: true},
+  {name: 'setGoalLevel', handler: setGoalLevel, isGM: true}
 ];
 
 export default events;
