@@ -100,6 +100,12 @@ export default class Game {
     socket.to(channel).emit(event, payload);
   }
 
+  endAuction(winner: Player, amount: number) {
+    winner.stats.willpower -= amount;
+
+    this.mode = GameModes.PLAYING;
+  }
+
   get id(): string {
     return this.__STATICS__.id;
   }
@@ -136,9 +142,17 @@ export default class Game {
     this.__mode = mode;
 
     if (mode === GameModes.VOTING) {
-      this.__auction = new Auction(this.players);
+      this.__auction = new Auction(this);
     } else {
       this.__auction = null;
     }
+
+    const payload = {
+      channel: 'all',
+      event: 'game.mode',
+      payload: this.mode.toString().toString().slice(7, -1)
+    };
+
+    this.emit(payload);
   }
 }

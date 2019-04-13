@@ -1,14 +1,23 @@
 import test from 'ava';
+import {stub} from 'sinon';
 
 import {MockSocket} from '../mocks/socket';
 import Auction from '../../../server/models/auction';
 import Player from '../../../server/models/player';
+import Game from '../../../server/models/game';
 
 const genAuction = () => {
   const players = new Array(3).fill(0).map(_ => new Player(new MockSocket()));
-  const auction = new Auction(players);
 
-  return {players, auction};
+  const game = new Game(new Player(new MockSocket()));
+
+  for (const p of players) {
+    game.addPlayer(p);
+  }
+
+  const auction = new Auction(game);
+
+  return {game, players, auction};
 };
 
 test('allows each player to bid', t => {
@@ -26,14 +35,12 @@ test('allows each player to bid', t => {
 });
 
 test('determines winner after all bids placed', t => {
-  const {players, auction} = genAuction();
+  const {game, players, auction} = genAuction();
+  game.endAuction = stub();
 
   auction.bid(players[0], 2);
   auction.bid(players[1], 3);
-
-  t.is(auction.winner, null);
-
   auction.bid(players[2], 1);
 
-  t.is(auction.winner, players[1]);
+  t.true(game.endAuction.calledWith(players[1], 3));
 });
