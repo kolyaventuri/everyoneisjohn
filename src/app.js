@@ -1,5 +1,15 @@
-import io from 'socket.io-client';
+import React from 'react';
+import {render} from 'react-dom';
+import {BrowserRouter as Router} from 'react-router-dom';
 
-window.io = io;
-console.log('Entry point.');
-console.log('Yep');
+import App from './components/app';
+
+render(
+  <Router>
+    <App/>
+  </Router>
+  , document.querySelector('#app'));
+
+if (module.hot) {
+  module.hot.accept();
+}
