@@ -8,15 +8,13 @@ type Payload = {
 };
 
 const givePoints = (socket: SocketType, {amount, player: id}: Payload) => {
-  const {game, player: invoker} = socket;
+  const {game} = socket;
 
-  if (game.owner === invoker) {
-    const {players} = game;
+  const {players} = game;
 
-    const player = players.find(p => p.id === id);
+  const player = players.find(p => p.id === id);
 
-    player.stats.goalLevel = amount;
-  }
+  player.stats.goalLevel = amount;
 };
 
 export default givePoints;

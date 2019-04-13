@@ -4,16 +4,14 @@ import * as GameModes from '../../lib/game-mode';
 import type {SocketType} from '..';
 
 const startBidding = (socket: SocketType) => {
-  const {game, player} = socket;
+  const {game} = socket;
 
-  if (game.owner === player) {
-    game.mode = GameModes.VOTING;
+  game.mode = GameModes.VOTING;
 
-    game.emit({
-      channel: 'all',
-      event: 'startBidding'
-    });
-  }
+  game.emit({
+    channel: 'all',
+    event: 'startBidding'
+  });
 };
 
 export default startBidding;

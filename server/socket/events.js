@@ -5,6 +5,7 @@ import disconnect from './actions/disconnect';
 import updatePlayer from './actions/update-player';
 
 import createGame from './actions/create-game';
+import startGame from './actions/start-game';
 import startBidding from './actions/start-bidding';
 import startPlaying from './actions/start-playing';
 import giveWillpower from './actions/give-willpower';
@@ -18,12 +19,13 @@ const events = [
   {name: 'updatePlayer', handler: updatePlayer},
 
   // GM Events
-  {name: 'createGame', handler: createGame},
-  {name: 'startBidding', handler: startBidding},
-  {name: 'startPlaying', handler: startPlaying},
-  {name: 'giveWillpower', handler: giveWillpower},
-  {name: 'givePoints', handler: givePoints},
-  {name: 'setGoalLevel', handler: setGoalLevel}
+  {name: 'createGame', handler: createGame, isGM: true},
+  {name: 'startGame', handler: startGame, isGM: true},
+  {name: 'startBidding', handler: startBidding, isGM: true},
+  {name: 'startPlaying', handler: startPlaying, isGM: true},
+  {name: 'giveWillpower', handler: giveWillpower, isGM: true},
+  {name: 'givePoints', handler: givePoints, isGM: true},
+  {name: 'setGoalLevel', handler: setGoalLevel, isGM: true}
 ];
 
 export default events;

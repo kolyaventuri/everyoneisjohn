@@ -18,19 +18,3 @@ test('can give points to a specific player', t => {
   t.is(player1.stats.points, 1);
   t.is(player2.stats.points, 0);
 });
-
-test('does nothing if you are not the game owner', t => {
-  const {game} = setup(true, true);
-  const mySocket = new MockSocket();
-  const player = new Player(mySocket);
-  const player1 = new Player(new MockSocket());
-
-  game.addPlayer(player1);
-
-  mySocket.player = player;
-  mySocket.game = game;
-
-  givePoints(mySocket, {amount: 1});
-
-  t.is(player1.stats.points, 0);
-});

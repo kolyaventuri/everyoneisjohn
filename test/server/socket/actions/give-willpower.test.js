@@ -32,19 +32,3 @@ test('can give willpower to a specific player', t => {
   t.is(player1.stats.willpower, 11);
   t.is(player2.stats.willpower, 10);
 });
-
-test('does nothing if you are not the game owner', t => {
-  const {game} = setup(true, true);
-  const mySocket = new MockSocket();
-  const player = new Player(mySocket);
-  const player1 = new Player(new MockSocket());
-
-  game.addPlayer(player1);
-
-  mySocket.player = player;
-  mySocket.game = game;
-
-  giveWillpower(mySocket, {amount: 1});
-
-  t.is(player1.stats.willpower, 10);
-});
