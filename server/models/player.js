@@ -58,8 +58,10 @@ export default class Player {
     const game = gameRepository.find(id);
 
     if (game) {
-      game.addPlayer(this);
+      return game.addPlayer(this);
     }
+
+    this.socket.emit('error', 'error.game.doesnt_exist');
   }
 
   leaveGame() {

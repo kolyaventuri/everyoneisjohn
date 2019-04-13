@@ -1,6 +1,7 @@
 // @flow
 
 import Player from './player';
+import Game from './game';
 
 type BidType = {|
   player: Player,
@@ -8,7 +9,8 @@ type BidType = {|
 |};
 
 type StaticsType = {|
-  playerCount: number
+  playerCount: number,
+  game: Game
 |};
 
 export default class Auction {
@@ -16,14 +18,14 @@ export default class Auction {
 
   bids: Array<BidType>;
 
-  winner: Player | null;
+  constructor(game: Game) {
+    const {players} = game;
 
-  constructor(players: Array<Player>) {
     this.bids = [];
     this.__STATICS__ = {
-      playerCount: players.length
+      playerCount: players.length,
+      game
     };
-    this.winner = null;
   }
 
   bid(player: Player, amount: number) {
@@ -47,6 +49,8 @@ export default class Auction {
       return 0;
     });
 
-    this.winner = bids[0].player;
+    const {player: winner, amount} = bids[0];
+
+    this.__STATICS__.game.endAuction(winner, amount);
   }
 }

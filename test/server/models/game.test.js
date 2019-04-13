@@ -115,6 +115,21 @@ test('can change modes', t => {
   t.is(game.mode, GameMode.VOTING);
 });
 
+test('emits mode to players', t => {
+  const game = genGame();
+  game.emit = stub();
+
+  game.mode = GameMode.VOTING;
+
+  const payload = {
+    channel: 'all',
+    event: 'game.mode',
+    payload: 'VOTING'
+  };
+
+  t.true(game.emit.calledWith(payload));
+});
+
 test('cannot set invalid modes', t => {
   const game = genGame();
 
@@ -222,4 +237,22 @@ test('subscribes owner to GM and "all" rooms', t => {
 
   t.true(owner.socket.join.calledWith(`game/${game.id}/gm`));
   t.true(owner.socket.join.calledWith(`game/${game.id}/all`));
+});
+
+test('subtracts willpower from auction winner and enters playing mode', t => {
+  const owner = new Player(new MockSocket());
+  const game = new Game(owner);
+
+  const players = new Array(2).fill(0).map(() => genPlayer());
+
+  for (const p of players) {
+    game.addPlayer(p);
+  }
+
+  game.endAuction(players[0], 3);
+
+  t.is(players[0].stats.willpower, 7);
+  t.is(players[1].stats.willpower, 10);
+
+  t.is(game.mode, GameMode.PLAYING);
 });
