@@ -37,7 +37,7 @@ const setup = (createGame = true, playerIsOwner = false) => {
 
   if (playerIsOwner) {
     game = new Game(player);
-  } else {
+  } else if (createGame) {
     game = new Game(owner);
     game.addPlayer(player);
   }

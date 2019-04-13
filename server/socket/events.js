@@ -3,6 +3,7 @@
 import initPlayer from './actions/init-player';
 import disconnect from './actions/disconnect';
 import updatePlayer from './actions/update-player';
+import joinGame from './actions/join-game';
 
 import createGame from './actions/create-game';
 import startGame from './actions/start-game';
@@ -20,6 +21,7 @@ const events = [
   {name: 'initPlayer', handler: initPlayer},
   {name: 'disconnect', handler: disconnect},
   {name: 'updatePlayer', handler: updatePlayer},
+  {name: 'joinGame', handler: joinGame},
 
   // GM Events
   {name: 'createGame', handler: createGame, isGM: true},
