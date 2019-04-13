@@ -12,6 +12,9 @@ import giveWillpower from './actions/give-willpower';
 import givePoints from './actions/give-points';
 import setGoalLevel from './actions/set-goal-level';
 
+import submitBid from './actions/submit-bid';
+import updateStats from './actions/update-stats';
+
 const events = [
   // Generic server events
   {name: 'initPlayer', handler: initPlayer},
@@ -25,7 +28,11 @@ const events = [
   {name: 'startPlaying', handler: startPlaying, isGM: true},
   {name: 'giveWillpower', handler: giveWillpower, isGM: true},
   {name: 'givePoints', handler: givePoints, isGM: true},
-  {name: 'setGoalLevel', handler: setGoalLevel, isGM: true}
+  {name: 'setGoalLevel', handler: setGoalLevel, isGM: true},
+
+  // Player events
+  {name: 'submitBid', handler: submitBid},
+  {name: 'updateStats', handler: updateStats}
 ];
 
 export default events;
