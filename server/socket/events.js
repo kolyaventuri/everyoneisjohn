@@ -5,6 +5,7 @@ import disconnect from './actions/disconnect';
 import updatePlayer from './actions/update-player';
 
 import createGame from './actions/create-game';
+import startGame from './actions/start-game';
 import startBidding from './actions/start-bidding';
 import startPlaying from './actions/start-playing';
 import giveWillpower from './actions/give-willpower';
@@ -19,6 +20,7 @@ const events = [
 
   // GM Events
   {name: 'createGame', handler: createGame},
+  {name: 'startGame', handler: startGame},
   {name: 'startBidding', handler: startBidding},
   {name: 'startPlaying', handler: startPlaying},
   {name: 'giveWillpower', handler: giveWillpower},
