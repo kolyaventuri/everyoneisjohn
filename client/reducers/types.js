@@ -1,10 +1,5 @@
 // @flow
 
-export type GameStateType = {
-  gameId: string,
-  isGm: boolean
-};
-
 export type PlayerStateType = {
   name: string,
   id: string,
@@ -14,6 +9,12 @@ export type PlayerStateType = {
   goal: string,
   goalLevel: number,
   frozen: boolean
+};
+
+export type GameStateType = {
+  gameId: string,
+  isGm: boolean,
+  players: Array<PlayerStateType>
 };
 
 export type ActionType = {

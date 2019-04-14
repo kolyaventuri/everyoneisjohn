@@ -18,6 +18,11 @@ const GameReducer = (state: GameStateType = {}, action: ActionType): GameStateTy
         gameId: payload.gameId,
         isGm: false
       };
+    case 'SET_PLAYERS':
+      return {
+        ...state,
+        players: payload.players
+      };
     default:
       return state;
   }

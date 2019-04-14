@@ -88,7 +88,7 @@ export default class Game {
     this.emit({
       channel: 'gm',
       event: 'setPlayers',
-      payload: this.players.map(p => p && p.serialize && p.serialize())
+      payload: this.players.map(p => p && p.serialize && p.serialize()).filter(p => p !== null)
     });
   }
 
