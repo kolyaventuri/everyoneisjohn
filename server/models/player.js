@@ -97,7 +97,7 @@ export default class Player {
 
   handleUpdateStats(stats: StatsUpdateType) {
     this.socket.emit('updateStats', stats);
-    if (this.game) {
+    if (this.game && this.game.owner) {
       this.game.owner.socket.emit('updateStats', {player: this.id, ...stats});
     }
   }

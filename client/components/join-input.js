@@ -10,13 +10,13 @@ type State = {|
 |};
 
 export default class GameJoinInput extends React.Component<{}, State> {
-  constructor(...args) {
+  constructor(...args: {[string]: any}) {
     super(...args);
     this.state = {gameId: ''};
   }
 
-  handleChange = (e: SyntheticKeyboardEvent<*>) => {
-    const {target} = e;
+  handleChange = (e: SyntheticKeyboardEvent<HTMLInputElement>) => {
+    const {currentTarget: target} = e;
     const gameId = target.value.trim();
 
     this.setState({gameId});
