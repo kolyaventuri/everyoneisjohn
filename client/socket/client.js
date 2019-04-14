@@ -22,6 +22,8 @@ const clientBuilder = (): SocketType => {
     applyHandlers(socket);
     socket.emit('initPlayer');
   });
+
+  return socket;
 };
 
 export default clientBuilder;

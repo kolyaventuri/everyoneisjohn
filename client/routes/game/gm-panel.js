@@ -1,17 +1,23 @@
 // @flow
 
 import React from 'react';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
 
-import type {MatchType} from './types';
+import type {GameStateType} from '../../apps/game';
 
 type Props = {
-  match: MatchType
+  gameId: string
 };
 
-const GMPanel = ({match: {params: {id}}}: Props) => {
+const GMPanel = (props: Props) => {
   return (
-    <p>GM: {id}</p>
+    <p>GM: {props.gameId}</p>
   );
 };
 
-export default GMPanel;
+const mapStateToProps = ({game: {gameId}}: GameStateType) => ({
+  gameId
+});
+
+export default withRouter(connect(mapStateToProps)(GMPanel));
