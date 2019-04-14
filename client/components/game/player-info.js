@@ -25,11 +25,11 @@ class PlayerInfo extends React.Component<Props> {
 
     return (
       <div>
-        <p>Name: {name}</p>
-        <p>Willpower: {willpower}</p>
-        <p>Score: {points}</p>
-        <p>Goal: {goal}</p>
-        <p>Skills: {skills.join(', ')}</p>
+        <p className="name">Name: {name}</p>
+        <p className="willpower">Willpower: {willpower}</p>
+        <p className="score">Score: {points}</p>
+        <p className="goal">Goal: {goal}</p>
+        <p className="skills">Skills: {skills.join(', ')}</p>
       </div>
     );
   }
