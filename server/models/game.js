@@ -72,6 +72,8 @@ export default class Game {
     const {prefix} = this.__STATICS__;
     player.socket.join(`${prefix}/all`);
     player.socket.join(`${prefix}/player/${player.id}`);
+    player.socket.emit('gameJoinSuccess', this.id);
+    player.handleUpdateStats({willpower: player.stats.willpower});
   }
 
   removePlayer({id}: Player) {

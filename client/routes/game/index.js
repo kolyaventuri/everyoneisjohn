@@ -61,9 +61,7 @@ class Game extends React.Component<Props, State> {
       return <p>Loading...</p>;
     }
 
-    return (
-      <p>{gameId}</p>
-    );
+    return <p>{gameId}</p>;
   }
 }
 

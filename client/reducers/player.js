@@ -14,7 +14,7 @@ const PlayerReducer = (state: PlayerStateType = {}, action: ActionType): PlayerS
     case 'SET_PLAYER_NAME':
       return {
         ...state,
-        name: payload.name,
+        name: payload.name
       };
     default:
       return state;

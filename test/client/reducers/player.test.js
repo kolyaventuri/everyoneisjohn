@@ -24,7 +24,6 @@ test('SET_PLAYER_ID should be able to set the player id', t => {
   t.deepEqual(result, expected);
 });
 
-
 test('SET_PLAYER_NAME should be able to set the player name', t => {
   const name = uuid();
 

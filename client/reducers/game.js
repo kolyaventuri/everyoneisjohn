@@ -12,6 +12,12 @@ const GameReducer = (state: GameStateType = {}, action: ActionType): GameStateTy
         gameId: payload.gameId,
         isGm: true
       };
+    case 'SET_GAME_ID':
+      return {
+        ...state,
+        gameId: payload.gameId,
+        isGm: false
+      };
     default:
       return state;
   }

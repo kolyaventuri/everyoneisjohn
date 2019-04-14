@@ -19,7 +19,7 @@ export default class GameJoinInput extends React.Component<{}, State> {
     const {target} = e;
     const gameId = target.value.trim();
 
-    this.setState({gameId})
+    this.setState({gameId});
   };
 
   handleJoin = (e: SyntheticMouseEvent<*>) => {
@@ -36,7 +36,7 @@ export default class GameJoinInput extends React.Component<{}, State> {
     return (
       <form>
         <input type="text" onKeyUp={this.handleChange}/>
-        <button onClick={this.handleJoin}>Join Game</button>
+        <button type="button" onClick={this.handleJoin}>Join Game</button>
       </form>
     );
   }
