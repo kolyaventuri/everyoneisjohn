@@ -6,6 +6,7 @@ import Player from '../../../server/models/player';
 import {repositories} from '../mocks';
 import {MockSocket, socketToMocks} from '../mocks/socket';
 import * as GameMode from '../../../server/lib/game-mode';
+import setup from '../stubs/create-socket';
 
 const mockBid = stub();
 class Auction {
@@ -255,4 +256,23 @@ test('subtracts willpower from auction winner and enters playing mode', t => {
   t.is(players[1].stats.willpower, 10);
 
   t.is(game.mode, GameMode.PLAYING);
+});
+
+test('emits players to GM upon adding player to game', t => {
+  const {game} = setup(true, true);
+  const {player} = setup(false);
+
+  const payload = [player.serialize()];
+
+  const expected = {
+    channel: 'gm',
+    event: 'setPlayers',
+    payload
+  };
+
+  game.emit = stub();
+  game.addPlayer(player);
+
+  t.true(player.emitUpdate.calledWith(false));
+  t.true(game.emit.calledWith(expected));
 });

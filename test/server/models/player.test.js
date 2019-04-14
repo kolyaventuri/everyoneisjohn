@@ -54,18 +54,18 @@ test('if player is in a game, the name change is sent to the GM', t => {
   const owner = new Player(ownerSocket);
   const game = new Game(owner);
 
-  game.addPlayer(player);
-  gameRepository.find = stub().returns(game);
   stub(game, 'owner').get(() => owner);
+  stub(player, 'game').get(() => game);
+  gameRepository.find = stub().returns(game);
+  game.addPlayer(player);
+
+  player.emitUpdate = stub();
 
   const name = uuid();
 
   player.name = name;
 
-  t.true(ownerSocket.emit.calledWith('playerUpdated', {
-    id: player.id,
-    name
-  }));
+  t.true(player.emitUpdate.called);
 });
 
 test('has an active flag', t => {
@@ -218,18 +218,16 @@ test('has the discount timeout cleared if they return within the time allowed', 
   clock.restore();
 });
 
-test('handleUpdateStats emits to both player and GM', t => {
+test('emitUpdate is called when a player joins a game', t => {
   const owner = genPlayer();
   const game = genGame(owner);
   const player = genPlayer();
-  const stats = {willpower: 10};
 
   stub(game, 'owner').get(() => owner);
   stub(player, 'game').get(() => game);
+  player.emitUpdate = stub();
 
   game.addPlayer(player);
-  player.handleUpdateStats(stats);
 
-  t.true(player.socket.emit.calledWith('updateStats', stats));
-  t.true(game.owner.socket.emit.calledWith('updateStats', {player: player.id, ...stats}));
+  t.true(player.emitUpdate.called);
 });

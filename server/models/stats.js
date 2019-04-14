@@ -67,7 +67,7 @@ export default class Stats {
       value = MIN_GOAL;
     }
 
-    this.player.handleUpdateStats({goalLevel: value});
+    this.player.emitUpdate();
     this.__STATICS__.goalLevel = value;
   }
 
@@ -82,7 +82,7 @@ export default class Stats {
   set willpower(willpower: number): number {
     this.__STATICS__.willpower = willpower;
 
-    this.player.handleUpdateStats({willpower});
+    this.player.emitUpdate();
     return this.willpower;
   }
 
@@ -90,9 +90,13 @@ export default class Stats {
     return this.__STATICS__.points;
   }
 
+  get frozen(): boolean {
+    return this.__STATICS__.frozen;
+  }
+
   set points(points: number): number {
     this.__STATICS__.points = points;
-    this.player.handleUpdateStats({points});
+    this.player.emitUpdate();
     return this.points;
   }
 
@@ -114,12 +118,12 @@ export default class Stats {
 
   freeze() {
     this.__STATICS__.frozen = true;
-    this.player.handleUpdateStats({frozen: true});
+    this.player.emitUpdate(false);
   }
 
   thaw() {
     this.__STATICS__.frozen = false;
-    this.player.handleUpdateStats({frozen: false});
+    this.player.emitUpdate(false);
   }
 }
 

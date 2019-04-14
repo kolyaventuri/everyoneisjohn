@@ -19,10 +19,12 @@ type StaticsType = {
   prefix: string
 };
 
+type EmitPayload = string | {[string]: any} | Array<any>;
+
 type EmitType = {
   channel: string,
   event: string,
-  payload?: string
+  payload?: EmitPayload
 };
 
 const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
@@ -73,7 +75,13 @@ export default class Game {
     player.socket.join(`${prefix}/all`);
     player.socket.join(`${prefix}/player/${player.id}`);
     player.socket.emit('gameJoinSuccess', this.id);
-    player.handleUpdateStats({willpower: player.stats.willpower});
+
+    player.emitUpdate(false);
+    this.emit({
+      channel: 'gm',
+      event: 'setPlayers',
+      payload: this.players.map(p => p && p.serialize && p.serialize())
+    });
   }
 
   removePlayer({id}: Player) {
