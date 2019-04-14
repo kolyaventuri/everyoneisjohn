@@ -1,7 +1,12 @@
 // @flow
 
+import {store} from '../../store';
+
 const setPlayerId = (id: string) => {
-  console.log('PID:', id);
+  store.dispatch({
+    type: 'SET_PLAYER_ID',
+    payload: {id}
+  });
 };
 
 export default setPlayerId;

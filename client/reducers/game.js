@@ -1,13 +1,8 @@
 // @flow
 
-type GameStateType = {[string]: any};
+import type {GameStateType, ActionType} from './types';
 
-type Action = {
-  type: string,
-  payload: {[string]: any}
-};
-
-const GameReducer = (state: GameStateType = {}, action: Action) => {
+const GameReducer = (state: GameStateType = {}, action: ActionType): GameStateType => {
   const {type, payload} = action;
 
   switch (type) {

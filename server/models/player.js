@@ -61,7 +61,7 @@ export default class Player {
       return game.addPlayer(this);
     }
 
-    this.socket.emit('error', 'error.game.doesnt_exist');
+    this.socket.emit('game.error', 'error.game.doesnt_exist');
   }
 
   leaveGame() {
