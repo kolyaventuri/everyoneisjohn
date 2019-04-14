@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import reducer from '../../../src/reducers/game';
+import reducer from '../../../client/reducers/game';
 
 test('it should return the default state', t => {
   const result = reducer(undefined, {});

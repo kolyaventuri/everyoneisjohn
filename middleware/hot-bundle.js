@@ -3,7 +3,7 @@
 import path from 'path';
 import Bundler from 'parcel-bundler';
 
-const dir = path.join(__dirname, '../src');
+const dir = path.join(__dirname, '../client');
 
 const options = {
   outDir: path.join(__dirname, '../static/javascripts'),
