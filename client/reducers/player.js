@@ -6,10 +6,11 @@ const PlayerReducer = (state: PlayerStateType = {}, action: ActionType): PlayerS
   const {type, payload} = action;
 
   switch (type) {
-    case 'SET_PLAYER_ID':
+    case 'SET_PLAYER_INFO':
       return {
         ...state,
-        id: payload.id
+        id: payload.id,
+        name: payload.name
       };
     case 'SET_PLAYER_NAME':
       return {

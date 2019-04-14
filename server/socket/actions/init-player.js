@@ -18,7 +18,10 @@ const initPlayer = (socket: SocketType, id?: string) => {
     player = new Player(socket);
   }
 
-  socket.emit('setPlayerId', player.id);
+  socket.emit('setPlayerInfo', {
+    id: player.id,
+    name: player.name
+  });
 };
 
 export default initPlayer;

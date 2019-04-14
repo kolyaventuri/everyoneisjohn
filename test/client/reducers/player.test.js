@@ -9,16 +9,18 @@ test('it should return the default state', t => {
   t.deepEqual(result, {});
 });
 
-test('SET_PLAYER_ID should be able to set the player id', t => {
+test('SET_PLAYER_NAME should be able to set the player id / name', t => {
   const id = uuid();
+  const name = uuid();
 
   const expected = {
-    id
+    id,
+    name
   };
 
   const result = reducer({}, {
-    type: 'SET_PLAYER_ID',
-    payload: {id}
+    type: 'SET_PLAYER_INFO',
+    payload: {id, name}
   });
 
   t.deepEqual(result, expected);

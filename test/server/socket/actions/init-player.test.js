@@ -26,7 +26,10 @@ test('creates a new player if none exists', t => {
   events.initPlayer(socket);
 
   t.not(socket.playerId, null);
-  t.true(socket.emit.calledWith('setPlayerId', match.string));
+  t.true(socket.emit.calledWith('setPlayerInfo', {
+    id: match.string,
+    name: match.string
+  }));
 });
 
 test('retrieves an existing player if the player is reconnecting', t => {
@@ -39,7 +42,11 @@ test('retrieves an existing player if the player is reconnecting', t => {
 
   events.initPlayer(socket, player.id);
 
+  const data = {
+    id: player.id,
+    name: player.name
+  };
   t.is(socket.playerId, player.id);
-  t.true(socket.emit.calledWith('setPlayerId', player.id));
+  t.true(socket.emit.calledWith('setPlayerInfo', data));
   t.true(player.reconnect.called);
 });
