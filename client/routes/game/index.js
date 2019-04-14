@@ -5,6 +5,7 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 
 import socket from '../../socket';
+import PlayerInfo from '../../components/game/player-info';
 
 import type {GameStateType} from '../../apps/game';
 import type {MatchType} from './types';
@@ -54,14 +55,13 @@ class Game extends React.Component<Props, State> {
   };
 
   render() {
-    const {gameId} = this.props;
     const {waiting} = this.state;
 
     if (waiting) {
       return <p>Loading...</p>;
     }
 
-    return <p>{gameId}</p>;
+    return <PlayerInfo/>;
   }
 }
 

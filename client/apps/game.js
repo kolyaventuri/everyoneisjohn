@@ -7,7 +7,8 @@ import type {
 
 export type GameStateType = {
   history: {[string]: any},
-  game: GameType
+  game: GameType,
+  player: PlayerType
 };
 
 export type PlayerStateType = PlayerType;
