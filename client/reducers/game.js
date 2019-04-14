@@ -1,13 +1,8 @@
 // @flow
 
-type GameStateType = {[string]: any};
+import type {GameStateType, ActionType} from './types';
 
-type Action = {
-  type: string,
-  payload: {[string]: any}
-};
-
-const GameReducer = (state: GameStateType = {}, action: Action) => {
+const GameReducer = (state: GameStateType = {}, action: ActionType): GameStateType => {
   const {type, payload} = action;
 
   switch (type) {
@@ -16,6 +11,17 @@ const GameReducer = (state: GameStateType = {}, action: Action) => {
         ...state,
         gameId: payload.gameId,
         isGm: true
+      };
+    case 'SET_GAME_ID':
+      return {
+        ...state,
+        gameId: payload.gameId,
+        isGm: false
+      };
+    case 'SET_PLAYERS':
+      return {
+        ...state,
+        players: payload.players
       };
     default:
       return state;

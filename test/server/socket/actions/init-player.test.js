@@ -1,6 +1,6 @@
 import test from 'ava';
 import proxyquire from 'proxyquire';
-import {stub, match} from 'sinon';
+import {stub} from 'sinon';
 
 import {MockSocket} from '../../mocks/socket';
 import {repositories} from '../../mocks';
@@ -26,13 +26,13 @@ test('creates a new player if none exists', t => {
   events.initPlayer(socket);
 
   t.not(socket.playerId, null);
-  t.true(socket.emit.calledWith('setPlayerId', match.string));
 });
 
 test('retrieves an existing player if the player is reconnecting', t => {
   const originalSocket = new MockSocket();
   const player = new Player(originalSocket);
   player.reconnect = stub();
+  player.emitUpdate = stub();
   playerRepository.find = stub().withArgs(player.id).returns(player);
 
   const socket = new MockSocket();
@@ -40,6 +40,6 @@ test('retrieves an existing player if the player is reconnecting', t => {
   events.initPlayer(socket, player.id);
 
   t.is(socket.playerId, player.id);
-  t.true(socket.emit.calledWith('setPlayerId', player.id));
+  t.true(player.emitUpdate.calledWith(false));
   t.true(player.reconnect.called);
 });

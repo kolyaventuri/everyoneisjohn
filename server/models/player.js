@@ -6,7 +6,6 @@ import Chance from 'chance';
 import {gameRepository, playerRepository} from '../repositories';
 import Game from './game';
 import Stats from './stats';
-import type {StatsUpdateType} from './stats';
 
 const chance = new Chance();
 
@@ -61,7 +60,7 @@ export default class Player {
       return game.addPlayer(this);
     }
 
-    this.socket.emit('error', 'error.game.doesnt_exist');
+    this.socket.emit('game.error', 'error.game.doesnt_exist');
   }
 
   leaveGame() {
@@ -95,10 +94,42 @@ export default class Player {
     playerRepository.destroy(this);
   }
 
-  handleUpdateStats(stats: StatsUpdateType) {
-    this.socket.emit('updateStats', stats);
-    if (this.game) {
-      this.game.owner.socket.emit('updateStats', {player: this.id, ...stats});
+  serialize() {
+    const {
+      willpower,
+      points,
+      skills,
+      goal,
+      goalLevel,
+      frozen
+    } = this.stats;
+    const {id, name} = this;
+    const payload = {
+      id,
+      name,
+      willpower,
+      points,
+      skills,
+      goal,
+      goalLevel,
+      frozen
+    };
+
+    return payload;
+  }
+
+  emitUpdate(emitToGm: boolean = true) {
+    const payload = this.serialize();
+    const event = 'updatePlayer';
+
+    this.socket.emit(event, payload);
+
+    if (this.game && emitToGm) {
+      this.game.emit({
+        channel: 'gm',
+        event,
+        payload
+      });
     }
   }
 
@@ -126,10 +157,7 @@ export default class Player {
     this.__STATICS__.name = newName;
 
     if (this.game) {
-      this.game.owner.socket.emit('playerUpdated', {
-        id: this.id,
-        name: newName
-      });
+      this.emitUpdate();
     }
 
     return this.__STATICS__.name;

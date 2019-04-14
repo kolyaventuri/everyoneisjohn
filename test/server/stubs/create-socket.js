@@ -11,7 +11,8 @@ const methods = [
   'setGame',
   'disconnect',
   'reconnect',
-  'destroy'
+  'destroy',
+  'emitUpdate'
 ];
 
 const gameMethods = [

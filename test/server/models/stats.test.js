@@ -2,12 +2,11 @@ import test from 'ava';
 import {stub} from 'sinon';
 
 import Stats from '../../../server/models/stats';
-import Player from '../../../server/models/player';
-import {MockSocket} from '../mocks/socket';
+import setup from '../stubs/create-socket';
 
 const genPlayer = () => {
-  const player = new Player(new MockSocket());
-  player.handleUpdateStats = stub();
+  const {player} = setup();
+  player.emitUpdate = stub();
 
   return player;
 };
@@ -26,7 +25,7 @@ test('emits new points', t => {
 
   stats.points += 3;
 
-  t.true(player.handleUpdateStats.calledWith({points: 3}));
+  t.true(player.emitUpdate.called);
 });
 
 test('has willpower that starts at 10', t => {
@@ -53,7 +52,7 @@ test('emits new willpower', t => {
 
   stats.willpower += 1;
 
-  t.true(player.handleUpdateStats.calledWith({willpower: 11}));
+  t.true(player.emitUpdate.called);
 });
 
 test('can have a goal', t => {
@@ -90,7 +89,7 @@ test('emits new goal level', t => {
 
   stats.goalLevel = 2;
 
-  t.true(player.handleUpdateStats.calledWith({goalLevel: 2}));
+  t.true(player.emitUpdate.called);
 });
 
 test('can set the 3 skills', t => {
@@ -131,7 +130,7 @@ test('skills and goals cannot be set once they are frozen', t => {
 
   t.deepEqual(stats.skills, []);
   t.not(stats.goal, goal);
-  t.true(player.handleUpdateStats.calledWith({frozen: true}));
+  t.true(player.emitUpdate.calledWith(false));
 });
 
 test('skills  / goals can be thawed for editing', t => {
@@ -145,5 +144,5 @@ test('skills  / goals can be thawed for editing', t => {
   stats.goal = goal;
 
   t.is(stats.goal, goal);
-  t.true(player.handleUpdateStats.calledWith({frozen: false}));
+  t.true(player.emitUpdate.calledWith(false));
 });
