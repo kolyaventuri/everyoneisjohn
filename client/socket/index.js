@@ -1,22 +1,8 @@
 // @flow
 
-import io from 'socket.io-client';
-import {store} from '../store';
+import client from './client';
 
-const {protocol, hostname} = window.location;
+export type SocketType = {[string]: any};
+const instance = typeof client === 'function' ? client() : client;
 
-const port = process.env.SOCKET_PORT || 8031;
-const url = `${protocol}//${hostname}:${port}`;
-
-const socket = io.connect(url);
-socket.on('connect', () => socket.emit('initPlayer'));
-socket.on('setPlayerId', id => console.log('PID:', id));
-
-socket.on('startGame', gameId => {
-  store.dispatch({
-    type: 'SET_GAME_GM',
-    payload: {gameId}
-  });
-});
-
-export default socket;
+export default instance;
