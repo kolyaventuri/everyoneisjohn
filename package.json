@@ -28,6 +28,7 @@
     "ava": "^1.2.1",
     "babel-eslint": "^10.0.1",
     "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.12.1",
     "eslint": "^5.14.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-xo": "^0.26.0",
@@ -39,6 +40,7 @@
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.12.4",
     "flow-bin": "^0.93.0",
+    "jsdom": "^14.0.0",
     "nodemon": "^1.18.10",
     "parcel-bundler": "^1.11.0",
     "postcss-modules": "^1.4.1",
@@ -55,13 +57,19 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "chance": "^1.0.18",
+    "connected-react-router": "^6.3.2",
+    "history": "^4.9.0",
     "koa": "^2.7.0",
     "koa-send": "^5.0.0",
     "koa-static": "^5.0.0",
     "quickstring": "^1.1.0",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
+    "react-redux": "^7.0.2",
+    "react-router": "^5.0.0",
     "react-router-dom": "^4.3.1",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
     "scriba": "^1.0.5",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",
@@ -103,7 +111,9 @@
     ],
     "require": [
       "@babel/register",
-      "@babel/polyfill"
+      "@babel/polyfill",
+      "./test/helpers/setup-jsdom",
+      "./test/helpers/setup-enzyme"
     ]
   }
 }
