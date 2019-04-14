@@ -8,7 +8,7 @@ const store = {
   dispatch: stub()
 };
 
-const CreateGame = proxyquire('../../../../src/routes/game/create', {
+const CreateGame = proxyquire('../../../../client/routes/game/create', {
   'react-router': {withRouter: stub().returnsArg(0)},
   'react-redux': {connect: stub().returns(stub().returnsArg(0))},
   '../../store': {store}

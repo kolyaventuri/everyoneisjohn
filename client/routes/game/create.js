@@ -3,10 +3,8 @@
 import React from 'react';
 import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
-import {push} from 'connected-react-router';
 
 import socket from '../../socket';
-import {store} from '../../store';
 
 import type {GameStateType} from '../../apps/game';
 
@@ -58,7 +56,7 @@ class CreateGame extends React.Component<Props, State> {
 
     if (gameId) {
       if (isGm) {
-        return store.dispatch(push(`/game/${gameId}/gm`));
+        return null;
       }
     }
 
