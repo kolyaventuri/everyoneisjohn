@@ -7,7 +7,13 @@ export type GameStateType = {
 
 export type PlayerStateType = {
   name: string,
-  id: string
+  id: string,
+  willpower: number,
+  points: number,
+  skills: Array<string>,
+  goal: string,
+  goalLevel: number,
+  frozen: boolean
 };
 
 export type ActionType = {

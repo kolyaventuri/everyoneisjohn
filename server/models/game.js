@@ -5,7 +5,6 @@ import Chance from 'chance';
 import Slug from '../lib/slug';
 import * as GameModes from '../lib/game-mode';
 import {gameRepository, playerRepository} from '../repositories';
-import socket from '../socket';
 import Player from './player';
 import Auction from './auction';
 
@@ -28,6 +27,15 @@ type EmitType = {
 };
 
 const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+
+let socket = null;
+if (process.env.NODE_ENV === 'test') {
+  socket = require('../socket').default;
+} else {
+  setImmediate(() => {
+    socket = require('../socket').default;
+  });
+}
 
 export default class Game {
   __STATICS__: StaticsType;
@@ -107,7 +115,9 @@ export default class Game {
     const {prefix} = this.__STATICS__;
     channel = `${prefix}/${channel}`;
 
-    socket.to(channel).emit(event, payload);
+    if (socket) {
+      socket.to(channel).emit(event, payload);
+    }
   }
 
   endAuction(winner: Player, amount: number) {

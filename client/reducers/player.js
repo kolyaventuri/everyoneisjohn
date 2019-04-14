@@ -9,8 +9,7 @@ const PlayerReducer = (state: PlayerStateType = {}, action: ActionType): PlayerS
     case 'SET_PLAYER_INFO':
       return {
         ...state,
-        id: payload.id,
-        name: payload.name
+        ...payload
       };
     case 'SET_PLAYER_NAME':
       return {

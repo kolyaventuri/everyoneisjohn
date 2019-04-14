@@ -1,12 +1,12 @@
 // @flow
 
 import startGame from './actions/start-game';
-import setPlayerInfo from './actions/set-player-info';
+import updatePlayer from './actions/update-player';
 import gameJoinSuccess from './actions/game-join-success';
 
 const events = [
   {name: 'startGame', handler: startGame},
-  {name: 'setPlayerInfo', handler: setPlayerInfo},
+  {name: 'updatePlayer', handler: updatePlayer},
   {name: 'gameJoinSuccess', handler: gameJoinSuccess}
 ];
 
