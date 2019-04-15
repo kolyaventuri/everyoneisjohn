@@ -5,7 +5,11 @@ import uuid from 'uuid/v4';
 
 import type {PlayerStateType} from '../../apps/game';
 
-const Player = ({data: player}: PlayerStateType) => {
+type Props = {|
+  data: PlayerStateType
+|};
+
+const Player = ({data: player}: Props) => {
   const {
     name,
     willpower,
