@@ -2,7 +2,7 @@
 
 import type {GameStateType, ActionType} from './types';
 
-const setSpecificPlayer = (state: GameStateType, payload: ActionType) => {
+const setSpecificPlayer = (state: GameStateType, {payload}: ActionType) => {
   const {players} = state;
   const index = players.findIndex(p => p.id === payload.id);
   if (index < 0) {
@@ -38,7 +38,7 @@ const GameReducer = (state: GameStateType = {}, action: ActionType): GameStateTy
         players: payload.players
       };
     case 'SET_GAME_PLAYER_INFO':
-      return setSpecificPlayer(state, payload);
+      return setSpecificPlayer(state, action);
     default:
       return state;
   }
