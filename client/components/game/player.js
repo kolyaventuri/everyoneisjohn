@@ -1,16 +1,23 @@
 // @flow
 
 import React from 'react';
+import {connect} from 'react-redux';
 import uuid from 'uuid/v4';
 
-import type {PlayerStateType} from '../../apps/game';
+import type {PlayerStateType, GameStateType} from '../../apps/game';
+import Willpower from './willpower';
 
 type Props = {|
   data: PlayerStateType
 |};
 
+type OwnProps = {|
+  id: string
+|};
+
 const Player = ({data: player}: Props) => {
   const {
+    id,
     name,
     willpower,
     goal,
@@ -22,7 +29,7 @@ const Player = ({data: player}: Props) => {
   return (
     <div>
       <h1 data-type="name">{name}</h1>
-      <h3 data-type="willpower">{willpower}</h3>
+      <Willpower playerId={id} value={willpower}/>
       <h3 data-type="goal">{goal}</h3>
       <h4 data-type="goalLevel">{goalLevel}</h4>
       <h3 data-type="score">{score}</h3>
@@ -35,4 +42,12 @@ const Player = ({data: player}: Props) => {
   );
 };
 
-export default Player;
+const mapStateToProps = ({game: {players}}: GameStateType, {id}: OwnProps) => {
+  const data = players.find(p => p.id === id);
+
+  return {
+    data
+  };
+};
+
+export default connect(mapStateToProps)(Player);

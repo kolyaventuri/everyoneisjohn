@@ -12,20 +12,24 @@ type Props = {
   players: Array<PlayerStateType>
 };
 
-const GMPanel = (props: Props) => {
-  return (
-    <div>
-      <p>GM: {props.gameId}</p>
-      <ul>
-        {props.players.map(p => {
-          return (
-            <Player key={p.id} data={p}/>
-          );
-        })}
-      </ul>
-    </div>
-  );
-};
+class GMPanel extends React.Component<Props> {
+  render() {
+    const {gameId, players} = this.props;
+
+    return (
+      <div>
+        <p>GM: {gameId}</p>
+        <ul>
+          {players.map(p => {
+            return (
+              <Player key={p.id} id={p.id}/>
+            );
+          })}
+        </ul>
+      </div>
+    );
+  }
+}
 
 const mapStateToProps = ({game}: GameStateType) => {
   const {

@@ -1,10 +1,15 @@
 import test from 'ava';
 import React from 'react';
 import {shallow} from 'enzyme';
+import proxyquire from 'proxyquire';
+import {stub} from 'sinon';
 
-import Player from '../../../../client/components/game/player';
+const Player = proxyquire('../../../../client/components/game/player', {
+  'react-redux': {connect: stub().returns(stub().returnsArg(0))}
+}).default;
 
 const player = {
+  id: 'some-id',
   name: 'Mr. Some Name',
   willpower: 9,
   goal: 'Some goal',
@@ -24,13 +29,16 @@ test('it renders the players name', t => {
   t.is(name.text(), player.name);
 });
 
-test('it renders the players willpower', t => {
+test('it renders a willpower component', t => {
   const wrapper = render();
 
-  const willpower = wrapper.find('[data-type="willpower"]');
+  const willpower = wrapper.find('Willpower');
 
   t.is(willpower.length, 1);
-  t.is(willpower.text(), player.willpower.toString());
+
+  const props = willpower.props();
+  t.is(props.playerId, player.id);
+  t.is(props.value, player.willpower);
 });
 
 test('it renders the players goal', t => {

@@ -63,6 +63,7 @@ export default class Game {
     this.__auction = null;
 
     gameRepository.insert(this);
+    owner.setGame(this);
 
     owner.socket.join(`${prefix}/gm`);
     owner.socket.join(`${prefix}/all`);
