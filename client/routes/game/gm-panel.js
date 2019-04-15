@@ -4,6 +4,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 
+import Player from '../../components/game/player';
 import type {GameStateType, PlayerStateType} from '../../apps/game';
 
 type Props = {
@@ -18,7 +19,7 @@ const GMPanel = (props: Props) => {
       <ul>
         {props.players.map(p => {
           return (
-            <li key={p.id}>{p.name}</li>
+            <Player key={p.id} data={p}/>
           );
         })}
       </ul>
