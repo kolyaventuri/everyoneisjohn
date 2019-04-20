@@ -27,6 +27,8 @@ jobs:
           name: test
           command: 'npm run test'
   deploy_staging:
+    docker:
+      - image: circleci/node:10.15.0
     steps:
       - run:
           name: add-remote
