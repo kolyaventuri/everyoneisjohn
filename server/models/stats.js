@@ -115,6 +115,7 @@ export default class Stats {
     }
 
     this.__STATICS__.skills[index - 1] = skill;
+    this.player.emitUpdate();
   }
 
   freeze() {

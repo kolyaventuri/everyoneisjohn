@@ -114,6 +114,15 @@ test('can set the 3 skills', t => {
   t.deepEqual(stats.skills, ['a', 'b', 'c']);
 });
 
+test('new skills are emitted', t => {
+  const player = genPlayer();
+  const stats = genStats(player);
+
+  stats.setSkill(1, 'a');
+
+  t.true(player.emitUpdate.called);
+});
+
 test('spends 3 willpower if the 3rd skill is set', t => {
   const stats = genStats();
 
