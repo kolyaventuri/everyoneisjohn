@@ -8,7 +8,7 @@ import type {SocketType} from '.';
 let socket;
 const {protocol, hostname} = window.location;
 
-const port = process.env.SOCKET_PORT || 8031;
+const port = process.env.PORT || 3000;
 const url = `${protocol}//${hostname}:${port}`;
 
 const clientBuilder = (): SocketType => {

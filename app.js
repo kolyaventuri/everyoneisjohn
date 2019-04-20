@@ -1,5 +1,6 @@
 // @flow
 
+import http from 'http';
 import Koa from 'koa';
 import serve from 'koa-static';
 import send from 'koa-send';
@@ -38,4 +39,4 @@ app.on('error', (err, ctx) => {
   logger.logError(new Error(error));
 });
 
-export default app;
+export default http.createServer(app.callback());
