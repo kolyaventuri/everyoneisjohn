@@ -64,6 +64,15 @@ test('can have a goal', t => {
   t.is(stats.goal, newGoal);
 });
 
+test('emits new goal', t => {
+  const player = genPlayer();
+  const stats = genStats(player);
+
+  stats.goal = 'abc';
+
+  t.true(player.emitUpdate.called);
+});
+
 test('goal can have a point value [1-3]', t => {
   const stats = genStats();
 
@@ -105,6 +114,15 @@ test('can set the 3 skills', t => {
   t.deepEqual(stats.skills, ['a', 'b', 'c']);
 });
 
+test('new skills are emitted', t => {
+  const player = genPlayer();
+  const stats = genStats(player);
+
+  stats.setSkill(1, 'a');
+
+  t.true(player.emitUpdate.called);
+});
+
 test('spends 3 willpower if the 3rd skill is set', t => {
   const stats = genStats();
 
@@ -118,6 +136,30 @@ test('spends 3 willpower if the 3rd skill is set', t => {
   t.is(stats.willpower, 7);
 });
 
+test('does not spend willpower again if 3rd skill has already been set', t => {
+  const stats = genStats();
+
+  stats.setSkill(1, 'a');
+  stats.setSkill(2, 'b');
+  stats.setSkill(3, 'c');
+
+  stats.setSkill(3, 'd');
+
+  t.is(stats.willpower, 7);
+});
+
+test('returns willpower if 3rd skill is unset', t => {
+  const stats = genStats();
+
+  stats.setSkill(1, 'a');
+  stats.setSkill(2, 'b');
+  stats.setSkill(3, 'c');
+
+  stats.setSkill(3, '');
+
+  t.is(stats.willpower, 10);
+});
+
 test('skills and goals cannot be set once they are frozen', t => {
   const player = genPlayer();
   const stats = genStats(player);
@@ -128,7 +170,7 @@ test('skills and goals cannot be set once they are frozen', t => {
   stats.goal = goal;
   stats.setSkill(1, 'Some skill');
 
-  t.deepEqual(stats.skills, []);
+  t.deepEqual(stats.skills, ['', '', '']);
   t.not(stats.goal, goal);
   t.true(player.emitUpdate.calledWith(false));
 });

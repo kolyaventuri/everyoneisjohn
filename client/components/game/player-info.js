@@ -5,13 +5,19 @@ import {connect} from 'react-redux';
 
 import type {GameStateType} from '../../apps/game';
 
-type Props = {
+import Willpower from './willpower';
+import Score from './score';
+import Goal from './goal';
+import SkillList from './skill-list';
+
+type Props = {|
   name: string,
   willpower: number,
   skills: Array<string>,
   goal: string,
-  points: number
-};
+  points: number,
+  frozen: boolean
+|};
 
 class PlayerInfo extends React.Component<Props> {
   render() {
@@ -20,16 +26,17 @@ class PlayerInfo extends React.Component<Props> {
       willpower,
       skills,
       goal,
-      points
+      points: score,
+      frozen
     } = this.props;
 
     return (
       <div>
         <p className="name">Name: {name}</p>
-        <p className="willpower">Willpower: {willpower}</p>
-        <p className="score">Score: {points}</p>
-        <p className="goal">Goal: {goal}</p>
-        <p className="skills">Skills: {skills.join(', ')}</p>
+        <Willpower value={willpower}/>
+        <Score value={score}/>
+        <Goal value={goal} frozen={frozen}/>
+        <SkillList items={skills} frozen={frozen}/>
       </div>
     );
   }
@@ -41,7 +48,8 @@ const mapStateToProps = ({player}: GameStateType) => {
     willpower,
     skills,
     goal,
-    points
+    points,
+    frozen
   } = player;
 
   return {
@@ -49,7 +57,8 @@ const mapStateToProps = ({player}: GameStateType) => {
     willpower,
     skills,
     goal,
-    points
+    points,
+    frozen
   };
 };
 

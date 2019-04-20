@@ -28,34 +28,34 @@ test('it renders player name', t => {
   t.is(name.text(), `Name: ${defaultProps.name}`);
 });
 
-test('it renders player willpower', t => {
+test('it renders a Willpower component', t => {
   const wrapper = render();
-  const willpower = wrapper.find('.willpower');
+  const willpower = wrapper.find('Willpower');
 
   t.is(willpower.length, 1);
-  t.is(willpower.text(), `Willpower: ${defaultProps.willpower}`);
+  t.is(willpower.props().value, defaultProps.willpower);
 });
 
-test('it renders player score', t => {
+test('it renders a Score component', t => {
   const wrapper = render();
-  const score = wrapper.find('.score');
+  const score = wrapper.find('Score');
 
   t.is(score.length, 1);
-  t.is(score.text(), `Score: ${defaultProps.points}`);
+  t.is(score.props().value, defaultProps.points);
 });
 
-test('it renders player goal', t => {
+test('it renders a Goal component', t => {
   const wrapper = render();
-  const goal = wrapper.find('.goal');
+  const goal = wrapper.find('Goal');
 
   t.is(goal.length, 1);
-  t.is(goal.text(), `Goal: ${defaultProps.goal}`);
+  t.is(goal.props().value, defaultProps.goal);
 });
 
-test('it renders player skills', t => {
+test('it renders a SkillList component', t => {
   const wrapper = render();
-  const skills = wrapper.find('.skills');
+  const list = wrapper.find('SkillList');
 
-  t.is(skills.length, 1);
-  t.is(skills.text(), `Skills: ${defaultProps.skills.join(', ')}`);
+  t.is(list.length, 1);
+  t.is(list.props().items, defaultProps.skills);
 });

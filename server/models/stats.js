@@ -35,7 +35,7 @@ export default class Stats {
     this.__STATICS__ = {
       goal: '',
       goalLevel: 1,
-      skills: [],
+      skills: new Array(3).fill(''),
       frozen: false,
       willpower: 10,
       points: 0
@@ -52,6 +52,7 @@ export default class Stats {
     }
 
     this.__STATICS__.goal = value;
+    this.player.emitUpdate();
   }
 
   get goalLevel(): number {
@@ -110,10 +111,15 @@ export default class Stats {
     }
 
     if (index === MAX_SKILLS) {
-      this.willpower -= 3;
+      if (skill) {
+        this.willpower = 7;
+      } else {
+        this.willpower = 10;
+      }
     }
 
     this.__STATICS__.skills[index - 1] = skill;
+    this.player.emitUpdate();
   }
 
   freeze() {
