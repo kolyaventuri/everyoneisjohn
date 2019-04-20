@@ -67,6 +67,7 @@ export default class Game {
 
     owner.socket.join(`${prefix}/gm`);
     owner.socket.join(`${prefix}/all`);
+    this.emitGameMode('gm');
   }
 
   addPlayer(player: Player) {
@@ -87,6 +88,7 @@ export default class Game {
 
     player.emitUpdate(false);
     this.gmEmitPlayers();
+    this.emitGameMode(`player/${player.id}`);
   }
 
   gmEmitPlayers() {
@@ -172,8 +174,12 @@ export default class Game {
       this.__auction = null;
     }
 
+    this.emitGameMode();
+  }
+
+  emitGameMode(channel: string = 'all') {
     const payload = {
-      channel: 'all',
+      channel,
       event: 'setGameMode',
       payload: this.mode.toString().toString().slice(7, -1)
     };
