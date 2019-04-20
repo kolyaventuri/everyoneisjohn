@@ -6,17 +6,13 @@ import {applyHandlers} from './handlers';
 import type {SocketType} from '.';
 
 let socket;
-const {protocol, hostname} = window.location;
-
-const port = process.env.PORT || 3000;
-const url = `${protocol}//${hostname}:${port}`;
 
 const clientBuilder = (): SocketType => {
   if (socket) {
     return socket;
   }
 
-  socket = io.connect(url);
+  socket = io.connect();
 
   socket.on('connect', () => {
     applyHandlers(socket);
