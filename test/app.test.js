@@ -9,6 +9,8 @@ class KoaMock {
   use = useMock;
 
   on = onMock;
+
+  callback = stub()
 }
 
 // This is fine because app is automatically evaled
