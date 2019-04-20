@@ -79,13 +79,12 @@ test('it emits a setGoalLevel event on changing the goal level', t => {
   t.true(socket.emit.calledWith('setGoalLevel', {amount: value, player: player.id}));
 });
 
-test('it renders the players score', t => {
+test('it renders a Score component', t => {
   const wrapper = render();
-
-  const score = wrapper.find('[data-type="score"]');
+  const score = wrapper.find('Score');
 
   t.is(score.length, 1);
-  t.is(score.text(), player.points.toString());
+  t.is(score.props().value, player.points);
 });
 
 test('it renders a SkillList component', t => {

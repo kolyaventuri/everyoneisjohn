@@ -9,6 +9,7 @@ import socket from '../../socket';
 import Willpower from './willpower';
 import Goal from './goal';
 import SkillList from './skill-list';
+import Score from './score';
 
 type Props = {|
   data: PlayerStateType
@@ -57,7 +58,7 @@ class Player extends React.Component<Props> {
           value={goalLevel}
           onChange={this.handleGoalChange}
         />
-        <h3 data-type="score">{score}</h3>
+        <Score value={score}/>
         <SkillList>{skills}</SkillList>
       </div>
     );
