@@ -30,12 +30,17 @@ jobs:
     docker:
       - image: circleci/node:10.15.0
     steps:
+      - checkout
+      - add_ssh_keys
+      - run:
+          name: add-known-host
+          command: ssh-keyscan -H $STAGING_HOST >> ~/.ssh/known_hosts
       - run:
           name: add-remote
           command: git remote add staging $STAGING_REMOTE
       - run:
           name: push-remote
-          command: git push dokku master
+          command: git push staging master
 workflows:
   version: 2
   build_and_test:
