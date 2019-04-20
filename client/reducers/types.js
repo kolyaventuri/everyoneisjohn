@@ -14,7 +14,8 @@ export type PlayerStateType = {
 export type GameStateType = {
   gameId: string,
   isGm: boolean,
-  players: Array<PlayerStateType>
+  players: Array<PlayerStateType>,
+  mode: 'SETUP' | 'VOTING' | 'PLAYING'
 };
 
 export type ActionType = {

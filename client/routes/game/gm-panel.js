@@ -8,6 +8,8 @@ import socket from '../../socket';
 import Player from '../../components/gm/player';
 import type {GameStateType, PlayerStateType} from '../../apps/game';
 
+import GameControls from '../../components/gm/game-controls';
+
 type Props = {
   gameId: string,
   players: Array<PlayerStateType>,
@@ -41,6 +43,7 @@ class GMPanel extends React.Component<Props> {
     return (
       <div>
         <p>GM: {gameId}</p>
+        <GameControls/>
         <ul>
           {players.map(p => {
             return (
