@@ -30,6 +30,7 @@ jobs:
     docker:
       - image: circleci/node:10.15.0
     steps:
+      - checkout
       - run:
           name: add-remote
           command: git remote add staging $STAGING_REMOTE
