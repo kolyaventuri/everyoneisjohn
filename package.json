@@ -44,7 +44,6 @@
     "express-to-koa": "^1.1.4",
     "flow-bin": "^0.93.0",
     "jsdom": "^14.0.0",
-    "node-sass": "^4.11.0",
     "nodemon": "^1.18.10",
     "pre-commit": "^1.2.2",
     "proxyquire": "^2.1.0",
@@ -53,12 +52,9 @@
     "sinon": "^7.2.3",
     "style-loader": "^0.23.1",
     "uglifyjs-webpack-plugin": "^2.1.2",
-    "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.0",
     "webpack-dev-middleware": "^3.6.2",
     "webpack-dev-server": "^3.3.1",
     "webpack-hot-middleware": "^2.24.3",
-    "webpack-merge": "^4.2.1",
     "xo": "^0.24.0"
   },
   "dependencies": {
@@ -84,7 +80,11 @@
     "scriba": "^1.0.5",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.0",
+    "webpack-merge": "^4.2.1",
+    "node-sass": "^4.11.0",
   },
   "pre-commit": [
     "lint:soft"
