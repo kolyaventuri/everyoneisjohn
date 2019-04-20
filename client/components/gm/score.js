@@ -1,17 +1,33 @@
 // @flow
 
 import React from 'react';
+import Ticker from './ticker';
 
 type Props = {|
-  value: number
+  value: number,
+  onChange: (amount: number) => void
 |};
 
-const Score = ({value}: Props) => (
-  <div>
-    <h3>
-      Score: <span data-type="score">{value}</span>
-    </h3>
-  </div>
-);
+class Score extends React.Component<Props> {
+  handleIncrement = () => this.props.onChange(1)
+
+  handleDecrement = () => this.props.onChange(-1)
+
+  render() {
+    const {value, onChange} = this.props;
+
+    return (
+      <div>
+        <h3>
+          Score:
+        </h3>
+        <Ticker
+          value={value}
+          onChange={onChange}
+        />
+      </div>
+    );
+  }
+}
 
 export default Score;

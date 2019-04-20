@@ -96,6 +96,20 @@ test('it renders a Score component', t => {
   t.is(score.props().value, player.points);
 });
 
+test('it emits a givePoints event on changing the score', t => {
+  const wrapper = render();
+
+  const willpower = wrapper.find('Score');
+  const amount = 1;
+
+  willpower.simulate('change', amount);
+
+  t.true(socket.emit.calledWith('givePoints', {
+    amount,
+    player: player.id
+  }));
+});
+
 test('it renders a SkillList component', t => {
   const wrapper = render();
   const skills = wrapper.find('SkillList');

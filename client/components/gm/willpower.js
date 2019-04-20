@@ -1,39 +1,18 @@
 // @flow
 
 import React from 'react';
+import Ticker from './ticker';
 
 type Props = {|
   value: number,
   onChange: (val: number) => void
 |};
 
-class Willpower extends React.Component<Props> {
-  handleIncrement = () => this.props.onChange(1)
-
-  handleDecrement = () => this.props.onChange(-1)
-
-  render() {
-    const {value} = this.props;
-    return (
-      <div>
-        <button
-          type="button"
-          data-action="decrement"
-          onClick={this.handleDecrement}
-        >
-          -
-        </button>
-        <p data-type="value">{value}</p>
-        <button
-          type="button"
-          data-action="increment"
-          onClick={this.handleIncrement}
-        >
-          +
-        </button>
-      </div>
-    );
-  }
-}
+const Willpower = ({value, onChange}: Props) => (
+  <Ticker
+    value={value}
+    onChange={onChange}
+  />
+);
 
 export default Willpower;

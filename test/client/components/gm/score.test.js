@@ -1,17 +1,21 @@
 import test from 'ava';
 import React from 'react';
 import {shallow} from 'enzyme';
+import {stub} from 'sinon';
 
 import Score from '../../../../client/components/gm/score';
 
-const render = (props = {}) => shallow(<Score {...props}/>);
+const onChange = stub();
 
-test('it renders the players score', t => {
+const render = (props = {}) => shallow(<Score onChange={onChange} {...props}/>);
+
+test('it renders a Ticker', t => {
   const value = 3;
   const wrapper = render({value});
+  const ticker = wrapper.find('Ticker');
 
-  const score = wrapper.find('[data-type="score"]');
+  const props = ticker.props();
 
-  t.is(score.length, 1);
-  t.is(score.text(), value.toString());
+  t.is(props.value, value);
+  t.is(props.onChange, onChange);
 });

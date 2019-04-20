@@ -36,7 +36,7 @@ class Player extends React.Component<Props> {
     socket.emit('giveWillpower', {amount, player});
   }
 
-  handleGoalComplete = (amount: number) => {
+  handleScoreChange = (amount: number) => {
     const player = this.playerId();
 
     socket.emit('givePoints', {amount, player});
@@ -71,9 +71,12 @@ class Player extends React.Component<Props> {
           name={goal}
           value={goalLevel}
           onChange={this.handleGoalChange}
-          onComplete={() => this.handleGoalComplete(goalLevel)}
+          onComplete={() => this.handleScoreChange(goalLevel)}
         />
-        <Score value={score}/>
+        <Score
+          value={score}
+          onChange={this.handleScoreChange}
+        />
         <SkillList>{skills}</SkillList>
       </div>
     );
