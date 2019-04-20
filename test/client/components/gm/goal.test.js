@@ -46,3 +46,15 @@ test('it emits a setGoalLevel event when the dropdown is changed', t => {
   t.true(onChange.calledWith(value));
 });
 
+test('it calls the onComplete handler upon clicking the complete goal button', t => {
+  const onComplete = stub();
+
+  const wrapper = render({onComplete});
+  const button = wrapper.find('button');
+
+  t.is(button.length, 1);
+
+  button.simulate('click');
+
+  t.true(onComplete.called);
+});

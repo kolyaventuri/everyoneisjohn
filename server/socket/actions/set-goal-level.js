@@ -7,7 +7,7 @@ type Payload = {
   player: string
 };
 
-const givePoints = (socket: SocketType, {amount, player: id}: Payload) => {
+const setGoalLevel = (socket: SocketType, {amount, player: id}: Payload) => {
   const {game} = socket;
 
   const {players} = game;
@@ -17,4 +17,4 @@ const givePoints = (socket: SocketType, {amount, player: id}: Payload) => {
   player.stats.goalLevel = amount;
 };
 
-export default givePoints;
+export default setGoalLevel;

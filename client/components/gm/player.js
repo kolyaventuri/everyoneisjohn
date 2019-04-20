@@ -21,19 +21,33 @@ type OwnProps = {|
 
 class Player extends React.Component<Props> {
   handleGoalChange = (amount: number | string) => {
-    const {
-      data: {id: player}
-    } = this.props;
+    if (typeof amount === 'string') {
+      amount = Number.parseInt(amount, 10);
+    }
+
+    const player = this.playerId();
 
     socket.emit('setGoalLevel', {amount, player});
   }
 
   handleWillpowerChange = (amount: number) => {
-    const {
-      data: {id: player}
-    } = this.props;
+    const player = this.playerId();
 
     socket.emit('giveWillpower', {amount, player});
+  }
+
+  handleGoalComplete = (amount: number) => {
+    const player = this.playerId();
+
+    socket.emit('givePoints', {amount, player});
+  }
+
+  playerId() {
+    const {
+      data: {id}
+    } = this.props;
+
+    return id;
   }
 
   render() {
@@ -57,6 +71,7 @@ class Player extends React.Component<Props> {
           name={goal}
           value={goalLevel}
           onChange={this.handleGoalChange}
+          onComplete={() => this.handleGoalComplete(goalLevel)}
         />
         <Score value={score}/>
         <SkillList>{skills}</SkillList>

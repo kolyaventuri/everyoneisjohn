@@ -79,6 +79,15 @@ test('it emits a setGoalLevel event on changing the goal level', t => {
   t.true(socket.emit.calledWith('setGoalLevel', {amount: value, player: player.id}));
 });
 
+test('it emits a givePoints event, with an amount equal to the goal, upon completing the goal', t => {
+  const wrapper = render();
+  const goal = wrapper.find('Goal');
+
+  goal.props().onComplete();
+
+  t.true(socket.emit.calledWith('givePoints', {amount: player.goalLevel, player: player.id}));
+});
+
 test('it renders a Score component', t => {
   const wrapper = render();
   const score = wrapper.find('Score');
