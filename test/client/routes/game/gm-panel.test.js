@@ -14,7 +14,10 @@ const GMPanel = proxyquire('../../../../client/routes/game/gm-panel', {
 }).default;
 
 const render = (props = {}) => {
-  return shallow(<GMPanel {...props}/>);
+  const match = {
+    params: {id: 'abcde'}
+  };
+  return shallow(<GMPanel {...props} match={match}/>);
 };
 
 test('it renders a list of Players', t => {

@@ -276,3 +276,23 @@ test('emits players to GM upon adding player to game', t => {
   t.true(player.emitUpdate.calledWith(false));
   t.true(game.emit.calledWith(expected));
 });
+
+test('#gmEmitPlayers emits players to GM', t => {
+  const {game} = setup(true, true);
+  const {player} = setup(false);
+
+  const payload = [player.serialize()];
+
+  const expected = {
+    channel: 'gm',
+    event: 'setPlayers',
+    payload
+  };
+
+  game.emit = stub();
+  game.addPlayer(player);
+  game.emit.reset();
+
+  game.gmEmitPlayers();
+  t.true(game.emit.calledWith(expected));
+});

@@ -86,6 +86,10 @@ export default class Game {
     player.socket.emit('gameJoinSuccess', this.id);
 
     player.emitUpdate(false);
+    this.gmEmitPlayers();
+  }
+
+  gmEmitPlayers() {
     this.emit({
       channel: 'gm',
       event: 'setPlayers',

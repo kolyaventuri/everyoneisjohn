@@ -6,6 +6,7 @@ import updatePlayer from './actions/update-player';
 import joinGame from './actions/join-game';
 
 import createGame from './actions/create-game';
+import joinGm from './actions/join-gm';
 import startGame from './actions/start-game';
 import startBidding from './actions/start-bidding';
 import startPlaying from './actions/start-playing';
@@ -25,6 +26,7 @@ const events = [
 
   // GM Events
   {name: 'createGame', handler: createGame},
+  {name: 'joinGm', handler: joinGm},
   {name: 'startGame', handler: startGame, isGM: true},
   {name: 'startBidding', handler: startBidding, isGM: true},
   {name: 'startPlaying', handler: startPlaying, isGM: true},

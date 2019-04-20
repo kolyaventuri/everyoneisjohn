@@ -20,7 +20,8 @@ const gameMethods = [
   'removePlayer',
   'addBid',
   'destroy',
-  'emit'
+  'emit',
+  'gmEmitPlayers'
 ];
 
 const stubAndCallThrough = (obj, func) => {
@@ -30,7 +31,7 @@ const stubAndCallThrough = (obj, func) => {
   });
 };
 
-const setup = (createGame = true, playerIsOwner = false) => {
+const setup = (createGame = true, playerIsOwner = false, joinToGame = true) => {
   const owner = new Player(new MockSocket());
   const socket = new MockSocket();
   const player = new Player(socket);
@@ -40,7 +41,9 @@ const setup = (createGame = true, playerIsOwner = false) => {
     game = new Game(player);
   } else if (createGame) {
     game = new Game(owner);
-    game.addPlayer(player);
+    if (joinToGame) {
+      game.addPlayer(player);
+    }
   }
 
   for (const m of methods) {
