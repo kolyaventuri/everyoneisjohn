@@ -30,6 +30,8 @@ export default class Player {
 
   stats: Stats;
 
+  destroyGame: () => void;
+
   constructor(socket: Socket, id: IdType = null) {
     id = id || uuid();
     socket.playerId = socket.playerId || id;
@@ -47,6 +49,7 @@ export default class Player {
     this.stats = new Stats(this);
 
     playerRepository.insert(this);
+    this.destroyGame = this.destroyGame.bind(this);
   }
 
   deactivate() {
@@ -79,6 +82,7 @@ export default class Player {
     this.deactivate();
 
     this.__STATICS__.disconnectTimer = setTimeout(() => {
+      this.destroyGame();
       this.leaveGame();
       this.destroy();
     }, 60 * 1000);
@@ -92,6 +96,12 @@ export default class Player {
 
   destroy() {
     playerRepository.destroy(this);
+  }
+
+  destroyGame() {
+    if (this.game && this.game.owner === this) {
+      this.game.destroy();
+    }
   }
 
   serialize() {
