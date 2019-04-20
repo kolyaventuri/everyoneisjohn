@@ -52,6 +52,7 @@ export default class Stats {
     }
 
     this.__STATICS__.goal = value;
+    this.player.emitUpdate();
   }
 
   get goalLevel(): number {

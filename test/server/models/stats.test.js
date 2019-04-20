@@ -64,6 +64,15 @@ test('can have a goal', t => {
   t.is(stats.goal, newGoal);
 });
 
+test('emits new goal', t => {
+  const player = genPlayer();
+  const stats = genStats(player);
+
+  stats.goal = 'abc';
+
+  t.true(player.emitUpdate.called);
+});
+
 test('goal can have a point value [1-3]', t => {
   const stats = genStats();
 

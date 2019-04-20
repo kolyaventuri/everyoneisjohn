@@ -10,13 +10,14 @@ import Score from './score';
 import Goal from './goal';
 import SkillList from './skill-list';
 
-type Props = {
+type Props = {|
   name: string,
   willpower: number,
   skills: Array<string>,
   goal: string,
-  points: number
-};
+  points: number,
+  frozen: boolean
+|};
 
 class PlayerInfo extends React.Component<Props> {
   render() {
@@ -25,7 +26,8 @@ class PlayerInfo extends React.Component<Props> {
       willpower,
       skills,
       goal,
-      points: score
+      points: score,
+      frozen
     } = this.props;
 
     return (
@@ -33,7 +35,7 @@ class PlayerInfo extends React.Component<Props> {
         <p className="name">Name: {name}</p>
         <Willpower value={willpower}/>
         <Score value={score}/>
-        <Goal value={goal}/>
+        <Goal value={goal} frozen={frozen}/>
         <SkillList>{skills}</SkillList>
       </div>
     );
@@ -46,7 +48,8 @@ const mapStateToProps = ({player}: GameStateType) => {
     willpower,
     skills,
     goal,
-    points
+    points,
+    frozen
   } = player;
 
   return {
@@ -54,7 +57,8 @@ const mapStateToProps = ({player}: GameStateType) => {
     willpower,
     skills,
     goal,
-    points
+    points,
+    frozen
   };
 };
 
