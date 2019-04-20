@@ -35,7 +35,7 @@ export default class Stats {
     this.__STATICS__ = {
       goal: '',
       goalLevel: 1,
-      skills: [],
+      skills: new Array(3).fill(''),
       frozen: false,
       willpower: 10,
       points: 0

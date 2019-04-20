@@ -137,7 +137,7 @@ test('skills and goals cannot be set once they are frozen', t => {
   stats.goal = goal;
   stats.setSkill(1, 'Some skill');
 
-  t.deepEqual(stats.skills, []);
+  t.deepEqual(stats.skills, ['', '', '']);
   t.not(stats.goal, goal);
   t.true(player.emitUpdate.calledWith(false));
 });

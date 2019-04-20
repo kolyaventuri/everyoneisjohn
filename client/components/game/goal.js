@@ -12,7 +12,7 @@ type State = {|
   value: string
 |};
 
-export class Goal extends React.Component<Props, State> {
+export default class Goal extends React.Component<Props, State> {
   constructor(...args: any) {
     super(...args);
 
@@ -75,5 +75,3 @@ export class Goal extends React.Component<Props, State> {
     );
   }
 }
-
-export default Goal;

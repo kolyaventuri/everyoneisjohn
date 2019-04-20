@@ -57,5 +57,5 @@ test('it renders a SkillList component', t => {
   const list = wrapper.find('SkillList');
 
   t.is(list.length, 1);
-  t.is(list.props().children, defaultProps.skills);
+  t.is(list.props().items, defaultProps.skills);
 });

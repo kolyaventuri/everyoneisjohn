@@ -36,7 +36,7 @@ class PlayerInfo extends React.Component<Props> {
         <Willpower value={willpower}/>
         <Score value={score}/>
         <Goal value={goal} frozen={frozen}/>
-        <SkillList>{skills}</SkillList>
+        <SkillList items={skills} frozen={frozen}/>
       </div>
     );
   }
