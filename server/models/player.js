@@ -30,6 +30,8 @@ export default class Player {
 
   stats: Stats;
 
+  destroyGame: () => void;
+
   constructor(socket: Socket, id: IdType = null) {
     id = id || uuid();
     socket.playerId = socket.playerId || id;
