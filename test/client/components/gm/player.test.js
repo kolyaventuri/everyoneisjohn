@@ -3,9 +3,13 @@ import React from 'react';
 import {shallow} from 'enzyme';
 import proxyquire from 'proxyquire';
 import {stub} from 'sinon';
+import {MockSocket} from '../../../server/mocks/socket';
+
+const socket = new MockSocket();
 
 const Player = proxyquire('../../../../client/components/gm/player', {
-  'react-redux': {connect: stub().returns(stub().returnsArg(0))}
+  'react-redux': {connect: stub().returns(stub().returnsArg(0))},
+  '../../socket': {default: socket}
 }).default;
 
 const player = {
@@ -52,13 +56,14 @@ test('it renders a goal component', t => {
   t.is(props.value, player.goalLevel);
 });
 
-test('it renders the players goal value', t => {
+test('it emits a setGoalLevel event on changing the goal level', t => {
   const wrapper = render();
+  const goal = wrapper.find('Goal');
+  const value = 2;
 
-  const goalVal = wrapper.find('[data-type="goalLevel"]');
+  goal.simulate('change', value);
 
-  t.is(goalVal.length, 1);
-  t.is(goalVal.text(), player.goalLevel.toString());
+  t.true(socket.emit.calledWith('setGoalLevel', {amount: value, player: player.id}));
 });
 
 test('it renders the players score', t => {
