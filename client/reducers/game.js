@@ -39,6 +39,11 @@ const GameReducer = (state: GameStateType = {}, action: ActionType): GameStateTy
       };
     case 'SET_GAME_PLAYER_INFO':
       return setSpecificPlayer(state, action);
+    case 'SET_GAME_MODE':
+      return {
+        ...state,
+        mode: payload.mode
+      };
     default:
       return state;
   }

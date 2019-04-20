@@ -124,7 +124,7 @@ test('emits mode to players', t => {
 
   const payload = {
     channel: 'all',
-    event: 'game.mode',
+    event: 'setGameMode',
     payload: 'VOTING'
   };
 

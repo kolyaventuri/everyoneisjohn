@@ -88,9 +88,9 @@ test('it renders the players score', t => {
   t.is(score.text(), player.points.toString());
 });
 
-test('it renders a Skill component', t => {
+test('it renders a SkillList component', t => {
   const wrapper = render();
-  const skills = wrapper.find('Skills');
+  const skills = wrapper.find('SkillList');
 
   t.is(skills.length, 1);
   t.deepEqual(skills.props().children, player.skills);
