@@ -85,7 +85,7 @@ test('it emits the skill upon clicking submit', t => {
 
   t.true(socket.emit.calledWith('updateStats', {
     skill: {
-      number: 0,
+      number: 1,
       content: items[0]
     }
   }));
@@ -100,10 +100,10 @@ test('it does not emit a skill if it is blank after trim', t => {
 
   button.simulate('click');
 
-  t.false(socket.emit.calledWith('updateStats', {
+  t.true(socket.emit.calledWith('updateStats', {
     skill: {
-      number: 0,
-      content: items[0]
+      number: 1,
+      content: items[0].trim()
     }
   }));
 });

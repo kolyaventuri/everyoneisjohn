@@ -111,7 +111,11 @@ export default class Stats {
     }
 
     if (index === MAX_SKILLS) {
-      this.willpower -= 3;
+      if (skill) {
+        this.willpower = 7;
+      } else {
+        this.willpower = 10;
+      }
     }
 
     this.__STATICS__.skills[index - 1] = skill;

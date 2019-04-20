@@ -42,14 +42,12 @@ export default class SkillList extends React.Component<Props, State> {
     const {items} = this.state;
     const content = items[index].trim();
 
-    if (content) {
-      socket.emit('updateStats', {
-        skill: {
-          number: index + 1,
-          content
-        }
-      });
-    }
+    socket.emit('updateStats', {
+      skill: {
+        number: index + 1,
+        content
+      }
+    });
   }
 
   renderSkill = (skill: string, index: number) => {
