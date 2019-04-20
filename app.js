@@ -9,8 +9,7 @@ import logger from './lib/logger';
 const app = new Koa();
 
 if (process.env.NODE_ENV !== 'production') {
-  /* eslint-disable-next-line import/no-unassigned-import */
-  require('./middleware/hot-bundle');
+  require('./webpack/dev-server').default(app);
 }
 
 app.use(async (ctx, next) => {
