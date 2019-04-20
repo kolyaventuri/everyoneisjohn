@@ -6,18 +6,27 @@ import Goal from '../../../../client/components/gm/goal';
 
 const render = (props = {}) => shallow(<Goal {...props}/>);
 
-test('it renders with the right data', t => {
+test('it renders the goal name', t => {
   const name = 'Some goal';
   const value = 2;
 
   const wrapper = render({name, value});
 
   const goalName = wrapper.find('[data-type="name"]');
-  const goalValue = wrapper.find('[data-type="value"]');
 
   t.is(goalName.length, 1);
   t.is(goalName.text(), name);
+});
+
+test('it renders the goal value as a dropdown', t => {
+  const name = 'Random';
+  const value = 2;
+
+  const wrapper = render({name, value});
+
+  const goalValue = wrapper.find('Dropdown');
 
   t.is(goalValue.length, 1);
-  t.is(goalValue.text(), value.toString());
+  t.is(goalValue.props().selected, value);
+  t.deepEqual(goalValue.props().options, [1, 2, 3]);
 });
