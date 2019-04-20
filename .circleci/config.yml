@@ -39,10 +39,18 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - test
+      - test:
+          requires:
+            - build
   build_and_deploy_staging:
-    branch: master
     jobs:
       - build
-      - test
-      - deploy_staging
+      - test:
+          requires:
+            - build
+      - deploy_staging:
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
