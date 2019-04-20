@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dokku": {
-      "predeploy": "NODE_ENV=development npm install && npm run build && npm prune --production"
+      "predeploy": "npm run build"
     }
   }
 }
