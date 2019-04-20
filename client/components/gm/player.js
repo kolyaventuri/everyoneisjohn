@@ -2,13 +2,13 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
-import uuid from 'uuid/v4';
 
 import type {PlayerStateType, GameStateType} from '../../apps/game';
 
 import socket from '../../socket';
 import Willpower from './willpower';
 import Goal from './goal';
+import SkillList from './skill-list';
 
 type Props = {|
   data: PlayerStateType
@@ -58,11 +58,7 @@ class Player extends React.Component<Props> {
           onChange={this.handleGoalChange}
         />
         <h3 data-type="score">{score}</h3>
-        <ul data-type="skills">
-          {skills.map(skill => (
-            <li key={uuid()}>{skill}</li>
-          ))}
-        </ul>
+        <SkillList>{skills}</SkillList>
       </div>
     );
   }

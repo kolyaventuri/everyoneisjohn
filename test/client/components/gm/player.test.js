@@ -88,20 +88,10 @@ test('it renders the players score', t => {
   t.is(score.text(), player.points.toString());
 });
 
-test('it renders the players skills', t => {
+test('it renders a Skill component', t => {
   const wrapper = render();
+  const skills = wrapper.find('Skills');
 
-  const skillsList = wrapper.find('[data-type="skills"]');
-
-  t.is(skillsList.length, 1);
-
-  const skills = skillsList.find('li');
-
-  t.is(skills.length, player.skills.length);
-
-  for (let i = 0; i < player.skills.length; i++) {
-    const skill = skills.at(i);
-
-    t.is(skill.text(), player.skills[i]);
-  }
+  t.is(skills.length, 1);
+  t.deepEqual(skills.props().children, player.skills);
 });
