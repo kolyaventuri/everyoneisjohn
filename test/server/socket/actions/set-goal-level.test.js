@@ -13,8 +13,8 @@ test('can give points to a specific player', t => {
   game.addPlayer(player1);
   game.addPlayer(player2);
 
-  setGoalLevel(socket, {amount: 1, player: player1.id});
+  setGoalLevel(socket, {amount: 2, player: player1.id});
 
-  t.is(player1.stats.goalLevel, 1);
-  t.is(player2.stats.goalLevel, 0);
+  t.is(player1.stats.goalLevel, 2);
+  t.is(player2.stats.goalLevel, 1);
 });

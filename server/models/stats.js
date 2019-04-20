@@ -34,7 +34,7 @@ export default class Stats {
 
     this.__STATICS__ = {
       goal: '',
-      goalLevel: 0,
+      goalLevel: 1,
       skills: [],
       frozen: false,
       willpower: 10,
@@ -67,8 +67,8 @@ export default class Stats {
       value = MIN_GOAL;
     }
 
-    this.player.emitUpdate();
     this.__STATICS__.goalLevel = value;
+    this.player.emitUpdate();
   }
 
   get skills(): Array<string> {

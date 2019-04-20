@@ -7,11 +7,6 @@ const startBidding = (socket: SocketType) => {
   const {game} = socket;
 
   game.mode = GameModes.VOTING;
-
-  game.emit({
-    channel: 'all',
-    event: 'startBidding'
-  });
 };
 
 export default startBidding;
