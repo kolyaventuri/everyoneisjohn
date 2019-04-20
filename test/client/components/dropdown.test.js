@@ -1,6 +1,7 @@
 import test from 'ava';
 import React from 'react';
 import {shallow} from 'enzyme';
+import {stub} from 'sinon';
 
 import Dropdown from '../../../client/components/dropdown';
 
@@ -43,4 +44,35 @@ test('it can render with a selected option', t => {
 
   t.is(opt.text(), options[1]);
   t.true(opt.props().selected);
+});
+
+test('it fires an onChange hander when changed', t => {
+  const options = ['a', 'b', 'c'];
+  const onChange = stub();
+  const wrapper = render({
+    options,
+    onChange
+  });
+
+  const select = wrapper.find('select');
+
+  select.simulate('change', {target: {value: options[1]}});
+
+  t.true(onChange.calledWith(options[1]));
+});
+
+test('it updates the seected option in state when changed', t => {
+  const options = ['a', 'b', 'c'];
+  const wrapper = render({
+    options
+  });
+
+  const select = wrapper.find('select');
+
+  select.simulate('change', {target: {value: options[1]}});
+
+  const instance = wrapper.instance();
+  const {state} = instance;
+
+  t.is(state.selected, options[1]);
 });
