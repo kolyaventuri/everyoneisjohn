@@ -41,8 +41,21 @@ test('it renders a willpower component', t => {
   t.is(willpower.length, 1);
 
   const props = willpower.props();
-  t.is(props.playerId, player.id);
   t.is(props.value, player.willpower);
+});
+
+test('it emits a giveWillpower event on changing the willpower', t => {
+  const wrapper = render();
+
+  const willpower = wrapper.find('Willpower');
+  const amount = 1;
+
+  willpower.simulate('change', amount);
+
+  t.true(socket.emit.calledWith('giveWillpower', {
+    amount,
+    player: player.id
+  }));
 });
 
 test('it renders a goal component', t => {

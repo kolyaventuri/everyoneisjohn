@@ -2,28 +2,15 @@
 
 import React from 'react';
 
-import socket from '../../socket';
-
 type Props = {|
-  playerId: string,
-  value: number
+  value: number,
+  onChange: (val: number) => void
 |};
 
 class Willpower extends React.Component<Props> {
-  giveWillpower = (amount: number) => {
-    const {
-      playerId: player
-    } = this.props;
+  handleIncrement = () => this.props.onChange(1)
 
-    socket.emit('giveWillpower', {
-      player,
-      amount
-    });
-  }
-
-  handleIncrement = () => this.giveWillpower(1)
-
-  handleDecrement = () => this.giveWillpower(-1)
+  handleDecrement = () => this.props.onChange(-1)
 
   render() {
     const {value} = this.props;

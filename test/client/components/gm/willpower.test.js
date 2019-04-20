@@ -1,18 +1,13 @@
 import test from 'ava';
 import React from 'react';
-import proxyquire from 'proxyquire';
 import {shallow} from 'enzyme';
-import {MockSocket} from '../../../server/mocks/socket';
+import {stub} from 'sinon';
 
-const mockSocket = new MockSocket();
-
-const Willpower = proxyquire('../../../../client/components/gm/willpower', {
-  '../../socket': {default: mockSocket}
-}).default;
+import Willpower from '../../../../client/components/gm/willpower';
 
 const defaultProps = {
-  playerId: 'some-id',
-  value: 3
+  value: 3,
+  onChange: stub()
 };
 
 const render = (props = defaultProps) => {
@@ -36,10 +31,7 @@ test('it increments the willpower upon clicking the plus button', t => {
 
   button.simulate('click');
 
-  t.true(mockSocket.emit.calledWith('giveWillpower', {
-    amount: 1,
-    player: defaultProps.playerId
-  }));
+  t.true(defaultProps.onChange.calledWith(1));
 });
 
 test('it decrements the willpower upon clicking the minus button', t => {
@@ -51,8 +43,5 @@ test('it decrements the willpower upon clicking the minus button', t => {
 
   button.simulate('click');
 
-  t.true(mockSocket.emit.calledWith('giveWillpower', {
-    amount: -1,
-    player: defaultProps.playerId
-  }));
+  t.true(defaultProps.onChange.calledWith(-1));
 });

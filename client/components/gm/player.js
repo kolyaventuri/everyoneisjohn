@@ -27,9 +27,16 @@ class Player extends React.Component<Props> {
     socket.emit('setGoalLevel', {amount, player});
   }
 
+  handleWillpowerChange = (amount: number) => {
+    const {
+      data: {id: player}
+    } = this.props;
+
+    socket.emit('giveWillpower', {amount, player});
+  }
+
   render() {
     const {
-      id,
       name,
       willpower,
       goal,
@@ -41,7 +48,10 @@ class Player extends React.Component<Props> {
     return (
       <div>
         <h1 data-type="name">{name}</h1>
-        <Willpower playerId={id} value={willpower}/>
+        <Willpower
+          value={willpower}
+          onChange={this.handleWillpowerChange}
+        />
         <Goal
           name={goal}
           value={goalLevel}
