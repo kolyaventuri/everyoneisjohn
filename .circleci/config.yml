@@ -8,8 +8,8 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
-          name: install-production
-          command: 'npm install --production'
+          name: install-npm
+          command: 'npm install'
       - run:
           name: build 
           command: 'npm run build'
