@@ -3,26 +3,39 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import socket from '../../socket';
+
 import type {GameStateType} from '../../apps/game';
 
 type Props = {|
-  mode: 'SETUP' | 'PLAYING' | 'VOTING'
+  mode: 'SETUP' | 'VOTING' | 'PLAYING'
 |};
 
+const emit = (event: string) => socket.emit(event);
+
 const renderSetupButtons = () => (
-  <button type="button">
+  <button
+    type="button"
+    onClick={() => emit('startGame')}
+  >
     Start Game
   </button>
 );
 
 const renderVotingButtons = () => (
-  <button type="button">
+  <button
+    type="button"
+    onClick={() => emit('startPlaying')}
+  >
     Skip Bidding
   </button>
 );
 
 const renderPlayingButtons = () => (
-  <button type="button">
+  <button
+    type="button"
+    onClick={() => emit('startBidding')}
+  >
     Next Round
   </button>
 );
