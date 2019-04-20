@@ -10,7 +10,7 @@ const Player = () => <div/>;
 const GMPanel = proxyquire('../../../../client/routes/game/gm-panel', {
   'react-router-dom': {withRouter: stub().returnsArg(0)},
   'react-redux': {connect: stub().returns(stub().returnsArg(0))},
-  '../../components/game/player': {default: Player}
+  '../../components/gm/player': {default: Player}
 }).default;
 
 const render = (props = {}) => {

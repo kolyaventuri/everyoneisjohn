@@ -4,7 +4,7 @@ import {shallow} from 'enzyme';
 import proxyquire from 'proxyquire';
 import {stub} from 'sinon';
 
-const Player = proxyquire('../../../../client/components/game/player', {
+const Player = proxyquire('../../../../client/components/gm/player', {
   'react-redux': {connect: stub().returns(stub().returnsArg(0))}
 }).default;
 
@@ -41,13 +41,15 @@ test('it renders a willpower component', t => {
   t.is(props.value, player.willpower);
 });
 
-test('it renders the players goal', t => {
+test('it renders a goal component', t => {
   const wrapper = render();
-
-  const goal = wrapper.find('[data-type="goal"]');
+  const goal = wrapper.find('Goal');
 
   t.is(goal.length, 1);
-  t.is(goal.text(), player.goal);
+  const props = goal.props();
+
+  t.is(props.name, player.goal);
+  t.is(props.value, player.goalLevel);
 });
 
 test('it renders the players goal value', t => {

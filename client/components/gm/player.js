@@ -6,6 +6,7 @@ import uuid from 'uuid/v4';
 
 import type {PlayerStateType, GameStateType} from '../../apps/game';
 import Willpower from './willpower';
+import Goal from './goal';
 
 type Props = {|
   data: PlayerStateType
@@ -30,7 +31,7 @@ const Player = ({data: player}: Props) => {
     <div>
       <h1 data-type="name">{name}</h1>
       <Willpower playerId={id} value={willpower}/>
-      <h3 data-type="goal">{goal}</h3>
+      <Goal name={goal} value={goalLevel}/>
       <h4 data-type="goalLevel">{goalLevel}</h4>
       <h3 data-type="score">{score}</h3>
       <ul data-type="skills">

@@ -6,7 +6,7 @@ import {MockSocket} from '../../../server/mocks/socket';
 
 const mockSocket = new MockSocket();
 
-const Willpower = proxyquire('../../../../client/components/game/willpower', {
+const Willpower = proxyquire('../../../../client/components/gm/willpower', {
   '../../socket': {default: mockSocket}
 }).default;
 
