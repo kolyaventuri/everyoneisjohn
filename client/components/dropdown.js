@@ -43,15 +43,14 @@ export default class Dropdown extends React.Component<Props, State> {
 
     return (
       <select
+        value={selected}
         onChange={this.onChange}
       >
         {options.map(val => {
-          const isSelected = selected === val;
           return (
             <option
               key={uuid()}
               value={val}
-              selected={isSelected}
             >
               {val}
             </option>

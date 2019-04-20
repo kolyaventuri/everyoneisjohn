@@ -39,11 +39,8 @@ test('it can render with a selected option', t => {
     selected: options[1]
   });
 
-  const opts = wrapper.find('select option');
-  const opt = opts.at(1);
-
-  t.is(opt.text(), options[1]);
-  t.true(opt.props().selected);
+  const select = wrapper.find('select');
+  t.is(select.props().value, options[1]);
 });
 
 test('it fires an onChange hander when changed', t => {
