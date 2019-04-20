@@ -57,3 +57,12 @@ test('it renders a button to submit your goal if editing is not frozen', t => {
     goal: value
   }));
 });
+
+test('it does not render the button if editing is frozen', t => {
+  const value = 'abc';
+  const wrapper = render({value, frozen: true});
+
+  const button = wrapper.find('button');
+
+  t.is(button.length, 0);
+});

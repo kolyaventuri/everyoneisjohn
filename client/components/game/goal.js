@@ -49,6 +49,12 @@ export class Goal extends React.Component<Props, State> {
   }
 
   renderSubmit = () => {
+    const {frozen} = this.props;
+
+    if (frozen) {
+      return null;
+    }
+
     return (
       <button
         type="button"
