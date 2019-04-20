@@ -26,3 +26,9 @@ jobs:
       - run:
           name: test
           command: 'npm run test'
+workflow:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test
