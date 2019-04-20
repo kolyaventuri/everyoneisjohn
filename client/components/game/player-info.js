@@ -5,6 +5,11 @@ import {connect} from 'react-redux';
 
 import type {GameStateType} from '../../apps/game';
 
+import Willpower from './willpower';
+import Score from './score';
+import Goal from './goal';
+import SkillList from './skill-list';
+
 type Props = {
   name: string,
   willpower: number,
@@ -20,16 +25,16 @@ class PlayerInfo extends React.Component<Props> {
       willpower,
       skills,
       goal,
-      points
+      points: score
     } = this.props;
 
     return (
       <div>
         <p className="name">Name: {name}</p>
-        <p className="willpower">Willpower: {willpower}</p>
-        <p className="score">Score: {points}</p>
-        <p className="goal">Goal: {goal}</p>
-        <p className="skills">Skills: {skills.join(', ')}</p>
+        <Willpower value={willpower}/>
+        <Score value={score}/>
+        <Goal value={goal}/>
+        <SkillList>{skills}</SkillList>
       </div>
     );
   }
