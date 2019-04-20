@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./bin/start",
     "dev": "nodemon --ignore client/ --ignore static/javascripts/ --exec node ./bin/start",
-    "build": "parcel build client/app.js -d static/javascripts --out-file bundle.js",
+    "build": "webpack --config ./webpack/webpack.prod.js --progress --colors",
     "test": "flow && xo && ava",
     "flow": "flow",
     "lint": "flow && xo",
