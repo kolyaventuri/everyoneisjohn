@@ -9,7 +9,8 @@ let io = require('socket.io');
 const {logInfo} = logger;
 let socket = null;
 
-const socketBuilder = (port?: number): SocketType => {
+const defaultPort = process.env.PORT || 3000;
+const socketBuilder = (port?: any): SocketType => {
   if (socket) {
     return socket;
   }
@@ -25,7 +26,7 @@ const socketBuilder = (port?: number): SocketType => {
     applyHandlers(client);
   });
 
-  logInfo(`Sockets listening on ${port || ''}`);
+  logInfo(`Sockets listening on ${defaultPort || ''}`);
 
   return socket;
 };

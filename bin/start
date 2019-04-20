@@ -9,9 +9,8 @@ require('@babel/polyfill');
 
 const app = require('../app').default;
 const port = process.env.PORT || 3000;
-const socketPort = process.env.SOCKET_PORT || 8031;
 
 /* eslint-disable-next-line import/no-unassigned */
-require('../server/socket/server').default(socketPort);
+require('../server/socket/server').default(app);
 
 app.listen(port);
