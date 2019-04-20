@@ -5,6 +5,7 @@ import uuid from 'uuid/v4';
 
 import {repositories} from '../mocks';
 import {MockSocket} from '../mocks/socket';
+import setup from '../stubs/create-socket';
 import Stats from '../../../server/models/stats';
 import Game from '../../../server/models/game';
 
@@ -178,6 +179,7 @@ test('has a disconnect timeout set if they leave', t => {
 
   player.leaveGame = stub();
   player.destroy = stub();
+  player.destroyGame = stub();
   gameRepository.find = stub().returns(game);
 
   game.addPlayer(player);
@@ -191,6 +193,7 @@ test('has a disconnect timeout set if they leave', t => {
 
   t.true(player.leaveGame.called);
   t.true(player.destroy.called);
+  t.true(player.destroyGame.called);
 
   clock.restore();
 });
@@ -216,6 +219,30 @@ test('has the discount timeout cleared if they return within the time allowed', 
   t.false(player.leaveGame.called);
 
   clock.restore();
+});
+
+test('#destroyGame destroys the game they own, if one exists', t => {
+  const {game, player} = setup(true, true);
+
+  player.destroyGame();
+
+  t.true(game.destroy.called);
+});
+
+test('#destroyGame does not destroy the game if they are not the owner', t => {
+  const {game, player} = setup(true);
+
+  player.destroyGame();
+
+  t.false(game.destroy.called);
+});
+
+test('#destroyGame does not error if they do not own a game', t => {
+  const {player} = setup(false);
+
+  const fn = player.destroyGame;
+
+  t.notThrows(fn);
 });
 
 test('emitUpdate is called when a player joins a game', t => {
