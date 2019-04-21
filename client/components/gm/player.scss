@@ -1,0 +1,22 @@
+.player {
+    background: #EEE;
+    border: 2px solid #DEDEDE;
+    border-radius: 0.25em;
+    padding: 1em;
+
+    .name {
+        font-weight: bold;
+        font-size: 1.5em;
+        text-align: center;
+
+        white-space: nowrap;
+        overflow-x: hidden;
+        line-height: 1.5em;
+        text-overflow: ellipsis;
+        max-width: 90%;
+
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}

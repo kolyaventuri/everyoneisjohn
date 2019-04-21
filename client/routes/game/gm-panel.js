@@ -3,6 +3,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
+import {Grid, Row, Col} from 'react-flexbox-grid';
 
 import socket from '../../socket';
 import Player from '../../components/gm/player';
@@ -57,13 +58,15 @@ class GMPanel extends React.Component<Props> {
           </p>
         </div>
         <GameControls/>
-        <ul>
-          {players.map(p => {
-            return (
-              <Player key={p.id} id={p.id}/>
-            );
-          })}
-        </ul>
+        <Grid fluid>
+          <Row>
+            {players.map(p => (
+              <Col key={`col-${p.id}`} xs={12} md={4} lg={3}>
+                <Player key={p.id} id={p.id}/>
+              </Col>
+            ))}
+          </Row>
+        </Grid>
       </div>
     );
   }

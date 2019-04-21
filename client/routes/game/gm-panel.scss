@@ -24,6 +24,10 @@
 
             a {
                 color: #333;
+
+                @media screen and (max-width: 450px) {
+                    font-size: 0.75em;
+                }
             }
         }
     }

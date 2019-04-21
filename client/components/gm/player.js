@@ -10,6 +10,7 @@ import Willpower from './willpower';
 import Goal from './goal';
 import SkillList from './skill-list';
 import Score from './score';
+import styles from './player.scss';
 
 type Props = {|
   data: PlayerStateType
@@ -61,8 +62,13 @@ class Player extends React.Component<Props> {
     } = this.props.data;
 
     return (
-      <div>
-        <h1 data-type="name">{name}</h1>
+      <div className={styles.player}>
+        <h1
+          data-type="name"
+          className={styles.name}
+        >
+          {name}
+        </h1>
         <Willpower
           value={willpower}
           onChange={this.handleWillpowerChange}
