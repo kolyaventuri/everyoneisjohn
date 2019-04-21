@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,o700i');
+@import './reset.scss';
+
+:global(html) {
+  &, :global(body), :global(#app) {
+    &, :global(#app) > div,main {
+      height: 100%;
+    }
+  }
+}
+
+:global(body) {
+  &, * {
+    font-family: 'Playfair Display', serif;
+    margin: 0;
+  }
+}

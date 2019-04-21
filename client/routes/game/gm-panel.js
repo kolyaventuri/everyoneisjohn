@@ -3,12 +3,14 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
+import {Grid, Row, Col} from 'react-flexbox-grid';
 
 import socket from '../../socket';
 import Player from '../../components/gm/player';
 import type {GameStateType, PlayerStateType} from '../../apps/game';
 
 import GameControls from '../../components/gm/game-controls';
+import styles from './gm-panel.scss';
 
 type Props = {
   gameId: string,
@@ -19,6 +21,10 @@ type Props = {
     }
   }
 };
+
+let url = process.env.ENV === 'local' ? 'http://localhost:3000' : '{env}.everyoneisjohn.xyz';
+url = url.replace('{env}', process.env.ENV === 'beta' ? 'beta' : 'www');
+const getLink = (code: string): string => `${url}/game/${code}`;
 
 class GMPanel extends React.Component<Props> {
   constructor(...args: any) {
@@ -39,18 +45,30 @@ class GMPanel extends React.Component<Props> {
 
   render() {
     const {gameId, players} = this.props;
+    const link = getLink(gameId);
 
     return (
-      <div>
-        <p>GM: {gameId}</p>
-        <GameControls/>
-        <ul>
-          {players.map(p => {
-            return (
-              <Player key={p.id} id={p.id}/>
-            );
-          })}
-        </ul>
+      <div className={styles.container}>
+        <div className={styles.heading}>
+          <p className={styles.title}>You are the Game Master.</p>
+          <p className={styles.gameId}>
+            Code: <span>{gameId}</span>
+            <br/>
+            <a href={link} target="_blank" rel="noopener noreferrer">{link}</a>
+          </p>
+        </div>
+        <div className={styles.status}>
+          <GameControls/>
+        </div>
+        <Grid fluid>
+          <Row>
+            {players.map(p => (
+              <Col key={`col-${p.id}`} xs={12} md={4} lg={3}>
+                <Player key={p.id} id={p.id}/>
+              </Col>
+            ))}
+          </Row>
+        </Grid>
       </div>
     );
   }

@@ -1,0 +1,35 @@
+@import "../../sass/_vars";
+
+.ticker {
+    font-size: 1.5em;
+
+    * {
+        display: inline-block;
+    }
+
+    a {
+        border: 0;
+        background: rgba(0,0,0,0);
+        cursor: pointer;
+        font-size: 1.25em;
+        font-weight: bold;
+        transform: translateY(3px);
+        color: inherit;
+        text-decoration: none;
+        padding: 0 0.25em;
+
+        &:focus {
+            outline: 0;
+        }
+
+        &:hover {
+            &.decrement {
+                color: $red;
+            }
+
+            &.increment {
+                color: $green;
+            }
+        }
+    }
+}

@@ -12,5 +12,5 @@ test('it renders player score', t => {
   const score = wrapper.find('[data-type="score"]');
 
   t.is(score.length, 1);
-  t.is(score.text(), `${value}`);
+  t.is(score.text(), `${value}.`);
 });

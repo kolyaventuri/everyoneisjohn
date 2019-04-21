@@ -20,12 +20,12 @@ const render = (props = defaultProps) => {
   return shallow(<PlayerInfo {...props}/>);
 };
 
-test('it renders player name', t => {
+test('it renders a Name component', t => {
   const wrapper = render();
-  const name = wrapper.find('.name');
+  const name = wrapper.find('Name');
 
   t.is(name.length, 1);
-  t.is(name.text(), `Name: ${defaultProps.name}`);
+  t.is(name.props().value, defaultProps.name);
 });
 
 test('it renders a Willpower component', t => {

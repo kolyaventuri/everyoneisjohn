@@ -9,8 +9,10 @@ import {ConnectedRouter} from 'connected-react-router';
 import {store, history} from './store';
 import App from './components/app';
 
-/* eslint-disable-next-line import/no-unassigned-import */
+/* eslint-disable import/no-unassigned-import */
 import './socket';
+import './app.scss';
+/* eslint-enable import/no-unassigned-import */
 
 render(
   <Provider store={store}>

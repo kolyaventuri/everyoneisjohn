@@ -9,6 +9,8 @@ import Willpower from './willpower';
 import Score from './score';
 import Goal from './goal';
 import SkillList from './skill-list';
+import Name from './name';
+import styles from './player-info.scss';
 
 type Props = {|
   name: string,
@@ -31,8 +33,8 @@ class PlayerInfo extends React.Component<Props> {
     } = this.props;
 
     return (
-      <div>
-        <p className="name">Name: {name}</p>
+      <div className={styles.player}>
+        <Name value={name}/>
         <Willpower value={willpower}/>
         <Score value={score}/>
         <Goal value={goal} frozen={frozen}/>

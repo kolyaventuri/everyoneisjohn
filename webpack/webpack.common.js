@@ -1,5 +1,7 @@
 const path = require('path');
 
+const cssLoaderOpts = 'css-loader?modules&importLoaders=true&localIdentName=[name]__[local]___[hash:base64:5]';
+
 module.exports = {
   entry: [
     path.join(process.cwd(), 'client/app.js')
@@ -12,13 +14,18 @@ module.exports = {
         loader: 'babel-loader'
       },
       {
-        test: /\.(css|scss)$/,
+        test: /\.css$/,
+        loader: 'style-loader!' + cssLoaderOpts,
+        include: /flexboxgrid/
+      },
+      {
+        test: /\.(scss)$/,
         use: [
           {
             loader: 'style-loader'
           },
           {
-            loader: 'css-loader?modules&importLoaders=true&localIdentName=[name]__[local]___[hash:base64:5]'
+            loader: cssLoaderOpts
           },
           {
             loader: 'sass-loader'

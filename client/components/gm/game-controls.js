@@ -2,10 +2,12 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
+import cx from 'classnames';
 
 import socket from '../../socket';
-
+import globalStyles from '../../sass/global.scss';
 import type {GameStateType} from '../../apps/game';
+import styles from './game-controls.scss';
 
 type Props = {|
   mode: 'SETUP' | 'VOTING' | 'PLAYING'
@@ -13,34 +15,23 @@ type Props = {|
 
 const emit = (event: string) => socket.emit(event);
 
-const renderSetupButtons = () => (
+const createButton = (event: string, text: string) => (
   <button
     type="button"
-    onClick={() => emit('startGame')}
+    className={cx(globalStyles.btn, styles.button)}
+    onClick={() => emit(event)}
   >
-    Start Game
+    {text}
   </button>
 );
 
-const renderVotingButtons = () => (
-  <button
-    type="button"
-    onClick={() => emit('startPlaying')}
-  >
-    Skip Bidding
-  </button>
-);
+const renderSetupButtons = () => createButton('startGame', 'Start Game');
 
-const renderPlayingButtons = () => (
-  <button
-    type="button"
-    onClick={() => emit('startBidding')}
-  >
-    Next Round
-  </button>
-);
+const renderVotingButtons = () => createButton('startPlaying', 'Skip Bidding');
 
-const GameControls = ({mode}: Props) => {
+const renderPlayingButtons = () => createButton('startBidding', 'Next Round');
+
+const renderButton = (mode: string) => {
   switch (mode) {
     case 'SETUP':
       return renderSetupButtons();
@@ -52,6 +43,29 @@ const GameControls = ({mode}: Props) => {
       return null; // This should never happen
   }
 };
+
+const modeMap = {
+  SETUP: 'Setting Up',
+  VOTING: 'Bidding',
+  PLAYING: 'Playing'
+};
+
+const renderStatus = (mode: string) => {
+  const modeStr = modeMap[mode];
+
+  return (
+    <p className={styles.status}>
+      Currently: <span>{modeStr}</span>
+    </p>
+  );
+};
+
+const GameControls = ({mode}: Props) => (
+  <div className={styles.container}>
+    {renderStatus(mode)}
+    {renderButton(mode)}
+  </div>
+);
 
 const mapStateToProps = ({game: {mode}}: GameStateType) => ({mode});
 
