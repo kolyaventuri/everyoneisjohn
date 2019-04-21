@@ -1,36 +1,47 @@
 // @flow
 
 import React from 'react';
+import cx from 'classnames';
+
+import styles from './ticker.scss';
 
 type Props = {|
   value: number,
-  onChange: (val: number) => void
+  onChange: (val: number) => void,
+  className?: string
 |};
 
 class Ticker extends React.Component<Props> {
+  static defaultProps = {
+    className: ''
+  };
+
   handleIncrement = () => this.props.onChange(1)
 
   handleDecrement = () => this.props.onChange(-1)
 
   render() {
-    const {value} = this.props;
+    const {value, className} = this.props;
+
     return (
-      <div>
-        <button
-          type="button"
+      <div className={cx(styles.ticker, className)}>
+        <a
+          href="#"
+          className={styles.decrement}
           data-action="decrement"
           onClick={this.handleDecrement}
         >
           -
-        </button>
+        </a>
         <p data-type="value">{value}</p>
-        <button
-          type="button"
+        <a
+          href="#"
+          className={styles.increment}
           data-action="increment"
           onClick={this.handleIncrement}
         >
           +
-        </button>
+        </a>
       </div>
     );
   }
