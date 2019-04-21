@@ -15,35 +15,21 @@ type Props = {|
 
 const emit = (event: string) => socket.emit(event);
 
-const renderSetupButtons = () => (
+const createButton = (event: string, text: string) => (
   <button
     type="button"
     className={cx(globalStyles.btn, styles.button)}
-    onClick={() => emit('startGame')}
+    onClick={() => emit(event)}
   >
-    Start Game
+    {text}
   </button>
 );
 
-const renderVotingButtons = () => (
-  <button
-    type="button"
-    className={cx(globalStyles.btn, styles.button)}
-    onClick={() => emit('startPlaying')}
-  >
-    Skip Bidding
-  </button>
-);
+const renderSetupButtons = () => createButton('startGame', 'Start Game');
 
-const renderPlayingButtons = () => (
-  <button
-    type="button"
-    className={cx(globalStyles.btn, styles.button)}
-    onClick={() => emit('startBidding')}
-  >
-    Next Round
-  </button>
-);
+const renderVotingButtons = () => createButton('startPlaying', 'Skip Bidding');
+
+const renderPlayingButtons = () => createButton('startBidding', 'Next Round');
 
 const renderButton = (mode: string) => {
   switch (mode) {
