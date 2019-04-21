@@ -57,7 +57,9 @@ class GMPanel extends React.Component<Props> {
             <a href={link} target="_blank" rel="noopener noreferrer">{link}</a>
           </p>
         </div>
-        <GameControls/>
+        <div className={styles.status}>
+          <GameControls/>
+        </div>
         <Grid fluid>
           <Row>
             {players.map(p => (
