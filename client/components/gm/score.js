@@ -3,6 +3,8 @@
 import React from 'react';
 import Ticker from './ticker';
 
+import styles from './score.scss';
+
 type Props = {|
   value: number,
   onChange: (amount: number) => void
@@ -17,8 +19,8 @@ class Score extends React.Component<Props> {
     const {value, onChange} = this.props;
 
     return (
-      <div>
-        <h3>
+      <div className={styles.score}>
+        <h3 className={styles.title}>
           Score:
         </h3>
         <Ticker

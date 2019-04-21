@@ -73,15 +73,15 @@ class Player extends React.Component<Props> {
           value={willpower}
           onChange={this.handleWillpowerChange}
         />
+        <Score
+          value={score}
+          onChange={this.handleScoreChange}
+        />
         <Goal
           name={goal}
           value={goalLevel}
           onChange={this.handleGoalChange}
           onComplete={() => this.handleScoreChange(goalLevel)}
-        />
-        <Score
-          value={score}
-          onChange={this.handleScoreChange}
         />
         <SkillList>{skills}</SkillList>
       </div>
