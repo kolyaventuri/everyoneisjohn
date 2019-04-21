@@ -25,3 +25,10 @@ test('it renders the players skills', t => {
     t.is(skill.text(), items[i]);
   }
 });
+
+test('it renders null if no skills are set', t => {
+  const items = ['', '', ''];
+  const wrapper = render(items);
+
+  t.is(wrapper.type(), null);
+});
