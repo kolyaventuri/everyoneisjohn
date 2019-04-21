@@ -9,20 +9,25 @@
 .start-here {
   position: relative;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateY(-50%);
 
   .title {
     font-weight: bold;
     font-size: 7em;
     text-align: center;
+
+    padding: 0.5em;
+
+    @media screen and (max-width: 450px) {
+        font-size: 4em;
+    }
+
+    @media screen and (max-width: 350px) {
+        font-size: 3em;
+    }
   }
 
   .homeGroup {
-    text-align: center;
-    padding: 2em;
-    margin-top: 2em;
-
     a {
       font-size: 1.25em;
       color: #000;
@@ -39,6 +44,26 @@
         border-bottom: 1px solid #666;
       }
     }
+  }
+
+  .midway {
+      width: 100%;
+      text-align: center;
+      border-bottom: 1px solid #000;
+      line-height: 0.1em;
+      margin: 2em 0;
+
+      font-size: 2em;
+      font-weight: bold;
+
+      span {
+          background: $blue;
+          padding: 0 0.5em;
+      }
+  }
+
+  .start {
+      text-align: center;
   }
 }
 
