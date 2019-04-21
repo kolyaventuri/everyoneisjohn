@@ -6,6 +6,12 @@
   color: #000;
   display: inline-block;
   margin: 0.5em;
+
+  cursor: pointer;
+
+  &:focus {
+      outline: 0;
+  }
 }
 
 .posRelative {
