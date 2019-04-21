@@ -5,7 +5,7 @@ import cx from 'classnames';
 import socket from '../../socket';
 
 import globalStyles from '../../sass/global.scss';
-import styles from './goal.scss';
+import styles from './section.scss';
 
 type Props = {|
   value: string,
@@ -46,7 +46,7 @@ export default class Goal extends React.Component<Props, State> {
     return (
       <input
         type="text"
-        className={styles.input}
+        className={globalStyles.input}
         placeholder="You must enter an obsession to play!"
         defaultValue={value}
         onChange={this.handleChange}
@@ -74,7 +74,8 @@ export default class Goal extends React.Component<Props, State> {
 
   render() {
     return (
-      <div className={styles.goal}>
+      <div className={styles.section}>
+        <p className={styles.title}>You are obsessed with doing the following:</p>
         {this.renderGoal()}
         {this.renderSubmit()}
       </div>
