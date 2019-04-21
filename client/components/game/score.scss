@@ -1,0 +1,14 @@
+.score {
+  * {
+    display: inline-block;
+  }
+
+  .title {
+    font-size: 1.5em;
+  }
+
+  .value {
+    font-size: 3em;
+    padding: 0 0.25em;
+  }
+}

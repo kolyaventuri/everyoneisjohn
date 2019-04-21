@@ -1,7 +1,11 @@
 // @flow
 
 import React from 'react';
+import cx from 'classnames';
 import socket from '../../socket';
+
+import globalStyles from '../../sass/global.scss';
+import styles from './goal.scss';
 
 type Props = {|
   value: string,
@@ -42,6 +46,8 @@ export default class Goal extends React.Component<Props, State> {
     return (
       <input
         type="text"
+        className={styles.input}
+        placeholder="You must enter an obsession to play!"
         defaultValue={value}
         onChange={this.handleChange}
       />
@@ -58,17 +64,17 @@ export default class Goal extends React.Component<Props, State> {
     return (
       <button
         type="button"
+        className={cx(globalStyles.btn, styles.button)}
         onClick={this.submitGoal}
       >
-        Submit Goal
+        Submit Obsession
       </button>
     );
   }
 
   render() {
     return (
-      <div>
-        <h3>Goal:</h3>
+      <div className={styles.goal}>
         {this.renderGoal()}
         {this.renderSubmit()}
       </div>
