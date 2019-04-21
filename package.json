@@ -40,6 +40,7 @@
     "eslint-plugin-react": "^7.12.4",
     "express-to-koa": "^1.1.4",
     "flow-bin": "^0.93.0",
+    "ignore-styles": "^5.0.1",
     "jsdom": "^14.0.0",
     "nodemon": "^1.18.10",
     "pre-commit": "^1.2.2",
@@ -128,7 +129,8 @@
       "@babel/register",
       "@babel/polyfill",
       "./test/helpers/setup-jsdom",
-      "./test/helpers/setup-enzyme"
+      "./test/helpers/setup-enzyme",
+      "ignore-styles"
     ]
   }
 }
