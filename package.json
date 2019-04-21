@@ -25,6 +25,7 @@
   "devDependencies": {
     "ava": "^1.2.1",
     "babel-eslint": "^10.0.1",
+    "dotenv": "^7.0.0",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.12.1",
     "eslint": "^5.14.0",
@@ -63,6 +64,7 @@
     "classnames": "^2.2.6",
     "connected-react-router": "^6.3.2",
     "css-loader": "^2.1.1",
+    "dotenv-webpack": "^1.7.0",
     "history": "^4.9.0",
     "koa": "^2.7.0",
     "koa-send": "^5.0.0",

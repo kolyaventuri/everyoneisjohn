@@ -1,5 +1,7 @@
 // @flow
 
+import fs from 'fs';
+import path from 'path';
 import http from 'http';
 import Koa from 'koa';
 import serve from 'koa-static';
@@ -11,6 +13,14 @@ const app = new Koa();
 
 if (process.env.NODE_ENV !== 'production') {
   require('./webpack/dev-server').default(app);
+
+  if (fs.existsSync(path.join(__dirname, '.env'))) {
+    const dotenv = require('dotenv');
+    const result = dotenv.config();
+    if (result.error) {
+      throw result.error;
+    }
+  }
 }
 
 app.use(async (ctx, next) => {
