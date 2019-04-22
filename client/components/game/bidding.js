@@ -2,6 +2,7 @@
 
 import React from 'react';
 
+import socket from '../../socket';
 import Ticker from '../gm/ticker';
 
 type Props = {|
@@ -9,13 +10,17 @@ type Props = {|
 |};
 
 type State = {|
-  value: number
+  value: number,
+  submitted: boolean
 |};
 
 export default class Bidding extends React.Component<Props, State> {
   constructor(...args: any) {
     super(...args);
-    this.state = {value: 0};
+    this.state = {
+      value: 0,
+      submitted: false
+    };
   }
 
   handleChange = (amount: number) => {
@@ -30,14 +35,31 @@ export default class Bidding extends React.Component<Props, State> {
     }
   }
 
-  render() {
-    const {value} = this.state;
+  submitBid = () => {
+    const {value: amount} = this.state;
 
-    return (
-      <Ticker
-        value={value}
-        onChange={this.handleChange}
-      />
-    );
+    socket.emit('submitBid', {amount});
+    this.setState({submitted: true});
+  }
+
+  render() {
+    const {value, submitted} = this.state;
+
+    return submitted ?
+      null :
+      (
+        <div>
+          <Ticker
+            value={value}
+            onChange={this.handleChange}
+          />
+          <button
+            type="button"
+            onClick={this.submitBid}
+          >
+            Submit Bid
+          </button>
+        </div>
+      );
   }
 }

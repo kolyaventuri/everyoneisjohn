@@ -9,7 +9,6 @@ const PlayerInfo = proxyquire('../../../../client/components/game/player-info', 
 }).default;
 
 const defaultProps = {
-  id: 'some-id',
   name: 'Mr. Some Name',
   willpower: 10,
   skills: ['A', 'B', 'C'],
