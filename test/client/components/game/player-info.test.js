@@ -13,7 +13,8 @@ const defaultProps = {
   willpower: 10,
   skills: ['A', 'B', 'C'],
   goal: 'Goal',
-  points: 0
+  points: 0,
+  mode: 'PLAYING'
 };
 
 const render = (props = defaultProps) => {
@@ -58,4 +59,25 @@ test('it renders a SkillList component', t => {
 
   t.is(list.length, 1);
   t.is(list.props().items, defaultProps.skills);
+});
+
+test('it does not render a Bidding component in SETUP mode', t => {
+  const wrapper = render({mode: 'SETUP'});
+  const bidding = wrapper.find('Bidding');
+
+  t.is(bidding.length, 0);
+});
+
+test('it does not render a Bidding component in PLAYING mode', t => {
+  const wrapper = render({mode: 'PLAYING'});
+  const bidding = wrapper.find('Bidding');
+
+  t.is(bidding.length, 0);
+});
+
+test('it renders a Bidding component in VOTING mode', t => {
+  const wrapper = render({mode: 'VOTING'});
+  const bidding = wrapper.find('Bidding');
+
+  t.is(bidding.length, 1);
 });

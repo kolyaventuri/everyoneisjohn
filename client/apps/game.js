@@ -2,7 +2,8 @@
 
 import type {
   GameStateType as GameType,
-  PlayerStateType as PlayerType
+  PlayerStateType as PlayerType,
+  GameModeType as ModeType
 } from '../reducers/types';
 
 export type GameStateType = {
@@ -12,3 +13,5 @@ export type GameStateType = {
 };
 
 export type PlayerStateType = PlayerType;
+
+export type GameModeType = ModeType;
