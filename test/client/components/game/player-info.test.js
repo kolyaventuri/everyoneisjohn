@@ -9,6 +9,7 @@ const PlayerInfo = proxyquire('../../../../client/components/game/player-info', 
 }).default;
 
 const defaultProps = {
+  id: 'some-id',
   name: 'Mr. Some Name',
   willpower: 10,
   skills: ['A', 'B', 'C'],
@@ -76,8 +77,14 @@ test('it does not render a Bidding component in PLAYING mode', t => {
 });
 
 test('it renders a Bidding component in VOTING mode', t => {
-  const wrapper = render({mode: 'VOTING'});
+  const wrapper = render({
+    ...defaultProps,
+    mode: 'VOTING'
+  });
   const bidding = wrapper.find('Bidding');
 
   t.is(bidding.length, 1);
+  const props = bidding.props();
+
+  t.is(props.max, defaultProps.willpower);
 });

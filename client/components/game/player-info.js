@@ -24,6 +24,23 @@ type Props = {|
 |};
 
 class PlayerInfo extends React.Component<Props> {
+  renderBidding = () => {
+    const {
+      willpower,
+      mode
+    } = this.props;
+
+    if (mode === 'VOTING') {
+      return (
+        <Bidding
+          max={willpower}
+        />
+      );
+    }
+
+    return null;
+  }
+
   render() {
     const {
       name,
@@ -31,15 +48,14 @@ class PlayerInfo extends React.Component<Props> {
       skills,
       goal,
       points: score,
-      frozen,
-      mode
+      frozen
     } = this.props;
 
     return (
       <div className={styles.player}>
         <Name value={name}/>
         <Willpower value={willpower}/>
-        {mode === 'VOTING' ? <Bidding/> : null}
+        {this.renderBidding()}
         <Score value={score}/>
         <Goal value={goal} frozen={frozen}/>
         <SkillList items={skills} frozen={frozen}/>
