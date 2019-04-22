@@ -1,3 +1,11 @@
+@import "../../sass/vars";
+
 .player {
   padding: 2em;
+
+  .winner {
+    color: $green;
+    font-size: 2em;
+    font-weight: bold;
+  }
 }

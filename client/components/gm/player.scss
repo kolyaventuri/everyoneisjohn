@@ -1,3 +1,5 @@
+@import "../../sass/vars";
+
 .player {
     background: #EEE;
     border: 2px solid #DEDEDE;
@@ -18,5 +20,9 @@
         position: relative;
         left: 50%;
         transform: translateX(-50%);
+
+        &.winner {
+          color: $green;
+        }
     }
 }
