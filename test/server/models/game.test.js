@@ -146,6 +146,19 @@ test('starts an auction during VOTING stage', t => {
   t.true(game.__auction instanceof Auction);
 });
 
+test('when an auction starts, the winner is cleared', t => {
+  const game = genGame();
+  const player = genPlayer();
+  game.addPlayer(player);
+  playerRepository.find = stub().returns(player);
+
+  player.stats.winner = true;
+
+  game.mode = GameMode.VOTING;
+
+  t.false(player.stats.winner);
+});
+
 test('clears out of the action during any other stage', t => {
   const game = genGame();
   game.mode = GameMode.VOTING;

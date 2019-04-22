@@ -188,3 +188,19 @@ test('skills  / goals can be thawed for editing', t => {
   t.is(stats.goal, goal);
   t.true(player.emitUpdate.calledWith(false));
 });
+
+test('it has a winner attribute', t => {
+  const stats = genStats();
+
+  t.is(stats.winner, false);
+});
+
+test('it updates and emits the winner upon being changed', t => {
+  const player = genPlayer();
+  const stats = genStats(player);
+
+  stats.winner = true;
+
+  t.true(stats.winner);
+  t.true(player.emitUpdate.called);
+});
