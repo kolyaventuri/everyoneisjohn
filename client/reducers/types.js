@@ -11,11 +11,13 @@ export type PlayerStateType = {
   frozen: boolean
 };
 
+export type GameModeType = 'SETUP' | 'VOTING' | 'PLAYING';
+
 export type GameStateType = {
   gameId: string,
   isGm: boolean,
   players: Array<PlayerStateType>,
-  mode: 'SETUP' | 'VOTING' | 'PLAYING'
+  mode: GameModeType
 };
 
 export type ActionType = {

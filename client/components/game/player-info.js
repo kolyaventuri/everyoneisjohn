@@ -3,13 +3,14 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import type {GameStateType} from '../../apps/game';
+import type {GameStateType, GameModeType} from '../../apps/game';
 
 import Willpower from './willpower';
 import Score from './score';
 import Goal from './goal';
 import SkillList from './skill-list';
 import Name from './name';
+import Bidding from './bidding';
 import styles from './player-info.scss';
 
 type Props = {|
@@ -18,10 +19,29 @@ type Props = {|
   skills: Array<string>,
   goal: string,
   points: number,
-  frozen: boolean
+  frozen: boolean,
+  mode: GameModeType,
+  winner: boolean
 |};
 
 class PlayerInfo extends React.Component<Props> {
+  renderBidding = () => {
+    const {
+      willpower,
+      mode
+    } = this.props;
+
+    if (mode === 'VOTING') {
+      return (
+        <Bidding
+          max={willpower}
+        />
+      );
+    }
+
+    return null;
+  }
+
   render() {
     const {
       name,
@@ -29,13 +49,16 @@ class PlayerInfo extends React.Component<Props> {
       skills,
       goal,
       points: score,
-      frozen
+      frozen,
+      winner
     } = this.props;
 
     return (
       <div className={styles.player}>
         <Name value={name}/>
+        {winner && <p className={styles.winner}>You are in control.</p>}
         <Willpower value={willpower}/>
+        {this.renderBidding()}
         <Score value={score}/>
         <Goal value={goal} frozen={frozen}/>
         <SkillList items={skills} frozen={frozen}/>
@@ -44,15 +67,18 @@ class PlayerInfo extends React.Component<Props> {
   }
 }
 
-const mapStateToProps = ({player}: GameStateType) => {
+const mapStateToProps = ({player, game}: GameStateType) => {
   const {
     name,
     willpower,
     skills,
     goal,
     points,
-    frozen
+    frozen,
+    winner
   } = player;
+
+  const {mode} = game;
 
   return {
     name,
@@ -60,7 +86,9 @@ const mapStateToProps = ({player}: GameStateType) => {
     skills,
     goal,
     points,
-    frozen
+    frozen,
+    mode,
+    winner
   };
 };
 

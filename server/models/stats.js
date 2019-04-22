@@ -8,8 +8,9 @@ type StatsType = {
   skills: Array<string>,
   frozen: boolean,
   willpower: number,
-  points: number
-}
+  points: number,
+  winner: boolean
+};
 
 export type StatsUpdateType = {
   goal?: string,
@@ -17,8 +18,9 @@ export type StatsUpdateType = {
   skills?: Array<string>,
   frozen?: boolean,
   willpower?: number,
-  points?: number
-}
+  points?: number,
+  winner?: boolean
+};
 
 const MIN_GOAL = 1;
 const MAX_GOAL = 3;
@@ -38,7 +40,8 @@ export default class Stats {
       skills: new Array(3).fill(''),
       frozen: false,
       willpower: 10,
-      points: 0
+      points: 0,
+      winner: false
     };
   }
 
@@ -99,6 +102,16 @@ export default class Stats {
     this.__STATICS__.points = points;
     this.player.emitUpdate();
     return this.points;
+  }
+
+  get winner(): boolean {
+    return this.__STATICS__.winner;
+  }
+
+  set winner(value: boolean): boolean {
+    this.__STATICS__.winner = value;
+    this.player.emitUpdate();
+    return value;
   }
 
   setSkill(index: number, skill: string) {

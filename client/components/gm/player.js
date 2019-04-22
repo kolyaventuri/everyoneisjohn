@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import cx from 'classnames';
 import {connect} from 'react-redux';
 
 import type {PlayerStateType, GameStateType} from '../../apps/game';
@@ -58,6 +59,7 @@ class Player extends React.Component<Props> {
       goal,
       goalLevel,
       skills,
+      winner,
       points: score
     } = this.props.data;
 
@@ -65,7 +67,7 @@ class Player extends React.Component<Props> {
       <div className={styles.player}>
         <h1
           data-type="name"
-          className={styles.name}
+          className={cx(styles.name, {[styles.winner]: winner})}
         >
           {name}
         </h1>

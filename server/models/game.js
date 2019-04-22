@@ -129,6 +129,7 @@ export default class Game {
 
   endAuction(winner: Player, amount: number) {
     winner.stats.willpower -= amount;
+    winner.stats.winner = true;
 
     this.mode = GameModes.PLAYING;
   }
@@ -169,6 +170,12 @@ export default class Game {
     this.__mode = mode;
 
     if (mode === GameModes.VOTING) {
+      for (const player of this.players) {
+        if (player.stats.winner) {
+          player.stats.winner = false;
+        }
+      }
+
       this.__auction = new Auction(this);
     } else {
       this.__auction = null;
