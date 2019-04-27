@@ -4,5 +4,17 @@
 
   .text {
     font-weight: bold;
+    font-size: 0.75em;
+    border: 0;
+    border-bottom: 1px solid #333;
+    width: 500px;
+
+    &:focus {
+        outline: none;
+    }
+
+    @media screen and (max-width: 500px) {
+        width: 100%;
+    }
   }
 }
