@@ -13,7 +13,7 @@ const joinGm = (socket: SocketType, gameId: string) => {
     return;
   }
 
-  socket.emit('game.error', 'error.game.doesnt_exist');
+  socket.emit('gameError', 'error.game.doesntExist');
 };
 
 export default joinGm;
