@@ -19,5 +19,5 @@ test('pings back an error if the game does not exist', t => {
   joinGame(socket, 'ABCDE');
 
   t.is(player.game, null);
-  t.true(player.socket.emit.calledWith('gameError', 'error.game.doesnt_exist'));
+  t.true(player.socket.emit.calledWith('gameError', 'error.game.doesntExist'));
 });
