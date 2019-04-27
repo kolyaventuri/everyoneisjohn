@@ -2,22 +2,25 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
 
-import type {AppStateType, ErrorType} from '../reducers/types';
+import type {ApplicationStateType, ErrorType} from '../reducers/types';
 
 import Main from './main';
 import Error from './error';
 
 type Props = {
-  error: ?ErrorType
+  error: ?ErrorType,
+  gameId: ?string,
+  isGm: boolean
 };
 
 class App extends React.Component<Props> {
   render() {
-    const {error} = this.props;
+    const {error, gameId, isGm} = this.props;
 
     if (error) {
-      return <Error type={error.type} error={error.error}/>;
+      return <Error error={error.error} gameId={gameId} isGm={isGm}/>;
     }
 
     return (
@@ -28,6 +31,22 @@ class App extends React.Component<Props> {
   }
 }
 
-const mapStateToProps = ({app: {error}}: AppStateType) => ({error});
+const mapStateToProps = (state: ApplicationStateType) => {
+  const {
+    app: {
+      error
+    },
+    game: {
+      gameId,
+      isGm
+    }
+  } = state;
 
-export default connect(mapStateToProps)(App);
+  return {
+    error,
+    gameId,
+    isGm: Boolean(isGm)
+  };
+};
+
+export default withRouter(connect(mapStateToProps)(App));
