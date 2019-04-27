@@ -22,7 +22,7 @@ type Props = {
   }
 };
 
-let url = process.env.ENV === 'local' ? 'http://localhost:3000' : '{env}.everyoneisjohn.xyz';
+let url = process.env.ENV === 'local' ? 'localhost:3000' : '{env}.everyoneisjohn.xyz';
 url = url.replace('{env}', process.env.ENV === 'beta' ? 'beta' : 'www');
 const getLink = (code: string): string => `${url}/game/${code}`;
 
@@ -46,6 +46,7 @@ class GMPanel extends React.Component<Props> {
   render() {
     const {gameId, players} = this.props;
     const link = getLink(gameId);
+    const linkHref = `${window.location.protocol}//${link}`;
 
     return (
       <div className={styles.container}>
@@ -54,7 +55,7 @@ class GMPanel extends React.Component<Props> {
           <p className={styles.gameId}>
             Code: <span>{gameId}</span>
             <br/>
-            <a href={link} target="_blank" rel="noopener noreferrer">{link}</a>
+            <a href={linkHref} target="_blank" rel="noopener noreferrer">{link}</a>
           </p>
         </div>
         <div className={styles.status}>
