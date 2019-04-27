@@ -74,12 +74,10 @@ export default class Game {
     const {id} = player;
     const players = this.__players;
 
-    if (players.includes(id)) {
-      return;
+    if (!players.includes(id)) {
+      players.push(id);
+      player.setGame(this);
     }
-
-    players.push(id);
-    player.setGame(this);
 
     const {prefix} = this.__STATICS__;
     player.socket.join(`${prefix}/all`);
