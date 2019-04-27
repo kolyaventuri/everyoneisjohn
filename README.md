@@ -21,4 +21,6 @@ Start the app with `npm start`. By default it will run in development, with hot-
 The linter can be run with `npm run lint`. We are using the [XO](https://github.com/xojs/xo) linter for code styling guidelines, and [Flow](https://flow.org) for static typing.
 
 ## Contributing
+All issues are handled on our [Jira Board](https://jira.kolya.cloud/projects/EIJ/issues)
+
 Feel free to pick up any issues and submit a PR for them. Please do not submit PRs that fail to address a specific issue. **Note:** When committing, the linter will run. Commits will be denied at the time of commit if there are any code style violations.
