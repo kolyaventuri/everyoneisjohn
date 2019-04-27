@@ -16,7 +16,6 @@ const {gameRepository, playerRepository} = repositories;
 
 const socket = new MockSocket();
 const genPlayer = () => new Player(socket);
-const genGame = () => new Game(genPlayer());
 
 test('it has an ID', t => {
   const player = genPlayer();
@@ -53,10 +52,11 @@ test('if player is in a game, the name change is sent to the GM', t => {
   const player = genPlayer();
   const ownerSocket = new MockSocket();
   const owner = new Player(ownerSocket);
-  const game = new Game(owner);
-
-  stub(game, 'owner').get(() => owner);
+  const game = new Game(owner, false);
   stub(player, 'game').get(() => game);
+  stub(game, 'owner').get(() => owner);
+  game.gmInitGame();
+
   gameRepository.find = stub().returns(game);
   game.addPlayer(player);
 
@@ -126,8 +126,7 @@ test('can be destroyed', t => {
 });
 
 test('can join a game', t => {
-  const game = genGame();
-  const player = genPlayer();
+  const {game, player} = setup();
 
   gameRepository.find = stub().returns(game);
   player.joinGame(game.id);
@@ -136,8 +135,7 @@ test('can join a game', t => {
 });
 
 test('can leave a game', t => {
-  const game = genGame();
-  const player = genPlayer();
+  const {game, player} = setup();
   gameRepository.find = stub().onCall(0).returns(game).returns(null);
   player.joinGame(game.id);
 
@@ -147,9 +145,7 @@ test('can leave a game', t => {
 });
 
 test('is subscribed to the public game room upon joining the game', t => {
-  const owner = new Player(socket, 'id');
-  const player = new Player(new MockSocket(), 'id');
-  const game = new Game(owner);
+  const {game, player} = setup(true, false);
 
   gameRepository.find = stub().returns(game);
 
@@ -161,8 +157,7 @@ test('is subscribed to the public game room upon joining the game', t => {
 });
 
 test('is subscribed to the private channel upon joining the game', t => {
-  const game = genGame();
-  const player = new Player(new MockSocket(), 'id');
+  const {game, player} = setup();
 
   gameRepository.find = stub().returns(game);
 
@@ -174,8 +169,7 @@ test('is subscribed to the private channel upon joining the game', t => {
 });
 
 test('has a disconnect timeout set if they leave', t => {
-  const game = genGame();
-  const player = new Player(new MockSocket(), 'id');
+  const {game, player} = setup();
 
   player.leaveGame = stub();
   player.destroy = stub();
@@ -199,8 +193,7 @@ test('has a disconnect timeout set if they leave', t => {
 });
 
 test('has the discount timeout cleared if they return within the time allowed', t => {
-  const game = genGame();
-  const player = new Player(new MockSocket(), 'id');
+  const {game, player} = setup();
 
   player.leaveGame = stub();
   gameRepository.find = stub().returns(game);
@@ -246,9 +239,8 @@ test('#destroyGame does not error if they do not own a game', t => {
 });
 
 test('emitUpdate is called when a player joins a game', t => {
-  const owner = genPlayer();
-  const game = genGame(owner);
-  const player = genPlayer();
+  const {game, player} = setup();
+  const {owner} = game;
 
   stub(game, 'owner').get(() => owner);
   stub(player, 'game').get(() => game);

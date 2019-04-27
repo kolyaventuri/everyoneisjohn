@@ -27,47 +27,45 @@ const genPlayer = () => new Player(socket);
 const genPlayers = num => new Array(num).fill(1).map(_ => genPlayer());
 
 test('it has an ID', t => {
-  const game = genGame();
+  const {game} = setup();
 
   t.is(typeof game.id, 'string');
   t.true(game.id.length === 5);
 });
 
 test('has a slug', t => {
-  const game = genGame();
+  const {game} = setup();
 
   t.is(typeof game.slug, 'string');
 });
 
 test('has an owner', t => {
-  const owner = genPlayer();
-  const game = genGame(owner);
+  const {game, player: owner} = setup(true, true);
 
-  t.is(game.owner, owner.id);
+  t.is(game.owner.id, owner.id);
 });
 
 test('can hold players', t => {
-  const game = genGame();
+  const {game} = setup();
 
   t.true(Array.isArray(game.players));
 });
 
 test('can add players', t => {
   const players = genPlayers(2);
-  const game = genGame();
+  const {game} = setup(true, false, false);
 
   game.addPlayer(players[0]);
   game.addPlayer(players[1]);
 
   t.is(game.players.length, 2);
 
-  t.true(game.players.includes(players[0].id));
-  t.true(game.players.includes(players[1].id));
+  t.is(game.players[0].id, players[0].id);
+  t.is(game.players[1].id, players[1].id);
 });
 
 test('cannot add duplicate players', t => {
-  const player = genPlayer();
-  const game = genGame();
+  const {game, player} = setup();
 
   game.addPlayer(player);
   game.addPlayer(player);
@@ -76,8 +74,7 @@ test('cannot add duplicate players', t => {
 });
 
 test('can remove players', t => {
-  const player = genPlayer();
-  const game = genGame();
+  const {game, player} = setup();
 
   game.addPlayer(player);
 
@@ -88,14 +85,13 @@ test('can remove players', t => {
 });
 
 test('gets stored in the game repository during the constructor', t => {
-  const game = genGame();
+  const {game} = setup();
 
-  t.true(gameRepository.insert.calledWith(game));
+  t.is(gameRepository.find(game.id), game.id);
 });
 
 test('ties player to game', t => {
-  const game = genGame();
-  const player = genPlayer();
+  const {game, player} = setup();
 
   game.addPlayer(player);
 
@@ -103,13 +99,13 @@ test('ties player to game', t => {
 });
 
 test('has a game mode', t => {
-  const game = genGame();
+  const {game} = setup();
 
   t.is(game.mode, GameMode.SETUP);
 });
 
 test('can change modes', t => {
-  const game = genGame();
+  const {game} = setup();
 
   game.mode = GameMode.VOTING;
 
@@ -117,7 +113,7 @@ test('can change modes', t => {
 });
 
 test('emits mode to players', t => {
-  const game = genGame();
+  const {game} = setup();
   game.emit = stub();
 
   game.mode = GameMode.VOTING;
@@ -132,7 +128,7 @@ test('emits mode to players', t => {
 });
 
 test('cannot set invalid modes', t => {
-  const game = genGame();
+  const {game} = setup();
 
   game.mode = 123;
 
@@ -140,16 +136,14 @@ test('cannot set invalid modes', t => {
 });
 
 test('starts an auction during VOTING stage', t => {
-  const game = genGame();
+  const {game} = setup();
   game.mode = GameMode.VOTING;
 
-  t.true(game.__auction instanceof Auction);
+  t.not(game.__action, null);
 });
 
 test('when an auction starts, the winner is cleared', t => {
-  const game = genGame();
-  const player = genPlayer();
-  game.addPlayer(player);
+  const {game, player} = setup();
   playerRepository.find = stub().returns(player);
 
   player.stats.winner = true;
@@ -160,7 +154,7 @@ test('when an auction starts, the winner is cleared', t => {
 });
 
 test('clears out of the action during any other stage', t => {
-  const game = genGame();
+  const {game} = setup();
   game.mode = GameMode.VOTING;
   game.mode = GameMode.SETUP;
 
@@ -168,9 +162,7 @@ test('clears out of the action during any other stage', t => {
 });
 
 test('freezes stats when game starts', t => {
-  const game = genGame();
-  const player = genPlayer();
-  game.addPlayer(player);
+  const {game, player} = setup();
 
   playerRepository.find = stub().returns(player);
 
@@ -182,6 +174,7 @@ test('freezes stats when game starts', t => {
 test('#addBid adds a bid for the given player', t => {
   const game = genGame();
   const player = genPlayer();
+  game.addPlayer(player);
   game.mode = GameMode.VOTING;
 
   game.addBid(player, 3);
@@ -190,8 +183,7 @@ test('#addBid adds a bid for the given player', t => {
 });
 
 test('#addBid does nothing if not in voting stage', t => {
-  const game = genGame();
-  const player = genPlayer();
+  const {game, player} = setup();
 
   game.addBid(player, 3);
 
@@ -207,12 +199,9 @@ test('can be destroyed', t => {
 });
 
 test('joins a user to the public room upon joining the game', t => {
-  const game = genGame();
-  const player = new Player(new MockSocket(), 'id');
+  const {game, player} = setup();
 
   const room = `game/${game.id}/all`;
-
-  game.addPlayer(player);
 
   t.true(player.socket.join.calledWith(room));
 });
@@ -245,9 +234,7 @@ test('can emit to all players in the game', t => {
 });
 
 test('subscribes owner to GM and "all" rooms', t => {
-  const owner = new Player(new MockSocket());
-
-  const game = new Game(owner);
+  const {game, player: owner} = setup(true, true);
 
   t.true(owner.socket.join.calledWith(`game/${game.id}/gm`));
   t.true(owner.socket.join.calledWith(`game/${game.id}/all`));
