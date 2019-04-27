@@ -1,10 +1,16 @@
 const path = require('path');
+const webpack = require('webpack');
 
 const cssLoaderOpts = 'css-loader?modules&importLoaders=true&localIdentName=[name]__[local]___[hash:base64:5]';
 
 module.exports = {
   entry: [
     path.join(process.cwd(), 'client/app.js')
+  ],
+  plugins: [
+    new webpack.EnvironmentPlugin({
+      ENV: 'local'
+    })
   ],
   module: {
     rules: [
