@@ -33,3 +33,9 @@ export type ErrorType = {
 export type AppStateType = {
   error: ErrorType | null
 };
+
+export type ApplicationStateType = {
+  game: GameStateType,
+  player: PlayerStateType,
+  app: AppStateType
+};

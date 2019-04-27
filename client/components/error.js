@@ -12,27 +12,48 @@ import styles from '../routes/home.scss';
 import errorStyles from './error.scss';
 
 type Props = {
-  error: string
+  error: string,
+  gameId: ?string,
+  isGm: boolean
 };
 
-const resolveError = (error: string): string => {
+const resolveError = (error: string, gameId?: string): string => {
+  const res = {};
+
   const errorParts = error.split('.');
   let current = errorMap;
+
   for (const part of errorParts) {
     if (typeof current[part] === 'object') {
       current = current[part];
     } else if (typeof current[part] === 'string') {
-      return current[part];
+      res.errorText = current[part];
+      break;
     } else {
-      return 'An unknown error occurred';
+      res.errorText = 'An unknown error occurred';
+      break;
     }
   }
+
+  if (gameId) {
+    res.extra = 'If you were already in a game, you can attempt to rejoin it.';
+  }
+
+  return res;
 };
 
 const clearError = () => store.dispatch({type: 'CLEAR_ERROR'});
+const returnToGame = (id: string, isGm: boolean) => {
+  let location = `/game/${id}`;
+  if (isGm) {
+    location += '/gm';
+  }
 
-const Error = ({error}: Props) => {
-  const errorText = resolveError(error);
+  window.location = location;
+};
+
+const Error = ({error, gameId, isGm}: Props) => {
+  const {errorText, extra} = resolveError(error, gameId);
 
   return (
     <div className={styles.container}>
@@ -48,8 +69,16 @@ const Error = ({error}: Props) => {
             <p className={styles.midway}><span>Sorry about that.</span></p>
           </Col>
         </Row>
+        {
+          extra &&
+          <Row>
+            <Col xs={12} lg={8} lgOffset={2}>
+              <p className={globalStyles.center}>{extra}</p>
+            </Col>
+          </Row>
+        }
         <Row className={styles.start}>
-          <Col xs={12} lg={2} lgOffset={5}>
+          <Col xs={12} lg={2} lgOffset={gameId ? 4 : 5}>
             <Link
               to="/"
               className={globalStyles.btn}
@@ -58,6 +87,20 @@ const Error = ({error}: Props) => {
               <span>Return Home</span>
             </Link>
           </Col>
+          {
+            gameId &&
+            <Col xs={12} lg={2}>
+              <Link
+                to="#"
+                className={globalStyles.btn}
+                onClick={() => {
+                  returnToGame(gameId, isGm);
+                }}
+              >
+                <span>Return to Game</span>
+              </Link>
+            </Col>
+          }
         </Row>
       </Grid>
     </div>

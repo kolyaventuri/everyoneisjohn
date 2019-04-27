@@ -12,6 +12,7 @@ import App from './components/app';
 /* eslint-disable import/no-unassigned-import */
 import './socket';
 import './app.scss';
+import './utils/error-trap';
 /* eslint-enable import/no-unassigned-import */
 
 render(
