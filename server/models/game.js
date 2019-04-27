@@ -46,7 +46,7 @@ export default class Game {
 
   __auction: Auction | null;
 
-  constructor(owner: Player) {
+  constructor(owner: Player, init: boolean = true) {
     const id = chance.string({length: 5, pool});
     const slug = Slug.random();
     const prefix = `game/${id}`;
@@ -63,23 +63,19 @@ export default class Game {
     this.__auction = null;
 
     gameRepository.insert(this);
-    owner.setGame(this);
-
-    owner.socket.join(`${prefix}/gm`);
-    owner.socket.join(`${prefix}/all`);
-    this.emitGameMode('gm');
+    if (init) {
+      this.gmInitGame();
+    }
   }
 
   addPlayer(player: Player) {
     const {id} = player;
     const players = this.__players;
 
-    if (players.includes(id)) {
-      return;
+    if (!players.includes(id)) {
+      players.push(id);
+      player.setGame(this);
     }
-
-    players.push(id);
-    player.setGame(this);
 
     const {prefix} = this.__STATICS__;
     player.socket.join(`${prefix}/all`);
@@ -89,6 +85,16 @@ export default class Game {
     player.emitUpdate(false);
     this.gmEmitPlayers();
     this.emitGameMode(`player/${player.id}`);
+  }
+
+  gmInitGame() {
+    const {prefix} = this.__STATICS__;
+    this.owner.setGame(this);
+
+    this.owner.socket.join(`${prefix}/gm`);
+    this.owner.socket.join(`${prefix}/all`);
+    this.emitGameMode('gm');
+    this.owner.socket.emit('startGame', this.id);
   }
 
   gmEmitPlayers() {

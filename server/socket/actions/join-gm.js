@@ -8,7 +8,9 @@ const joinGm = (socket: SocketType, gameId: string) => {
   const game = gameRepository.find(gameId);
 
   if (game && game.owner === player) {
-    return game.gmEmitPlayers();
+    game.gmInitGame();
+    game.gmEmitPlayers();
+    return;
   }
 
   socket.emit('game.error', 'error.game.doesnt_exist');

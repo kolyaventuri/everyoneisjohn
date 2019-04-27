@@ -6,9 +6,9 @@ import Game from '../../models/game';
 const createGame = (socket: SocketType) => {
   const {player} = socket;
 
-  const game = new Game(player);
+  const game = new Game(player, false);
 
-  player.socket.emit('startGame', game.id);
+  game.gmInitGame();
 };
 
 export default createGame;
