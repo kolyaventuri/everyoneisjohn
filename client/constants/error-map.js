@@ -2,6 +2,6 @@
 
 export default {
   game: {
-    doesntExist: 'fatal'
+    doesntExist: 'The requested game doesn\'t exist'
   }
 };

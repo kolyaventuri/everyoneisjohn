@@ -26,3 +26,20 @@ test('SET_ERROR should be able to set the game GM', t => {
 
   t.deepEqual(result, expected);
 });
+
+test('CLEAR_ERROR should clear any errors', t => {
+  const expected = {
+    error: null
+  };
+
+  const result = reducer({
+    error: {
+      error: 'a',
+      type: '1'
+    }
+  }, {
+    type: 'CLEAR_ERROR'
+  });
+
+  t.deepEqual(result, expected);
+});

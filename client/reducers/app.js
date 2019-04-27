@@ -18,6 +18,11 @@ const AppReducer = (state: AppStateType = defaultState, action: ActionType): App
           type: payload.type
         }
       };
+    case 'CLEAR_ERROR':
+      return {
+        ...state,
+        error: null
+      };
     default:
       return state;
   }
