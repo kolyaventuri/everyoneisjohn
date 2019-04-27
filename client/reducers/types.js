@@ -24,3 +24,12 @@ export type ActionType = {
   type: string,
   payload: {[string]: any}
 };
+
+export type ErrorType = {
+  error: string,
+  type: string
+};
+
+export type AppStateType = {
+  error: ErrorType | null
+};
