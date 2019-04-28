@@ -63,10 +63,10 @@ class Game extends React.Component<Props, State> {
     }
 
     return (
-      <>
+      <React.Fragment>
         <Header/>
         <GamePanel/>
-      </>
+      </React.Fragment>
     );
   }
 }

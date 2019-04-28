@@ -103,8 +103,8 @@ const Rules = () => (
 );
 
 export default () => (
-  <>
+  <React.Fragment>
     <Header/>
     <Rules/>
-  </>
+  </React.Fragment>
 );
