@@ -1,8 +1,10 @@
 import test from 'ava';
 import React from 'react';
 import proxyquire from 'proxyquire';
+import sinon from 'sinon';
 import {shallow} from 'enzyme';
 import {MockSocket} from '../../../server/mocks/socket';
+import {DEBOUNCE_AMOUNT} from '../../../../client/constants/sockets';
 
 const socket = new MockSocket();
 
@@ -44,21 +46,9 @@ test('it renders players skils as text boxes if editing is not frozen', t => {
   }
 });
 
-test('when editing is not frozen, it renders a submit button next to each skill', t => {
-  const items = ['a', 'b', 'c'];
-  const wrapper = render({items, frozen: false});
-  const skills = wrapper.find('[data-type="skills"]');
-  const lis = skills.find('li');
+test('it emits the skill to the server on input change', t => {
+  const clock = sinon.useFakeTimers();
 
-  for (let i = 0; i < items.length; i++) {
-    const li = lis.at(i);
-    const button = li.find('button');
-
-    t.is(button.length, 1);
-  }
-});
-
-test('it updates the state for each skill on input change', t => {
   const items = ['a', 'b', 'c'];
   const wrapper = render({items, frozen: false});
   const skills = wrapper.find('[data-type="skills"]');
@@ -67,43 +57,16 @@ test('it updates the state for each skill on input change', t => {
 
   const value = 'abcde';
 
-  input.simulate('change', {target: {value}});
+  input.simulate('change', {target: {value}, persist: () => {}});
 
-  const {state} = wrapper.instance();
+  t.false(socket.emit.called);
 
-  t.is(state.items[0], value);
-});
-
-test('it emits the skill upon clicking submit', t => {
-  const items = ['a', 'b', 'c'];
-  const wrapper = render({items, frozen: false});
-  const skills = wrapper.find('[data-type="skills"]');
-  const lis = skills.find('li');
-  const button = lis.at(0).find('button');
-
-  button.simulate('click');
+  clock.tick(DEBOUNCE_AMOUNT);
 
   t.true(socket.emit.calledWith('updateStats', {
     skill: {
       number: 1,
-      content: items[0]
-    }
-  }));
-});
-
-test('it does not emit a skill if it is blank after trim', t => {
-  const items = ['  ', 'b', 'c'];
-  const wrapper = render({items, frozen: false});
-  const skills = wrapper.find('[data-type="skills"]');
-  const lis = skills.find('li');
-  const button = lis.at(0).find('button');
-
-  button.simulate('click');
-
-  t.true(socket.emit.calledWith('updateStats', {
-    skill: {
-      number: 1,
-      content: items[0].trim()
+      content: value
     }
   }));
 });

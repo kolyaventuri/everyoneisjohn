@@ -1,8 +1,10 @@
 // @flow
 
 import React from 'react';
-import cx from 'classnames';
 import uuid from 'uuid/v4';
+import debounce from 'debounce';
+
+import {DEBOUNCE_AMOUNT} from '../../constants/sockets';
 
 import globalStyles from '../../sass/global.scss';
 import socket from '../../socket';
@@ -15,7 +17,6 @@ type Props = {|
 |};
 
 type State = {|
-  items: Array<string>,
   ids: Array<string>
 |};
 
@@ -30,21 +31,23 @@ export default class SkillList extends React.Component<Props, State> {
       ids[i] = uuid();
     }
 
-    this.state = {items, ids};
+    this.state = {ids};
+
+    this.debounced = (e: SyntheticInputEvent<HTMLInputElement>, index: number) => {
+      e.persist();
+
+      const {
+        target: {
+          value
+        }
+      } = e;
+
+      debounce(this.handleChange, DEBOUNCE_AMOUNT)(value, index);
+    };
   }
 
-  handleChange = (e: SyntheticInputEvent<HTMLInputElement>, index: number) => {
-    const {target: {value}} = e;
-
-    const {items} = this.state;
-    items[index] = value;
-
-    this.setState({items});
-  }
-
-  handleSubmit = (index: number) => {
-    const {items} = this.state;
-    const content = items[index].trim();
+  handleChange = (value: string, index: number) => {
+    const content = value.trim();
 
     socket.emit('updateStats', {
       skill: {
@@ -70,21 +73,15 @@ export default class SkillList extends React.Component<Props, State> {
           className={globalStyles.input}
           defaultValue={skill}
           placeholder="Enter a skill"
-          onChange={e => this.handleChange(e, index)}
+          onChange={e => this.debounced(e, index)}
         />
-        <button
-          type="button"
-          className={cx(globalStyles.btn, styles.button)}
-          onClick={() => this.handleSubmit(index)}
-        >
-          Submit
-        </button>
       </div>
     );
   }
 
   render() {
-    const {items, ids} = this.state;
+    const {items} = this.props;
+    const {ids} = this.state;
 
     return (
       <div className={styles.section}>
