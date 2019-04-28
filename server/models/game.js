@@ -2,6 +2,7 @@
 
 import Chance from 'chance';
 
+import {logInfo} from '../lib/logger';
 import Slug from '../lib/slug';
 import * as GameModes from '../lib/game-mode';
 import {gameRepository, playerRepository} from '../repositories';
@@ -66,6 +67,8 @@ export default class Game {
     if (init) {
       this.gmInitGame();
     }
+
+    logInfo(`Game ${id} created by player ${owner.id}`);
   }
 
   addPlayer(player: Player) {
@@ -74,6 +77,7 @@ export default class Game {
 
     if (!players.includes(id)) {
       players.push(id);
+      logInfo(`Player ${player.id} added to Game ${this.id}`);
       player.setGame(this);
     }
 
@@ -88,6 +92,7 @@ export default class Game {
   }
 
   gmInitGame() {
+    logInfo(`Player ${this.owner.id} init as GM for game ${this.id}`);
     const {prefix} = this.__STATICS__;
     this.owner.setGame(this);
 
@@ -121,6 +126,7 @@ export default class Game {
   }
 
   destroy() {
+    logInfo(`Game ${this.id} is being destroyed!`);
     gameRepository.destroy(this);
   }
 

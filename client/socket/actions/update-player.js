@@ -15,12 +15,30 @@ type Payload = {|
   frozen: boolean
 |};
 
+const shouldUpdateId = (payload: Payload): boolean => {
+  const {id} = payload;
+  const {
+    player: {id: playerId},
+    game: {isGm}
+  } = store.getState();
+
+  if (id && !isGm) {
+    if (playerId === id) {
+      return false;
+    }
+
+    return true;
+  }
+
+  return false;
+};
+
 const setPlayerInfo = (payload: Payload) => {
   const {game} = store.getState();
 
   const type = game.isGm ? 'SET_GAME_PLAYER_INFO' : 'SET_PLAYER_INFO';
 
-  if (payload.id) {
+  if (shouldUpdateId(payload)) {
     set(EIJ_PID, payload.id);
   }
 

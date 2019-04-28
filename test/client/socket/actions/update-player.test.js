@@ -8,7 +8,8 @@ const set = stub();
 const state = {
   game: {
     isGm: false
-  }
+  },
+  player: {}
 };
 
 const store = {
@@ -43,6 +44,7 @@ test('it dispatches a SET_GAME_PLAYER_INFO action if the player is the GM', t =>
 });
 
 test('it stores the player ID on the localStorage object', t => {
+  state.game.isGm = false;
   const payload = {
     id: 'abcde'
   };
@@ -55,5 +57,18 @@ test('it stores the player ID on the localStorage object', t => {
 test('it does not attempt to store the player ID if it is not in the payload', t => {
   setPlayerInfo({});
 
-  t.false(set.calledTwice);
+  t.false(set.calledWith(EIJ_PID, undefined));
+});
+
+test('it does not attempt to store the player ID if the player is the GM, and the ID does not match their own', t => {
+  state.game.isGm = true;
+  state.player.id = 'my-id';
+
+  const payload = {
+    id: 'some-other-id'
+  };
+
+  setPlayerInfo(payload);
+
+  t.false(set.calledWith(EIJ_PID, payload.id));
 });
