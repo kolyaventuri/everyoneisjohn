@@ -3,13 +3,17 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 
+import styles from './header.scss';
+
 const Header = () => (
-  <div>
-    <Link
-      to="/"
-    >
-      Everyone is John
-    </Link>
+  <div className={styles.header}>
+    <p>
+      <Link
+        to="/"
+      >
+        Everyone is John
+      </Link>
+    </p>
   </div>
 );
 
