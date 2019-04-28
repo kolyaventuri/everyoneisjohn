@@ -3,6 +3,7 @@
 import uuid from 'uuid/v1';
 import Chance from 'chance';
 
+import {logInfo} from '../lib/logger';
 import {gameRepository, playerRepository} from '../repositories';
 import Game from './game';
 import Stats from './stats';
@@ -50,6 +51,8 @@ export default class Player {
 
     playerRepository.insert(this);
     this.destroyGame = this.destroyGame.bind(this);
+
+    logInfo(`Player ${name} (${id}) created`);
   }
 
   deactivate() {
@@ -79,6 +82,7 @@ export default class Player {
   }
 
   disconnect() {
+    logInfo(`Player ${this.id} disconnected.`);
     this.deactivate();
 
     this.__STATICS__.disconnectTimer = setTimeout(() => {
@@ -95,6 +99,7 @@ export default class Player {
   }
 
   destroy() {
+    logInfo(`Player ${this.id} is being destroyed!`);
     playerRepository.destroy(this);
   }
 
