@@ -32,11 +32,21 @@ export default class SkillList extends React.Component<Props, State> {
     }
 
     this.state = {ids};
+
+    this.debounced = (e: SyntheticInputEvent<HTMLInputElement>, index: number) => {
+      e.persist();
+
+      const {
+        target: {
+          value
+        }
+      } = e;
+
+      debounce(this.handleChange, DEBOUNCE_AMOUNT)(value, index);
+    };
   }
 
-  handleChange = (e: SyntheticInputEvent<HTMLInputElement>, index: number) => {
-    const {target: {value}} = e;
-
+  handleChange = (value: string, index: number) => {
     const content = value.trim();
 
     socket.emit('updateStats', {
@@ -63,7 +73,7 @@ export default class SkillList extends React.Component<Props, State> {
           className={globalStyles.input}
           defaultValue={skill}
           placeholder="Enter a skill"
-          onChange={debounce(e => this.handleChange(e, index), DEBOUNCE_AMOUNT)}
+          onChange={e => this.debounced(e, index)}
         />
       </div>
     );

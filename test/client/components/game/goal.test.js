@@ -40,7 +40,7 @@ test('it emits the value to the server as you type', t => {
   const input = wrapper.find('input');
   const value = 'abc';
 
-  input.simulate('change', {target: {value}});
+  input.simulate('change', {target: {value}, persist: () => {}});
 
   t.false(socket.emit.called);
 

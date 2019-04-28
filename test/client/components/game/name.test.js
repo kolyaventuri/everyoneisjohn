@@ -31,7 +31,7 @@ test('it updates the name on change, after a delay', t => {
   const wrapper = render({value: 'Joe'});
   const name = wrapper.find('input[data-type="name"]');
 
-  name.simulate('change', {target: {value}});
+  name.simulate('change', {target: {value}, persist: () => {}});
   t.false(socket.emit.called);
 
   clock.tick(DEBOUNCE_AMOUNT);

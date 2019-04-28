@@ -13,13 +13,22 @@ type Props = {|
 |};
 
 class Name extends React.Component<Props> {
-  handleChange = (e: SyntheticInputEvent<HTMLInputElement>) => {
-    const {
-      target: {
-        value: name
-      }
-    } = e;
+  constructor(...args) {
+    super(...args);
 
+    this.debounced = (e: SyntheticInputEvent<HTMLInputElement>) => {
+      e.persist();
+      const {
+        target: {
+          value: name
+        }
+      } = e;
+
+      debounce(this.handleChange, DEBOUNCE_AMOUNT)(name);
+    };
+  }
+
+  handleChange = (name: string) => {
     socket.emit('updatePlayer', {name});
   }
 
@@ -33,7 +42,7 @@ class Name extends React.Component<Props> {
           className={styles.text}
           data-type="name"
           defaultValue={value}
-          onChange={debounce(this.handleChange, DEBOUNCE_AMOUNT)}
+          onChange={this.debounced}
         />
       </div>
     );

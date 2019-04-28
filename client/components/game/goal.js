@@ -15,13 +15,22 @@ type Props = {|
 |};
 
 export default class Goal extends React.Component<Props> {
-  submitGoal = (e: SyntheticInputEvent<HTMLInputElement>) => {
-    const {
-      target: {
-        value: goal
-      }
-    } = e;
+  constructor(...args) {
+    super(...args);
 
+    this.debounced = (e: SyntheticInputEvent<HTMLInputElement>) => {
+      e.persist();
+      const {
+        target: {
+          value: goal
+        }
+      } = e;
+
+      debounce(this.submitGoal, DEBOUNCE_AMOUNT)(goal);
+    };
+  }
+
+  submitGoal = (goal: string) => {
     socket.emit('updateStats', {goal});
   }
 
@@ -38,7 +47,7 @@ export default class Goal extends React.Component<Props> {
         className={globalStyles.input}
         placeholder="You must enter an obsession to play!"
         defaultValue={value}
-        onChange={debounce(this.submitGoal, DEBOUNCE_AMOUNT)}
+        onChange={this.debounced}
       />
     );
   }

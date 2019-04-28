@@ -57,7 +57,7 @@ test('it emits the skill to the server on input change', t => {
 
   const value = 'abcde';
 
-  input.simulate('change', {target: {value}});
+  input.simulate('change', {target: {value}, persist: () => {}});
 
   t.false(socket.emit.called);
 
