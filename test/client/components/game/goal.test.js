@@ -1,8 +1,10 @@
 import test from 'ava';
 import React from 'react';
 import proxyquire from 'proxyquire';
+import sinon from 'sinon';
 import {shallow} from 'enzyme';
 import {MockSocket} from '../../../server/mocks/socket';
+import {DEBOUNCE_AMOUNT} from '../../../../client/constants/sockets';
 
 const socket = new MockSocket();
 
@@ -31,38 +33,20 @@ test('it renders a text box of the players goal if editing is not frozen', t => 
   t.is(goal.props().defaultValue, value);
 });
 
-test('it stores the value in the state as you type', t => {
+test('it emits the value to the server as you type', t => {
+  const clock = sinon.useFakeTimers();
+
   const wrapper = render({value: '', frozen: false});
-  const instance = wrapper.instance();
   const input = wrapper.find('input');
   const value = 'abc';
 
   input.simulate('change', {target: {value}});
 
-  const {state} = instance;
-  t.is(state.value, value);
-});
+  t.false(socket.emit.called);
 
-test('it renders a button to submit your goal if editing is not frozen', t => {
-  const value = 'abc';
-  const wrapper = render({value, frozen: false});
+  clock.tick(DEBOUNCE_AMOUNT);
 
-  const button = wrapper.find('button');
+  t.true(socket.emit.calledWith('updateStats', {goal: value}));
 
-  t.is(button.length, 1);
-
-  button.simulate('click');
-
-  t.true(socket.emit.calledWith('updateStats', {
-    goal: value
-  }));
-});
-
-test('it does not render the button if editing is frozen', t => {
-  const value = 'abc';
-  const wrapper = render({value, frozen: true});
-
-  const button = wrapper.find('button');
-
-  t.is(button.length, 0);
+  clock.reset();
 });
