@@ -65,6 +65,7 @@
     "classnames": "^2.2.6",
     "connected-react-router": "^6.3.2",
     "css-loader": "^2.1.1",
+    "debounce": "^1.2.0",
     "dotenv-webpack": "^1.7.0",
     "history": "^4.9.0",
     "koa": "^2.7.0",
@@ -107,7 +108,10 @@
     ],
     "rules": {
       "babel/semi": true,
-      "react/jsx-fragments": [true, "element"]
+      "react/jsx-fragments": [
+        true,
+        "element"
+      ]
     },
     "settings": {
       "react": {
