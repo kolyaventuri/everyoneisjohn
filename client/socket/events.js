@@ -5,6 +5,7 @@ import updatePlayer from './actions/update-player';
 import gameJoinSuccess from './actions/game-join-success';
 import setGameMode from './actions/set-game-mode';
 import gameError from './actions/game-error';
+import disconnect from './actions/disconnect';
 
 import setPlayers from './actions/set-players';
 
@@ -15,6 +16,7 @@ const events = [
   {name: 'gameJoinSuccess', handler: gameJoinSuccess},
   {name: 'setGameMode', handler: setGameMode},
   {name: 'gameError', handler: gameError},
+  {name: 'disconnect', handler: disconnect},
 
   // GM Events
   {name: 'setPlayers', handler: setPlayers}
