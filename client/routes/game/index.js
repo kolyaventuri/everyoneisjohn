@@ -5,6 +5,7 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 
 import socket from '../../socket';
+import Header from '../../components/header';
 import GamePanel from '../../components/game/panel';
 
 import type {GameStateType} from '../../apps/game';
@@ -61,7 +62,12 @@ class Game extends React.Component<Props, State> {
       return <p>Loading...</p>;
     }
 
-    return <GamePanel/>;
+    return (
+      <>
+        <Header/>
+        <GamePanel/>
+      </>
+    );
   }
 }
 

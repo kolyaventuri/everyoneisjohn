@@ -4,6 +4,7 @@ import React from 'react';
 import cx from 'classnames';
 import {Grid, Col, Row} from 'react-flexbox-grid';
 
+import Header from '../components/header';
 import globalStyles from '../sass/global.scss';
 import styles from './rules.scss';
 
@@ -101,4 +102,9 @@ const Rules = () => (
   </Grid>
 );
 
-export default Rules;
+export default () => (
+  <>
+    <Header/>
+    <Rules/>
+  </>
+);
