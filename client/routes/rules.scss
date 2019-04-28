@@ -1,0 +1,57 @@
+.heading {
+  padding: 3em;
+
+  .title {
+    font-weight: bold;
+    font-size: 5em;
+
+    padding: 0.5em;
+  }
+
+  .subtitle {
+    font-size: 2em;
+    padding-bottom: 0.5em;
+  }
+
+  .title, .subtitle {
+    text-align: center;
+  }
+}
+
+.container {
+  width: 80%;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+
+  @media screen and (max-width: 500px) {
+    width: 95%;
+  }
+
+  .block {
+    padding: 0 1em;
+  }
+
+  h2 {
+    font-size: 1.75em;
+    font-weight: bold;
+    color: #333;
+
+    padding: 0.75em 0;
+  }
+
+  p {
+    font-size: 1.25em;
+
+    padding: 0.25em 0;
+    line-height: 1.6em;
+  }
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.pad {
+  padding: 2em 0;
+}
