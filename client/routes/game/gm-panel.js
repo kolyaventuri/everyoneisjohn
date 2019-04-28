@@ -9,6 +9,7 @@ import socket from '../../socket';
 import Player from '../../components/gm/player';
 import type {GameStateType, PlayerStateType} from '../../apps/game';
 
+import Header from '../../components/header';
 import GameControls from '../../components/gm/game-controls';
 import styles from './gm-panel.scss';
 
@@ -50,6 +51,7 @@ class GMPanel extends React.Component<Props> {
 
     return (
       <div className={styles.container}>
+        <Header/>
         <div className={styles.heading}>
           <p className={styles.title}>You are the Game Master.</p>
           <p className={styles.gameId}>

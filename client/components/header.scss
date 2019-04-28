@@ -1,0 +1,18 @@
+@import "../sass/vars";
+
+.header {
+  width: 100%;
+  padding: 0.75em;
+
+  background: $blue;
+
+  p {
+    font-size: 1.5em;
+    font-weight: bold;
+
+    a {
+      color: #000;
+      text-decoration: none;
+    }
+  }
+}

@@ -40,3 +40,10 @@ test('it renders a GameControls component', t => {
 
   t.is(controls.length, 1);
 });
+
+test('it renders a Header component', t => {
+  const wrapper = render({players: []});
+  const header = wrapper.find('Header');
+
+  t.is(header.length, 1);
+});

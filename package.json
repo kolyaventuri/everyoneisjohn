@@ -106,7 +106,8 @@
       "flowtype"
     ],
     "rules": {
-      "babel/semi": true
+      "babel/semi": true,
+      "react/jsx-fragments": [true, "element"]
     },
     "settings": {
       "react": {

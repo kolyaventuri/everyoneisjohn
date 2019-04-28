@@ -32,3 +32,11 @@ test('it renders a GamePanel once the game is connected', t => {
 
   t.is(panel.length, 1);
 });
+
+test('it renders a Header component', t => {
+  const wrapper = render();
+  wrapper.instance().setState({waiting: false});
+  const header = wrapper.find('Header');
+
+  t.is(header.length, 1);
+});
