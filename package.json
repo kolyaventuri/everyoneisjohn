@@ -19,7 +19,7 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kolyaventuri/everyoneisjohn/issues"
+    "url": "https://jira.kolya.cloud/projects/EIJ/issues"
   },
   "homepage": "https://github.com/kolyaventuri/everyoneisjohn#readme",
   "devDependencies": {
