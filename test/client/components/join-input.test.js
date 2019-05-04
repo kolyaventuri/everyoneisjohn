@@ -56,3 +56,16 @@ test('redirects to the game upon clicking the button', t => {
 
   t.true(store.dispatch.calledWith(push(`/game/${gameId}`)));
 });
+
+test('redirects to the game upon pressing enter', t => {
+  const wrapper = render();
+  const input = wrapper.find('input');
+  const gameId = 'someid';
+
+  input.simulate('keyUp', {
+    currentTarget: {value: gameId},
+    keyCode: 13
+  });
+
+  t.true(store.dispatch.calledWith(push(`/game/${gameId}`)));
+});
