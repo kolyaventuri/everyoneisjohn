@@ -5,11 +5,20 @@
     font-weight: bold;
     font-size: 5em;
 
+    @media screen and (max-width: 500px) {
+        font-size: 3em;
+    }
+
     padding: 0.5em;
   }
 
   .subtitle {
     font-size: 2em;
+
+    @media screen and (max-width: 500px) {
+        font-size: 1.5em;
+    }
+
     padding-bottom: 0.5em;
   }
 
