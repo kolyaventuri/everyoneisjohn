@@ -18,21 +18,29 @@ export default class GameJoinInput extends React.Component<{}, State> {
   }
 
   handleChange = (e: SyntheticKeyboardEvent<HTMLInputElement>) => {
-    const {currentTarget: target} = e;
+    const {currentTarget: target, keyCode} = e;
     const gameId = target.value.trim();
 
     this.setState({gameId});
+
+    if (keyCode === 13) {
+      this.joinGame();
+    }
   };
 
   handleJoin = (e: SyntheticMouseEvent<*>) => {
     e.preventDefault();
 
+    this.joinGame();
+  };
+
+  joinGame = () => {
     const {gameId} = this.state;
 
     if (gameId) {
       store.dispatch(push(`/game/${gameId}`));
     }
-  };
+  }
 
   render() {
     return (
