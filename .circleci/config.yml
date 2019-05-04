@@ -71,7 +71,7 @@ workflows:
             branches:
               only: master
       - deploy_production:
-          requireds:
+          requires:
             - build
             - test
           filters:
