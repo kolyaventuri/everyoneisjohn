@@ -41,6 +41,22 @@ jobs:
       - run:
           name: push-remote
           command: git push staging master
+
+  deploy_production:
+    docker:
+      - image: circleci/node:10.15.0
+    steps:
+      - checkout
+      - add_ssh_keys
+      - run:
+          name: add-known-host
+          command: ssh-keyscan -H $PROD_HOST >> ~/.ssh/known_hosts
+      - run:
+          name: add-remote
+          command: git remote add production $PRODUCTION_REMOTE
+      - run:
+          name: push-remote
+          command: git push production master
 workflows:
   version: 2
   build_and_test:
@@ -54,3 +70,10 @@ workflows:
           filters:
             branches:
               only: master
+      - deploy_production:
+          requireds:
+            - build
+            - test
+          filters:
+            branches:
+              only: production
