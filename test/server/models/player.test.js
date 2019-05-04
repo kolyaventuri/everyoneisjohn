@@ -250,3 +250,32 @@ test('emitUpdate is called when a player joins a game', t => {
 
   t.true(player.emitUpdate.called);
 });
+
+test('stats are destroyed upon joining new game', t => {
+  const {game, player} = setup();
+
+  game.addPlayer(player);
+  player.stats.willpower += 5;
+
+  const oldStats = Object.assign({}, player.serialize());
+
+  const {game: gameB} = setup();
+
+  gameB.addPlayer(player);
+
+  const newStats = Object.assign({}, player.serialize());
+
+  t.notDeepEqual(newStats, oldStats);
+});
+
+test('player is booted from the old game if they join a new one', t => {
+  const {game, player} = setup();
+
+  player.joinGame(game.id);
+
+  const {game: gameB} = setup();
+
+  player.joinGame(gameB.id);
+
+  t.true(player.leaveGame.called);
+});

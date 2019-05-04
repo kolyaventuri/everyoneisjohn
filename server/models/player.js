@@ -47,7 +47,7 @@ export default class Player {
       name
     };
 
-    this.stats = new Stats(this);
+    this.resetStats();
 
     playerRepository.insert(this);
     this.destroyGame = this.destroyGame.bind(this);
@@ -78,7 +78,18 @@ export default class Player {
   }
 
   setGame({id}: Game) {
+    const {game} = this;
+
+    if (game) {
+      this.leaveGame();
+      this.resetStats();
+    }
+
     this.__game = id;
+  }
+
+  resetStats() {
+    this.stats = new Stats(this);
   }
 
   disconnect() {
