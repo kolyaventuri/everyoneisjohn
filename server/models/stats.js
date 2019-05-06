@@ -135,6 +135,10 @@ export default class Stats {
     this.player.emitUpdate();
   }
 
+  deleteSkill(index: number) {
+    this.setSkill(index, '');
+  }
+
   freeze() {
     this.__STATICS__.frozen = true;
     this.player.emitUpdate(false);

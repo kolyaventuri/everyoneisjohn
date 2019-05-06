@@ -13,6 +13,7 @@ import startPlaying from './actions/start-playing';
 import giveWillpower from './actions/give-willpower';
 import givePoints from './actions/give-points';
 import setGoalLevel from './actions/set-goal-level';
+import rejectSkill from './actions/reject-skill';
 
 import submitBid from './actions/submit-bid';
 import updateStats from './actions/update-stats';
@@ -33,6 +34,7 @@ const events = [
   {name: 'giveWillpower', handler: giveWillpower, isGM: true},
   {name: 'givePoints', handler: givePoints, isGM: true},
   {name: 'setGoalLevel', handler: setGoalLevel, isGM: true},
+  {name: 'rejectSkill', handler: rejectSkill, isGM: true},
 
   // Player events
   {name: 'submitBid', handler: submitBid},

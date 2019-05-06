@@ -114,6 +114,17 @@ test('can set the 3 skills', t => {
   t.deepEqual(stats.skills, ['a', 'b', 'c']);
 });
 
+test('can delete skill by index', t => {
+  const stats = genStats();
+
+  stats.setSkill(1, 'a');
+  stats.setSkill(2, 'b');
+
+  stats.deleteSkill(2);
+
+  t.deepEqual(stats.skills, ['a', '', '']);
+});
+
 test('new skills are emitted', t => {
   const player = genPlayer();
   const stats = genStats(player);
