@@ -146,11 +146,12 @@ export default class Player {
     return payload;
   }
 
-  emitUpdate(emitToGm: boolean = true) {
+  emitUpdate(emitToGm: boolean = true, emitToPlayer: boolean = true) {
     const payload = this.serialize();
     const event = 'updatePlayer';
-
-    this.socket.emit(event, payload);
+    if (emitToPlayer) {
+      this.socket.emit(event, payload);
+    }
 
     if (this.game && emitToGm) {
       this.game.emit({

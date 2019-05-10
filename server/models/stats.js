@@ -114,7 +114,7 @@ export default class Stats {
     return value;
   }
 
-  setSkill(index: number, skill: string) {
+  setSkill(index: number, skill: string, emitToPlayer: boolean = false) {
     if (this.__STATICS__.frozen) {
       return;
     }
@@ -132,11 +132,11 @@ export default class Stats {
     }
 
     this.__STATICS__.skills[index - 1] = skill;
-    this.player.emitUpdate();
+    this.player.emitUpdate(true, emitToPlayer);
   }
 
   deleteSkill(index: number) {
-    this.setSkill(index, '');
+    this.setSkill(index, '', true);
   }
 
   freeze() {
