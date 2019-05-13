@@ -33,6 +33,8 @@ export default class SkillList extends React.Component<Props, State> {
     }
 
     this.state = {ids};
+
+    this.handleChange = debounce(this.handleChange, DEBOUNCE_AMOUNT);
   }
 
   handleInput = (e: SyntheticInputEvent<HTMLInputElement>, index: number) => {
@@ -46,11 +48,12 @@ export default class SkillList extends React.Component<Props, State> {
 
     const {items} = this.props;
     items[index] = value;
+
     store.dispatch({
       type: 'SET_PLAYER_INFO',
       payload: {skills: items}
     });
-    debounce(this.handleChange, DEBOUNCE_AMOUNT)(value, index);
+    this.handleChange(value, index);
   }
 
   handleChange = (value: string, index: number) => {
@@ -78,7 +81,7 @@ export default class SkillList extends React.Component<Props, State> {
           key={`skill-input-${ids[index]}`}
           type="text"
           className={globalStyles.input}
-          defaultValue={skill}
+          value={skill}
           placeholder="Enter a skill"
           onInput={e => this.handleInput(e, index)}
         />
@@ -87,8 +90,8 @@ export default class SkillList extends React.Component<Props, State> {
   }
 
   render() {
-    const {items} = this.props;
     const {ids} = this.state;
+    const {items} = this.props;
 
     return (
       <div className={styles.section}>

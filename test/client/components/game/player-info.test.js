@@ -11,14 +11,14 @@ const PlayerInfo = proxyquire('../../../../client/components/game/player-info', 
 const defaultProps = {
   name: 'Mr. Some Name',
   willpower: 10,
-  skills: ['A', 'B', 'C'],
+  skills: JSON.stringify(['A', 'B', 'C']),
   goal: 'Goal',
   points: 0,
   mode: 'PLAYING'
 };
 
 const render = (props = defaultProps) => {
-  return shallow(<PlayerInfo {...props}/>);
+  return shallow(<PlayerInfo {...defaultProps} {...props}/>);
 };
 
 test('it renders a Name component', t => {
@@ -58,7 +58,7 @@ test('it renders a SkillList component', t => {
   const list = wrapper.find('SkillList');
 
   t.is(list.length, 1);
-  t.is(list.props().items, defaultProps.skills);
+  t.deepEqual(list.props().items, JSON.parse(defaultProps.skills));
 });
 
 test('it does not render a Bidding component in SETUP mode', t => {

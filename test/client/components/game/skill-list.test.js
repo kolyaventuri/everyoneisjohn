@@ -46,7 +46,7 @@ test('it renders players skils as text boxes if editing is not frozen', t => {
     const input = li.find('input');
 
     t.is(input.length, 1);
-    t.is(input.props().defaultValue, items[i]);
+    t.is(input.props().value, items[i]);
   }
 });
 
