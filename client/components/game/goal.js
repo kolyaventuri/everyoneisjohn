@@ -57,6 +57,7 @@ export default class Goal extends React.Component<Props> {
         placeholder="You must enter an obsession to play!"
         value={value}
         onInput={this.handleInput}
+        onChange={this.handleInput}
       />
     );
   }
