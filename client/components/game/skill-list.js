@@ -6,9 +6,9 @@ import debounce from 'debounce';
 
 import {DEBOUNCE_AMOUNT} from '../../constants/sockets';
 
+import {store} from '../../store';
 import globalStyles from '../../sass/global.scss';
 import socket from '../../socket';
-import {store} from '../../store';
 
 import styles from './section.scss';
 

@@ -6,6 +6,7 @@ import debounce from 'debounce';
 import socket from '../../socket';
 import {DEBOUNCE_AMOUNT} from '../../constants/sockets';
 
+import {store} from '../../store';
 import globalStyles from '../../sass/global.scss';
 import styles from './section.scss';
 
@@ -18,16 +19,24 @@ export default class Goal extends React.Component<Props> {
   constructor(...args) {
     super(...args);
 
-    this.debounced = (e: SyntheticInputEvent<HTMLInputElement>) => {
-      e.persist();
-      const {
-        target: {
-          value: goal
-        }
-      } = e;
+    this.submitGoal = debounce(this.submitGoal, DEBOUNCE_AMOUNT);
+  }
 
-      debounce(this.submitGoal, DEBOUNCE_AMOUNT)(goal);
-    };
+  handleInput = (e: SyntheticInputEvent<HTMLInputElement>) => {
+    e.persist();
+
+    const {
+      target: {
+        value: goal
+      }
+    } = e;
+
+    store.dispatch({
+      type: 'SET_PLAYER_INFO',
+      payload: {goal}
+    });
+
+    this.submitGoal(goal);
   }
 
   submitGoal = (goal: string) => {
@@ -46,8 +55,8 @@ export default class Goal extends React.Component<Props> {
         type="text"
         className={globalStyles.input}
         placeholder="You must enter an obsession to play!"
-        defaultValue={value}
-        onChange={this.debounced}
+        value={value}
+        onInput={this.handleInput}
       />
     );
   }
