@@ -139,6 +139,10 @@ export default class Stats {
     this.setSkill(index, '', true);
   }
 
+  deleteGoal() {
+    this.goal = '';
+  }
+
   freeze() {
     this.__STATICS__.frozen = true;
     this.player.emitUpdate(false);

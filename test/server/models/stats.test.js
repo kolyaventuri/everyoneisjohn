@@ -101,6 +101,17 @@ test('emits new goal level', t => {
   t.true(player.emitUpdate.called);
 });
 
+test('goal can be deleted', t => {
+  const player = genPlayer();
+  const stats = genStats(player);
+
+  stats.goal = 'abc';
+
+  stats.deleteGoal();
+
+  t.is(stats.goal, '');
+});
+
 test('can set the 3 skills', t => {
   const stats = genStats();
 
