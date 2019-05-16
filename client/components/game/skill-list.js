@@ -84,6 +84,7 @@ export default class SkillList extends React.Component<Props, State> {
           value={skill}
           placeholder="Enter a skill"
           onInput={e => this.handleInput(e, index)}
+          onChange={e => this.handleInput(e, index)}
         />
       </div>
     );
