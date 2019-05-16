@@ -46,12 +46,14 @@ class PlayerInfo extends React.Component<Props> {
     const {
       name,
       willpower,
-      skills,
       goal,
+      skills,
       points: score,
       frozen,
       winner
     } = this.props;
+
+    const items = JSON.parse(skills);
 
     return (
       <div className={styles.player}>
@@ -61,7 +63,7 @@ class PlayerInfo extends React.Component<Props> {
         {this.renderBidding()}
         <Score value={score}/>
         <Goal value={goal} frozen={frozen}/>
-        <SkillList items={skills} frozen={frozen}/>
+        <SkillList items={items} frozen={frozen}/>
       </div>
     );
   }
@@ -83,7 +85,7 @@ const mapStateToProps = ({player, game}: GameStateType) => {
   return {
     name,
     willpower,
-    skills,
+    skills: JSON.stringify(skills),
     goal,
     points,
     frozen,

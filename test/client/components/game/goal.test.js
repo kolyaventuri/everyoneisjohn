@@ -1,15 +1,19 @@
 import test from 'ava';
 import React from 'react';
 import proxyquire from 'proxyquire';
-import sinon from 'sinon';
+import sinon, {stub} from 'sinon';
 import {shallow} from 'enzyme';
 import {MockSocket} from '../../../server/mocks/socket';
 import {DEBOUNCE_AMOUNT} from '../../../../client/constants/sockets';
 
 const socket = new MockSocket();
+const store = {
+  dispatch: stub()
+};
 
 const Goal = proxyquire('../../../../client/components/game/goal', {
-  '../../socket': {default: socket}
+  '../../socket': {default: socket},
+  '../../store': {store}
 }).default;
 
 const render = (props = {}) => shallow(<Goal frozen {...props}/>);
@@ -30,7 +34,7 @@ test('it renders a text box of the players goal if editing is not frozen', t => 
   const goal = wrapper.find('input[type="text"]');
 
   t.is(goal.length, 1);
-  t.is(goal.props().defaultValue, value);
+  t.is(goal.props().value, value);
 });
 
 test('it emits the value to the server as you type', t => {
@@ -40,7 +44,7 @@ test('it emits the value to the server as you type', t => {
   const input = wrapper.find('input');
   const value = 'abc';
 
-  input.simulate('change', {target: {value}, persist: () => {}});
+  input.simulate('input', {target: {value}, persist: () => {}});
 
   t.false(socket.emit.called);
 
@@ -49,4 +53,18 @@ test('it emits the value to the server as you type', t => {
   t.true(socket.emit.calledWith('updateStats', {goal: value}));
 
   clock.reset();
+});
+
+test('it updates the store with the new goal on input', t => {
+  const wrapper = render({value: '', frozen: false});
+
+  const value = 'Some goal';
+  const input = wrapper.find('input');
+
+  input.simulate('input', {target: {value}, persist: () => {}});
+
+  t.true(store.dispatch.calledWith({
+    type: 'SET_PLAYER_INFO',
+    payload: {goal: value}
+  }));
 });

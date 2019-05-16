@@ -65,6 +65,7 @@ test('it renders a goal component', t => {
   t.is(goal.length, 1);
   const props = goal.props();
 
+  t.is(props.player, player.id);
   t.is(props.name, player.goal);
   t.is(props.value, player.goalLevel);
 });
@@ -113,7 +114,9 @@ test('it emits a givePoints event on changing the score', t => {
 test('it renders a SkillList component', t => {
   const wrapper = render();
   const skills = wrapper.find('SkillList');
+  const props = skills.props();
 
   t.is(skills.length, 1);
-  t.deepEqual(skills.props().children, player.skills);
+  t.deepEqual(props.children, player.skills);
+  t.is(props.player, player.id);
 });

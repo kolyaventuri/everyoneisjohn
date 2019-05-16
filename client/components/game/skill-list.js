@@ -6,6 +6,7 @@ import debounce from 'debounce';
 
 import {DEBOUNCE_AMOUNT} from '../../constants/sockets';
 
+import {store} from '../../store';
 import globalStyles from '../../sass/global.scss';
 import socket from '../../socket';
 
@@ -33,17 +34,26 @@ export default class SkillList extends React.Component<Props, State> {
 
     this.state = {ids};
 
-    this.debounced = (e: SyntheticInputEvent<HTMLInputElement>, index: number) => {
-      e.persist();
+    this.handleChange = debounce(this.handleChange, DEBOUNCE_AMOUNT);
+  }
 
-      const {
-        target: {
-          value
-        }
-      } = e;
+  handleInput = (e: SyntheticInputEvent<HTMLInputElement>, index: number) => {
+    e.persist();
 
-      debounce(this.handleChange, DEBOUNCE_AMOUNT)(value, index);
-    };
+    const {
+      target: {
+        value
+      }
+    } = e;
+
+    const {items} = this.props;
+    items[index] = value;
+
+    store.dispatch({
+      type: 'SET_PLAYER_INFO',
+      payload: {skills: items}
+    });
+    this.handleChange(value, index);
   }
 
   handleChange = (value: string, index: number) => {
@@ -71,17 +81,17 @@ export default class SkillList extends React.Component<Props, State> {
           key={`skill-input-${ids[index]}`}
           type="text"
           className={globalStyles.input}
-          defaultValue={skill}
+          value={skill}
           placeholder="Enter a skill"
-          onChange={e => this.debounced(e, index)}
+          onInput={e => this.handleInput(e, index)}
         />
       </div>
     );
   }
 
   render() {
-    const {items} = this.props;
     const {ids} = this.state;
+    const {items} = this.props;
 
     return (
       <div className={styles.section}>

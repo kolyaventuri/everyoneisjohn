@@ -1,15 +1,19 @@
 import test from 'ava';
 import React from 'react';
 import proxyquire from 'proxyquire';
-import sinon from 'sinon';
+import sinon, {stub} from 'sinon';
 import {shallow} from 'enzyme';
 import {MockSocket} from '../../../server/mocks/socket';
 import {DEBOUNCE_AMOUNT} from '../../../../client/constants/sockets';
 
 const socket = new MockSocket();
+const store = {
+  dispatch: stub()
+};
 
 const SkillList = proxyquire('../../../../client/components/game/skill-list', {
-  '../../socket': {default: socket}
+  '../../socket': {default: socket},
+  '../../store': {store}
 }).default;
 
 const render = (props = {}) => shallow(<SkillList frozen {...props}/>);
@@ -42,11 +46,11 @@ test('it renders players skils as text boxes if editing is not frozen', t => {
     const input = li.find('input');
 
     t.is(input.length, 1);
-    t.is(input.props().defaultValue, items[i]);
+    t.is(input.props().value, items[i]);
   }
 });
 
-test('it emits the skill to the server on input change', t => {
+test('it emits the skill to the server on input', t => {
   const clock = sinon.useFakeTimers();
 
   const items = ['a', 'b', 'c'];
@@ -57,7 +61,7 @@ test('it emits the skill to the server on input change', t => {
 
   const value = 'abcde';
 
-  input.simulate('change', {target: {value}, persist: () => {}});
+  input.simulate('input', {target: {value}, persist: () => {}});
 
   t.false(socket.emit.called);
 
@@ -68,5 +72,24 @@ test('it emits the skill to the server on input change', t => {
       number: 1,
       content: value
     }
+  }));
+});
+
+test('it updates the store with the new skill on input', t => {
+  const items = ['', '', ''];
+  const wrapper = render({items, frozen: false});
+
+  const skills = wrapper.find('[data-type="skills"]');
+  const lis = skills.find('li');
+  const input = lis.at(0).find('input');
+
+  const value = 'abcde';
+
+  input.simulate('input', {target: {value}, persist: () => {}});
+
+  const skillsArray = [value, '', ''];
+  t.true(store.dispatch.calledWith({
+    type: 'SET_PLAYER_INFO',
+    payload: {skills: skillsArray}
   }));
 });

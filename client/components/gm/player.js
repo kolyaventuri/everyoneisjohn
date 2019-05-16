@@ -54,6 +54,7 @@ class Player extends React.Component<Props> {
 
   render() {
     const {
+      id: playerId,
       name,
       willpower,
       goal,
@@ -80,12 +81,13 @@ class Player extends React.Component<Props> {
           onChange={this.handleScoreChange}
         />
         <Goal
+          player={playerId}
           name={goal}
           value={goalLevel}
           onChange={this.handleGoalChange}
           onComplete={() => this.handleScoreChange(goalLevel)}
         />
-        <SkillList>{skills}</SkillList>
+        <SkillList player={playerId}>{skills}</SkillList>
       </div>
     );
   }

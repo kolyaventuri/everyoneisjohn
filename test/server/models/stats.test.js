@@ -101,6 +101,17 @@ test('emits new goal level', t => {
   t.true(player.emitUpdate.called);
 });
 
+test('goal can be deleted', t => {
+  const player = genPlayer();
+  const stats = genStats(player);
+
+  stats.goal = 'abc';
+
+  stats.deleteGoal();
+
+  t.is(stats.goal, '');
+});
+
 test('can set the 3 skills', t => {
   const stats = genStats();
 
@@ -112,6 +123,17 @@ test('can set the 3 skills', t => {
   stats.setSkill(0, 'e');
 
   t.deepEqual(stats.skills, ['a', 'b', 'c']);
+});
+
+test('can delete skill by index', t => {
+  const stats = genStats();
+
+  stats.setSkill(1, 'a');
+  stats.setSkill(2, 'b');
+
+  stats.deleteSkill(2);
+
+  t.deepEqual(stats.skills, ['a', '', '']);
 });
 
 test('new skills are emitted', t => {

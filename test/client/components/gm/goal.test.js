@@ -1,11 +1,18 @@
 import test from 'ava';
 import React from 'react';
+import proxyquire from 'proxyquire';
 import {shallow} from 'enzyme';
 import {stub} from 'sinon';
+import {MockSocket} from '../../../server/mocks/socket';
 
-import Goal from '../../../../client/components/gm/goal';
+const socket = new MockSocket();
+const player = 'some-id';
 
-const render = (props = {}) => shallow(<Goal {...props}/>);
+const Goal = proxyquire('../../../../client/components/gm/goal', {
+  '../../socket': {default: socket}
+}).default;
+
+const render = (props = {}) => shallow(<Goal player={player} {...props}/>);
 
 test('it renders the goal name', t => {
   const name = 'Some goal';
@@ -64,4 +71,23 @@ test('it renders null if no goal is set', t => {
   const wrapper = render({name: ''});
 
   t.is(wrapper.type(), null);
+});
+
+test('it renders a reject button next to the obsession', t => {
+  const wrapper = render({name: 'Some goal'});
+
+  const goalContainer = wrapper.find('[data-type="name"]').parent().shallow();
+
+  const reject = goalContainer.find('[data-type="reject"]');
+
+  t.is(reject.length, 1);
+});
+
+test('it emits a rejectGoal event when the reject button is clicked', t => {
+  const wrapper = render({name: 'Some goal'});
+  const reject = wrapper.find('[data-type="reject"]');
+
+  reject.simulate('click');
+
+  t.true(socket.emit.calledWith('rejectGoal', {player}));
 });
