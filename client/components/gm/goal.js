@@ -4,10 +4,12 @@ import React from 'react';
 import cx from 'classnames';
 
 import Dropdown from '../dropdown';
+import socket from '../../socket';
 import globalStyles from '../../sass/global.scss';
 import styles from './goal.scss';
 
 type Props = {|
+  player: string,
   name: string,
   value: number,
   onChange: (value: string | number) => void,
@@ -16,11 +18,19 @@ type Props = {|
 
 const options = [1, 2, 3];
 
-const Goal = ({name, value, onChange, onComplete}: Props) => name ? (
+const reject = player => socket.emit('rejectGoal', {player});
+
+const Goal = ({player, name, value, onChange, onComplete}: Props) => name ? (
   <div className={styles.goal}>
     <div className={styles.container}>
       <p className={styles.title}>Obsession:&nbsp;</p>
       <p data-type="name">{name}</p>
+      <p
+        data-type="reject"
+        onClick={() => reject(player)}
+      >
+        X
+      </p>
     </div>
     <div className={styles.container}>
       <p className={styles.title}>Value:&nbsp;</p>

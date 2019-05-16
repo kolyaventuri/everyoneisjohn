@@ -81,6 +81,7 @@ class Player extends React.Component<Props> {
           onChange={this.handleScoreChange}
         />
         <Goal
+          player={playerId}
           name={goal}
           value={goalLevel}
           onChange={this.handleGoalChange}

@@ -65,6 +65,7 @@ test('it renders a goal component', t => {
   t.is(goal.length, 1);
   const props = goal.props();
 
+  t.is(props.player, player.id);
   t.is(props.name, player.goal);
   t.is(props.value, player.goalLevel);
 });
