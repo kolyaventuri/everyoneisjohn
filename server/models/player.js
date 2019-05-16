@@ -162,6 +162,13 @@ export default class Player {
     }
   }
 
+  emitDelete({type, index}: {type: string, index?: number}) {
+    this.socket.emit('deleteItem', {
+      type,
+      index
+    });
+  }
+
   get id(): string {
     return this.__STATICS__.id;
   }

@@ -136,7 +136,11 @@ export default class Stats {
   }
 
   deleteSkill(index: number) {
-    this.setSkill(index, '', true);
+    this.setSkill(index, '');
+    this.player.emitDelete({
+      type: 'skill',
+      index: index - 1
+    });
   }
 
   deleteGoal() {
