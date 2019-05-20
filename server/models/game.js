@@ -116,6 +116,8 @@ export default class Game {
 
     if (index > -1) {
       players.splice(index, 1);
+
+      this.gmEmitPlayers();
     }
   }
 
