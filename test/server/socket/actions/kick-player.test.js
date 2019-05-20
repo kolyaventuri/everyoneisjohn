@@ -9,7 +9,7 @@ test('kicks a given player from a given game', t => {
 
   game.addPlayer(player);
 
-  kickPlayer(socket, player.id);
+  kickPlayer(socket, {player: player.id});
 
   t.true(player.leaveGame.called);
 });
@@ -17,7 +17,7 @@ test('kicks a given player from a given game', t => {
 test('it does nothing if the game does not exist', t => {
   const {socket, player} = setup(false);
 
-  const fn = () => kickPlayer(socket, player.id);
+  const fn = () => kickPlayer(socket, {player: player.id});
 
   t.notThrows(fn);
   t.false(player.leaveGame.called);
