@@ -15,6 +15,7 @@ import givePoints from './actions/give-points';
 import setGoalLevel from './actions/set-goal-level';
 import rejectSkill from './actions/reject-skill';
 import rejectGoal from './actions/reject-goal';
+import kickPlayer from './actions/kick-player';
 
 import submitBid from './actions/submit-bid';
 import updateStats from './actions/update-stats';
@@ -37,6 +38,7 @@ const events = [
   {name: 'setGoalLevel', handler: setGoalLevel, isGM: true},
   {name: 'rejectSkill', handler: rejectSkill, isGM: true},
   {name: 'rejectGoal', handler: rejectGoal, isGM: true},
+  {name: 'kickPlayer', handler: kickPlayer, isGM: true},
 
   // Player events
   {name: 'submitBid', handler: submitBid},
