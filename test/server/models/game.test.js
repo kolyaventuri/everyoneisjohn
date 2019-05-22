@@ -84,6 +84,16 @@ test('can remove players', t => {
   t.false(game.players.includes(player));
 });
 
+test('emits a gameKick event to the player when kicked', t => {
+  const {game, player} = setup();
+
+  game.addPlayer(player);
+
+  game.removePlayer(player);
+
+  t.true(player.socket.emit.calledWith('gameKick'));
+});
+
 test('gets stored in the game repository during the constructor', t => {
   const {game} = setup();
 

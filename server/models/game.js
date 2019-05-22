@@ -110,12 +110,16 @@ export default class Game {
     });
   }
 
-  removePlayer({id}: Player) {
+  removePlayer(player: Player) {
+    const {id} = player;
     const players = this.__players;
     const index = players.indexOf(id);
 
     if (index > -1) {
       players.splice(index, 1);
+
+      this.gmEmitPlayers();
+      player.socket.emit('gameKick');
     }
   }
 

@@ -120,3 +120,11 @@ test('it renders a SkillList component', t => {
   t.deepEqual(props.children, player.skills);
   t.is(props.player, player.id);
 });
+
+test('it renders a Kick component', t => {
+  const wrapper = render();
+  const kick = wrapper.find('Kick');
+
+  t.is(kick.length, 1);
+  t.is(kick.props().player, player.id);
+});
