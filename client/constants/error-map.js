@@ -6,6 +6,7 @@ export default {
     socketDisconnect: 'You have been disconnected from the server.'
   },
   game: {
-    doesntExist: 'The requested game doesn\'t exist.'
+    doesntExist: 'The requested game doesn\'t exist.',
+    kicked: 'You were removed from the game.'
   }
 };
