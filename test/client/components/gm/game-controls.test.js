@@ -67,3 +67,29 @@ test('the Next Round button dispatches a startBidding event', t => {
 
   t.true(socket.emit.calledWith('startBidding'));
 });
+
+test('it renders a Ticker', t => {
+  const wrapper = render({mode: 'PLAYING'});
+  const ticker = wrapper.find('Ticker');
+
+  t.is(ticker.length, 1);
+});
+
+test('it does not render a Ticker if in the SETUP mode', t => {
+  const wrapper = render({mode: 'SETUP'});
+  const ticker = wrapper.find('Ticker');
+
+  t.is(ticker.length, 0);
+});
+
+test('when changed, the Ticker emits a giveWillpower event', t => {
+  const wrapper = render({mode: 'PLAYING'});
+  const ticker = wrapper.find('Ticker');
+
+  const {onChange} = ticker.props();
+
+  const amount = -1;
+  onChange(amount);
+
+  t.true(socket.emit.calledWith('giveWillpower', {amount}));
+});
