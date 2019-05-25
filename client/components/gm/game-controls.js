@@ -6,13 +6,13 @@ import cx from 'classnames';
 
 import socket from '../../socket';
 import globalStyles from '../../sass/global.scss';
-import {modes, type ModeType} from '../../constants/game';
-import type {GameStateType} from '../../apps/game';
+import {modes} from '../../constants/game';
+import type {GameStateType, GameModeType} from '../../apps/game';
 import Ticker from './ticker';
 import styles from './game-controls.scss';
 
 type Props = {|
-  mode: ModeType
+  mode: GameModeType
 |};
 
 const {SETUP, VOTING, PLAYING} = modes;

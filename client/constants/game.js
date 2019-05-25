@@ -7,5 +7,3 @@ export const modes = keyMirror({
   VOTING: null,
   PLAYING: null
 });
-
-export type ModeType = modes.SETUP | modes.VOTING | modes.PLAYING;

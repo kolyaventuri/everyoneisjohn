@@ -3,6 +3,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import {modes} from '../../constants/game';
 import type {GameStateType, GameModeType} from '../../apps/game';
 
 import Willpower from './willpower';
@@ -31,7 +32,7 @@ class PlayerInfo extends React.Component<Props> {
       mode
     } = this.props;
 
-    if (mode === 'VOTING') {
+    if (mode === modes.VOTING) {
       return (
         <Bidding
           max={willpower}
