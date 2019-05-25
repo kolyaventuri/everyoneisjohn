@@ -2,13 +2,13 @@ import test from 'ava';
 import {stub} from 'sinon';
 import proxyquire from 'proxyquire';
 
-const push = stub().returnsArg(0);
+const replace = stub().returnsArg(0);
 const dispatch = stub();
 const store = {dispatch};
 
 proxyquire.noCallThru();
 const startGame = proxyquire('../../../../client/socket/actions/start-game', {
-  'connected-react-router': {push},
+  'connected-react-router': {replace},
   '../../store': {store}
 }).default;
 
@@ -22,9 +22,9 @@ test('updates the redux store with the game', t => {
   }));
 });
 
-test('redirects player to GM route', t => {
+test('redirects player to GM route via replace', t => {
   const gameId = 'ABCDE';
   startGame(gameId);
 
-  t.true(dispatch.calledWith(push(`/game/${gameId}/gm`)));
+  t.true(dispatch.calledWith(replace(`/game/${gameId}/gm`)));
 });
