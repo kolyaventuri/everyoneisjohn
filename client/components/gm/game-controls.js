@@ -7,6 +7,7 @@ import cx from 'classnames';
 import socket from '../../socket';
 import globalStyles from '../../sass/global.scss';
 import type {GameStateType} from '../../apps/game';
+import Ticker from './ticker';
 import styles from './game-controls.scss';
 
 type Props = {|
@@ -60,10 +61,13 @@ const renderStatus = (mode: string) => {
   );
 };
 
+const renderTicker = () => <Ticker renderValue={false}/>;
+
 const GameControls = ({mode}: Props) => (
   <div className={styles.container}>
     {renderStatus(mode)}
     {renderButton(mode)}
+    {mode !== 'SETUP' && renderTicker()}
   </div>
 );
 

@@ -45,3 +45,10 @@ test('it decrements the valeu upon clicking the minus button', t => {
 
   t.true(defaultProps.onChange.calledWith(-1));
 });
+
+test('does not render the value if renderValue is false', t => {
+  const wrapper = render({value: 3, renderValue: false});
+  const value = wrapper.find('[data-type="value"]');
+
+  t.is(value.length, 0);
+});
