@@ -63,7 +63,15 @@ const renderStatus = (mode: string) => {
 
 const handleTickerChange = (amount: number) => socket.emit('giveWillpower', {amount});
 
-const renderTicker = () => <Ticker renderValue={false} onChange={handleTickerChange}/>;
+const renderTicker = () => (
+  <div>
+    <p>All Willpower:</p>
+    <Ticker
+      renderValue={false}
+      onChange={handleTickerChange}
+    />
+  </div>
+);
 
 const GameControls = ({mode}: Props) => (
   <div className={styles.container}>
