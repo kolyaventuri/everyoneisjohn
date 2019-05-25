@@ -61,7 +61,9 @@ const renderStatus = (mode: string) => {
   );
 };
 
-const renderTicker = () => <Ticker renderValue={false}/>;
+const handleTickerChange = (amount: number) => socket.emit('giveWillpower', {amount});
+
+const renderTicker = () => <Ticker renderValue={false} onChange={handleTickerChange}/>;
 
 const GameControls = ({mode}: Props) => (
   <div className={styles.container}>

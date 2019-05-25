@@ -81,3 +81,15 @@ test('it does not render a Ticker if in the SETUP mode', t => {
 
   t.is(ticker.length, 0);
 });
+
+test('when changed, the Ticker emits a giveWillpower event', t => {
+  const wrapper = render({mode: 'PLAYING'});
+  const ticker = wrapper.find('Ticker');
+
+  const {onChange} = ticker.props();
+
+  const amount = -1;
+  onChange(amount);
+
+  t.true(socket.emit.calledWith('giveWillpower', {amount}));
+});
