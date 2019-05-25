@@ -6,13 +6,16 @@ import cx from 'classnames';
 
 import socket from '../../socket';
 import globalStyles from '../../sass/global.scss';
+import {modes, type ModeType} from '../../constants/game';
 import type {GameStateType} from '../../apps/game';
 import Ticker from './ticker';
 import styles from './game-controls.scss';
 
 type Props = {|
-  mode: 'SETUP' | 'VOTING' | 'PLAYING'
+  mode: ModeType
 |};
+
+const {SETUP, VOTING, PLAYING} = modes;
 
 const emit = (event: string) => socket.emit(event);
 
@@ -34,11 +37,11 @@ const renderPlayingButtons = () => createButton('startBidding', 'Next Round');
 
 const renderButton = (mode: string) => {
   switch (mode) {
-    case 'SETUP':
+    case SETUP:
       return renderSetupButtons();
-    case 'VOTING':
+    case VOTING:
       return renderVotingButtons();
-    case 'PLAYING':
+    case PLAYING:
       return renderPlayingButtons();
     default:
       return null; // This should never happen
@@ -46,9 +49,9 @@ const renderButton = (mode: string) => {
 };
 
 const modeMap = {
-  SETUP: 'Setting Up',
-  VOTING: 'Bidding',
-  PLAYING: 'Playing'
+  [SETUP]: 'Setting Up',
+  [VOTING]: 'Bidding',
+  [PLAYING]: 'Playing'
 };
 
 const renderStatus = (mode: string) => {
@@ -77,7 +80,7 @@ const GameControls = ({mode}: Props) => (
   <div className={styles.container}>
     {renderStatus(mode)}
     {renderButton(mode)}
-    {mode !== 'SETUP' && renderTicker()}
+    {mode !== SETUP && renderTicker()}
   </div>
 );
 
