@@ -1,6 +1,6 @@
 // @flow
 
-import {push} from 'connected-react-router';
+import {replace} from 'connected-react-router';
 
 import {store} from '../../store';
 
@@ -10,7 +10,7 @@ const startGame = (gameId: string) => {
     payload: {gameId}
   });
 
-  store.dispatch(push(`/game/${gameId}/gm`));
+  store.dispatch(replace(`/game/${gameId}/gm`));
 };
 
 export default startGame;
