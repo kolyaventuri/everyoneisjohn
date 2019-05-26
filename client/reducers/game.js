@@ -1,5 +1,7 @@
 // @flow
 
+import deepMerge from 'deepmerge';
+
 import type {GameStateType, ActionType} from './types';
 
 const setSpecificPlayer = (state: GameStateType, {payload}: ActionType) => {
@@ -9,7 +11,8 @@ const setSpecificPlayer = (state: GameStateType, {payload}: ActionType) => {
     return {...state};
   }
 
-  players[index] = payload;
+  players[index] = deepMerge(players[index], payload);
+  console.log(players[index].id, payload);
   return {
     ...state,
     players

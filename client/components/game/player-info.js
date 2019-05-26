@@ -48,13 +48,11 @@ class PlayerInfo extends React.Component<Props> {
       name,
       willpower,
       goal,
-      skills,
+      skills: items,
       points: score,
       frozen,
       winner
     } = this.props;
-
-    const items = JSON.parse(skills);
 
     return (
       <div className={styles.player}>
@@ -74,7 +72,9 @@ const mapStateToProps = ({player, game}: GameStateType) => {
   const {
     name,
     willpower,
-    skills,
+    skill1,
+    skill2,
+    skill3,
     goal,
     points,
     frozen,
@@ -82,11 +82,12 @@ const mapStateToProps = ({player, game}: GameStateType) => {
   } = player;
 
   const {mode} = game;
+  const skills = [skill1, skill2, skill3];
 
   return {
     name,
     willpower,
-    skills: JSON.stringify(skills),
+    skills,
     goal,
     points,
     frozen,

@@ -280,11 +280,35 @@ test('player is booted from the old game if they join a new one', t => {
   t.true(player.leaveGame.called);
 });
 
-test('emitDelete emits a deleteItem event to the player', t => {
+test('emitSkill emits a setSkill event to the player', t => {
   const {player} = setup();
 
-  const payload = {type: 'static', index: 1};
-  player.emitDelete(payload);
+  const skill = 'skill';
+  player.stats.__STATICS__.skill1 = skill;
 
-  t.true(player.socket.emit.calledWith('deleteItem', payload));
+  player.emitSkill(0);
+
+  t.true(player.socket.emit.calledWith('setSkill', {index: 0, skill}));
+});
+
+test('emitUpdate does not emit anything if there has been no change since the last update', t => {
+  const {player} = setup();
+
+  player.emitUpdate();
+
+  t.true(player.socket.emit.calledWith('updatePlayer'));
+  const calls = player.socket.emit.args;
+  const updateCalls = calls.filter(call => call[0] === 'updatePlayer');
+
+  t.is(updateCalls.length, 1); // Account for the one call when player is created
+});
+
+test('emitUpdate emits only the changed values', t => {
+  const {player} = setup();
+  const willpower = 7;
+  const {id} = player;
+
+  player.stats.willpower = willpower;
+
+  t.true(player.socket.emit.calledWithExactly('updatePlayer', {id, willpower}));
 });

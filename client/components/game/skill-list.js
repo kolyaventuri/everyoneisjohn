@@ -34,7 +34,9 @@ export default class SkillList extends React.Component<Props, State> {
 
     this.state = {ids};
 
-    this.handleChange = debounce(this.handleChange, DEBOUNCE_AMOUNT);
+    this.changeHandler = new Array(3).fill(0).map((_, i) => {
+      return debounce(this.handleChange.bind(this, i), DEBOUNCE_AMOUNT);
+    });
   }
 
   handleInput = (e: SyntheticInputEvent<HTMLInputElement>, index: number) => {
@@ -46,17 +48,17 @@ export default class SkillList extends React.Component<Props, State> {
       }
     } = e;
 
-    const {items} = this.props;
-    items[index] = value;
-
     store.dispatch({
       type: 'SET_PLAYER_INFO',
-      payload: {skills: items}
+      payload: {
+        [`skill${index + 1}`]: value
+      }
     });
-    this.handleChange(value, index);
+
+    this.changeHandler[index](value);
   }
 
-  handleChange = (value: string, index: number) => {
+  handleChange = (index: number, value: string) => {
     const content = value.trim();
 
     socket.emit('updateStats', {
