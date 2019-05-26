@@ -3,6 +3,7 @@
 import React from 'react';
 import cx from 'classnames';
 
+import Reject from '../reject';
 import Dropdown from '../dropdown';
 import socket from '../../socket';
 import globalStyles from '../../sass/global.scss';
@@ -25,12 +26,7 @@ const Goal = ({player, name, value, onChange, onComplete}: Props) => name ? (
     <div className={styles.container}>
       <p className={styles.title}>Obsession:&nbsp;</p>
       <p data-type="name">{name}</p>
-      <p
-        data-type="reject"
-        onClick={() => reject(player)}
-      >
-        X
-      </p>
+      <Reject onClick={() => reject(player)}/>
     </div>
     <div className={styles.container}>
       <p className={styles.title}>Value:&nbsp;</p>

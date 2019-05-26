@@ -78,14 +78,14 @@ test('it renders a reject button next to the obsession', t => {
 
   const goalContainer = wrapper.find('[data-type="name"]').parent().shallow();
 
-  const reject = goalContainer.find('[data-type="reject"]');
+  const reject = goalContainer.find('Reject');
 
   t.is(reject.length, 1);
 });
 
 test('it emits a rejectGoal event when the reject button is clicked', t => {
   const wrapper = render({name: 'Some goal'});
-  const reject = wrapper.find('[data-type="reject"]');
+  const reject = wrapper.find('Reject');
 
   reject.simulate('click');
 
