@@ -77,19 +77,21 @@ test('it emits the skill to the server on input', t => {
 
 test('it updates the store with the new skill on input', t => {
   const items = ['', '', ''];
+  const index = 0;
   const wrapper = render({items, frozen: false});
 
   const skills = wrapper.find('[data-type="skills"]');
   const lis = skills.find('li');
-  const input = lis.at(0).find('input');
+  const input = lis.at(index).find('input');
 
   const value = 'abcde';
 
   input.simulate('input', {target: {value}, persist: () => {}});
 
-  const skillsArray = [value, '', ''];
   t.true(store.dispatch.calledWith({
     type: 'SET_PLAYER_INFO',
-    payload: {skills: skillsArray}
+    payload: {
+      [`skill${index + 1}`]: value
+    }
   }));
 });

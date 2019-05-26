@@ -46,12 +46,11 @@ export default class SkillList extends React.Component<Props, State> {
       }
     } = e;
 
-    const {items} = this.props;
-    items[index] = value;
-
     store.dispatch({
       type: 'SET_PLAYER_INFO',
-      payload: {skills: items}
+      payload: {
+        [`skill${index + 1}`]: value
+      }
     });
     this.handleChange(value, index);
   }

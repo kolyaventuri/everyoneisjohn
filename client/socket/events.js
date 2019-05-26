@@ -8,6 +8,7 @@ import gameError from './actions/game-error';
 import disconnect from './actions/disconnect';
 import deleteItem from './actions/delete-item';
 import gameKick from './actions/game-kick';
+import setSkill from './actions/set-skill';
 
 import setPlayers from './actions/set-players';
 
@@ -21,6 +22,7 @@ const events = [
   {name: 'disconnect', handler: disconnect},
   {name: 'deleteItem', handler: deleteItem},
   {name: 'gameKick', handler: gameKick},
+  {name: 'setSkill', handler: setSkill},
 
   // GM Events
   {name: 'setPlayers', handler: setPlayers}

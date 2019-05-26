@@ -315,8 +315,9 @@ test('emitUpdate does not emit anything if there has been no change since the la
 test('emitUpdate emits only the changed values', t => {
   const {player} = setup();
   const willpower = 7;
+  const {id} = player;
 
   player.stats.willpower = willpower;
 
-  t.true(player.socket.emit.calledWithExactly('updatePlayer', {willpower}));
+  t.true(player.socket.emit.calledWithExactly('updatePlayer', {id, willpower}));
 });

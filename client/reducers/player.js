@@ -1,5 +1,7 @@
 // @flow
 
+import deepMerge from 'deepmerge';
+
 import type {PlayerStateType, ActionType} from './types';
 
 const PlayerReducer = (state: PlayerStateType = {}, action: ActionType): PlayerStateType => {
@@ -7,10 +9,7 @@ const PlayerReducer = (state: PlayerStateType = {}, action: ActionType): PlayerS
 
   switch (type) {
     case 'SET_PLAYER_INFO':
-      return {
-        ...state,
-        ...payload
-      };
+      return deepMerge(state, payload);
     case 'SET_PLAYER_NAME':
       return {
         ...state,

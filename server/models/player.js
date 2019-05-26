@@ -132,7 +132,6 @@ export default class Player {
       points,
       goal,
       goalLevel,
-      skills,
       frozen,
       winner
     } = this.stats;
@@ -144,7 +143,6 @@ export default class Player {
       points,
       goal,
       goalLevel,
-      skills,
       frozen,
       winner
     };
@@ -196,6 +194,17 @@ export default class Player {
       index,
       skill
     });
+
+    if (this.game) {
+      this.game.emit({
+        channel: 'gm',
+        event: 'updatePlayer',
+        payload: {
+          id: this.id,
+          [`skill${index + 1}`]: skill
+        }
+      });
+    }
   }
 
   get id(): string {
