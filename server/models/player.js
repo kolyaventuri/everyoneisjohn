@@ -72,9 +72,9 @@ export default class Player {
     this.socket.emit('gameError', 'error.game.doesntExist');
   }
 
-  leaveGame() {
+  leaveGame({silent}: {silent: boolean} = {silent: false}) {
     if (this.game) {
-      this.game.removePlayer(this);
+      this.game.removePlayer(this, silent);
     }
 
     this.__game = '';
@@ -86,7 +86,7 @@ export default class Player {
     this.__STATICS__.lastSerialized = {};
 
     if (game) {
-      this.leaveGame();
+      this.leaveGame({silent: true});
       this.resetStats();
     }
 

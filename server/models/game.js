@@ -110,7 +110,7 @@ export default class Game {
     });
   }
 
-  removePlayer(player: Player) {
+  removePlayer(player: Player, silent: boolean = false) {
     const {id} = player;
     const players = this.__players;
     const index = players.indexOf(id);
@@ -119,7 +119,10 @@ export default class Game {
       players.splice(index, 1);
 
       this.gmEmitPlayers();
-      player.socket.emit('gameKick');
+
+      if (!silent) {
+        player.socket.emit('gameKick');
+      }
     }
   }
 

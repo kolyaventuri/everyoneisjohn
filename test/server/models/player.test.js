@@ -144,6 +144,17 @@ test('can leave a game', t => {
   t.is(player.game, null);
 });
 
+test('can leave a game silently', t => {
+  const {game, player} = setup();
+  gameRepository.find = stub().onCall(0).returns(game).returns(null);
+  player.joinGame(game.id);
+
+  player.leaveGame({silent: true});
+
+  t.is(player.game, null);
+  t.true(game.removePlayer.calledWith(player, true));
+});
+
 test('is subscribed to the public game room upon joining the game', t => {
   const {game, player} = setup(true, false);
 

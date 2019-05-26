@@ -94,6 +94,16 @@ test('emits a gameKick event to the player when kicked', t => {
   t.true(player.socket.emit.calledWith('gameKick'));
 });
 
+test('does not emit a gameKick event to the player if silent is true', t => {
+  const {game, player} = setup();
+
+  game.addPlayer(player);
+
+  game.removePlayer(player, true);
+
+  t.false(player.socket.emit.calledWith('gameKick'));
+});
+
 test('gets stored in the game repository during the constructor', t => {
   const {game} = setup();
 
