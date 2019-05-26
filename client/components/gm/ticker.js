@@ -2,6 +2,11 @@
 
 import React from 'react';
 import cx from 'classnames';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {
+  faPlus,
+  faMinus
+} from '@fortawesome/pro-regular-svg-icons';
 
 import styles from './ticker.scss';
 
@@ -35,7 +40,7 @@ class Ticker extends React.Component<Props> {
           data-action="decrement"
           onClick={this.handleDecrement}
         >
-          -
+          <FontAwesomeIcon icon={faMinus}/>
         </a>
         {renderValue && <p data-type="value">{value}</p>}
         <a
@@ -44,7 +49,7 @@ class Ticker extends React.Component<Props> {
           data-action="increment"
           onClick={this.handleIncrement}
         >
-          +
+          <FontAwesomeIcon icon={faPlus}/>
         </a>
       </div>
     );
