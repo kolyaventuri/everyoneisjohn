@@ -2,13 +2,11 @@
 
 import React from 'react';
 import {render} from 'react-dom';
-import {Router} from 'react-router-dom';
 import {Provider} from 'react-redux';
-import {ConnectedRouter} from 'connected-react-router';
 import ReactGA from 'react-ga';
 
-import {store, history} from './store';
-import App from './components/app';
+import {store} from './store';
+import RouteController from './route-controller';
 
 /* eslint-disable import/no-unassigned-import */
 import './socket';
@@ -18,25 +16,9 @@ import './utils/error-trap';
 
 ReactGA.initialize(process.env.GA_TRACKING);
 
-class Routes extends React.Component {
-  componentDidMount() {
-    ReactGA.pageview(window.location.pathname);
-  }
-
-  render() {
-    return (
-      <ConnectedRouter history={history}>
-        <Router history={history}>
-          <App/>
-        </Router>
-      </ConnectedRouter>
-    );
-  }
-}
-
 render(
   <Provider store={store}>
-    <Routes/>
+    <RouteController/>
   </Provider>
   // $FlowFixMe
   , document.querySelector('#app'));
