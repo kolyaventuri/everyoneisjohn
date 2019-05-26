@@ -25,3 +25,11 @@ test('calls player.destroy() if no game exists', t => {
 
   clock.restore();
 });
+
+test('it does not throw if the player does not exist', t => {
+  const socket = {};
+
+  const fn = () => disconnect(socket);
+
+  t.notThrows(fn);
+});
