@@ -6,12 +6,14 @@ import type {SocketType} from '..';
 
 const disconnect = (socket: SocketType) => {
   const player = playerRepository.find(socket.playerId);
-  const {game} = player;
+  if (player) {
+    const {game} = player;
 
-  if (game) {
-    player.disconnect();
-  } else if (player) {
-    player.destroy();
+    if (game) {
+      player.disconnect();
+    } else if (player) {
+      player.destroy();
+    }
   }
 };
 
