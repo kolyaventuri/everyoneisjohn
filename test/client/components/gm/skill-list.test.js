@@ -47,7 +47,7 @@ test('it renders a reject button next to each skill', t => {
   const skills = wrapper.find('li');
   const skill = skills.at(0);
 
-  const reject = skill.find('p').at(1);
+  const reject = skill.find('Reject');
 
   t.is(reject.length, 1);
 });
@@ -57,7 +57,7 @@ test('it emits a rejectSkill event when the reject button is clicked', t => {
   const wrapper = render(items);
   const skills = wrapper.find('li');
   const skill = skills.at(0);
-  const reject = skill.find('p').at(1);
+  const reject = skill.find('Reject');
 
   reject.simulate('click');
 

@@ -12,9 +12,9 @@ const Kick = proxyquire('../../../../client/components/gm/kick', {
 
 const render = (props = {}) => shallow(<Kick {...props}/>);
 
-test('it renders an X button', t => {
+test('it renders a Reject component', t => {
   const wrapper = render({player: 'id'});
-  const button = wrapper.find('[data-type="button"]');
+  const button = wrapper.find('Reject');
 
   t.is(button.length, 1);
 });
@@ -23,7 +23,7 @@ test('it emits a kickPlayer event when clicked', t => {
   const player = 'some-id';
 
   const wrapper = render({player});
-  const button = wrapper.find('[data-type="button"]');
+  const button = wrapper.find('Reject');
 
   button.simulate('click');
 

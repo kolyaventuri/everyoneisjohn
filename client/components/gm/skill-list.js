@@ -3,6 +3,7 @@
 import React from 'react';
 import uuid from 'uuid/v4';
 
+import Reject from '../reject';
 import socket from '../../socket';
 
 import styles from './skill-list.scss';
@@ -32,7 +33,7 @@ class SkillList extends React.Component<Props> {
             {children.map((skill, index) => skill ? (
               <li key={uuid()}>
                 <p>{skill}</p>
-                <p onClick={() => this.handleReject(index)}>X</p>
+                <Reject onClick={() => this.handleReject(index)}/>
               </li>
             ) : null)}
           </ul>

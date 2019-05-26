@@ -2,6 +2,7 @@
 
 import React from 'react';
 
+import Reject from '../reject';
 import socket from '../../socket';
 
 type Props = {|
@@ -10,13 +11,6 @@ type Props = {|
 
 const kickPlayer = (player: string) => socket.emit('kickPlayer', {player});
 
-const Kick = ({player}: Props) => (
-  <p
-    data-type="button"
-    onClick={() => kickPlayer(player)}
-  >
-    X
-  </p>
-);
+const Kick = ({player}: Props) => <Reject onClick={() => kickPlayer(player)}/>;
 
 export default Kick;
