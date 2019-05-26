@@ -58,7 +58,7 @@ test('it renders a SkillList component', t => {
   const list = wrapper.find('SkillList');
 
   t.is(list.length, 1);
-  t.deepEqual(list.props().items, JSON.parse(defaultProps.skills));
+  t.deepEqual(list.props().items, defaultProps.skills);
 });
 
 test('it does not render a Bidding component in SETUP mode', t => {

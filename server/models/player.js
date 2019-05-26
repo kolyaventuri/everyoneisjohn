@@ -2,6 +2,7 @@
 
 import uuid from 'uuid/v1';
 import Chance from 'chance';
+import {diff, updatedDiff} from 'deep-object-diff';
 
 import {logInfo} from '../lib/logger';
 import {gameRepository, playerRepository} from '../repositories';
@@ -19,7 +20,8 @@ type StaticsType = {
   id: string,
   active: boolean,
   name: string,
-  disconnectTimer: ?TimeoutID
+  disconnectTimer: ?TimeoutID,
+  lastSerialized: {[string]: any}
 };
 
 export default class Player {
@@ -44,7 +46,8 @@ export default class Player {
       id,
       active: true,
       disconnectTimer: null,
-      name
+      name,
+      lastSerialized: {}
     };
 
     this.resetStats();
@@ -80,6 +83,8 @@ export default class Player {
   setGame({id}: Game) {
     const {game} = this;
 
+    this.__STATICS__.lastSerialized = {};
+
     if (game) {
       this.leaveGame();
       this.resetStats();
@@ -105,6 +110,7 @@ export default class Player {
 
   reconnect() {
     this.__STATICS__.active = true;
+    this.__STATICS__.lastSerialized = {};
 
     clearTimeout(this.__STATICS__.disconnectTimer);
   }
@@ -124,9 +130,9 @@ export default class Player {
     const {
       willpower,
       points,
-      skills,
       goal,
       goalLevel,
+      skills,
       frozen,
       winner
     } = this.stats;
@@ -136,9 +142,9 @@ export default class Player {
       name,
       willpower,
       points,
-      skills,
       goal,
       goalLevel,
+      skills,
       frozen,
       winner
     };
@@ -147,7 +153,21 @@ export default class Player {
   }
 
   emitUpdate(emitToGm: boolean = true, emitToPlayer: boolean = true) {
-    const payload = this.serialize();
+    const {lastSerialized} = this.__STATICS__;
+    const serialized = this.serialize();
+    const currentDiff = diff(lastSerialized, serialized);
+
+    if (Object.values(currentDiff).length === 0) {
+      return;
+    }
+
+    const updated = updatedDiff(lastSerialized, serialized);
+    this.__STATICS__.lastSerialized = serialized;
+
+    const payload = Object.values(updated).length === 0 ? serialized : updated;
+
+    payload.id = this.id;
+
     const event = 'updatePlayer';
     if (emitToPlayer) {
       this.socket.emit(event, payload);

@@ -299,3 +299,24 @@ test('emitSkill emits a setSkill event to the player', t => {
 
   t.true(player.socket.emit.calledWith('setSkill', {index: 0, skill}));
 });
+
+test('emitUpdate does not emit anything if there has been no change since the last update', t => {
+  const {player} = setup();
+
+  player.emitUpdate();
+
+  t.true(player.socket.emit.calledWith('updatePlayer'));
+  const calls = player.socket.emit.args;
+  const updateCalls = calls.filter(call => call[0] === 'updatePlayer');
+
+  t.is(updateCalls.length, 1); // Account for the one call when player is created
+});
+
+test('emitUpdate emits only the changed values', t => {
+  const {player} = setup();
+  const willpower = 7;
+
+  player.stats.willpower = willpower;
+
+  t.true(player.socket.emit.calledWithExactly('updatePlayer', {willpower}));
+});
