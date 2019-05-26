@@ -280,15 +280,6 @@ test('player is booted from the old game if they join a new one', t => {
   t.true(player.leaveGame.called);
 });
 
-test('emitDelete emits a deleteItem event to the player', t => {
-  const {player} = setup();
-
-  const payload = {type: 'static', index: 1};
-  player.emitDelete(payload);
-
-  t.true(player.socket.emit.calledWith('deleteItem', payload));
-});
-
 test('emitSkill emits a setSkill event to the player', t => {
   const {player} = setup();
 

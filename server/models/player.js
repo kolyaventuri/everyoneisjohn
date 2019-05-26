@@ -180,13 +180,6 @@ export default class Player {
     }
   }
 
-  emitDelete({type, index}: {type: string, index?: number}) {
-    this.socket.emit('deleteItem', {
-      type,
-      index
-    });
-  }
-
   emitSkill(index: number) {
     const skill = this.stats.skills[index];
 

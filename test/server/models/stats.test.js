@@ -7,7 +7,6 @@ import setup from '../stubs/create-socket';
 const genPlayer = () => {
   const {player} = setup();
   player.emitUpdate = stub();
-  player.emitDelete = stub();
   player.emitSkill = stub();
 
   return player;
@@ -136,17 +135,6 @@ test('can delete skill by index', t => {
   stats.deleteSkill(2);
 
   t.deepEqual(stats.skills, ['a', '', '']);
-});
-
-test('emits a delete event to the player on skill deletion', t => {
-  const player = genPlayer();
-  const stats = genStats(player);
-
-  stats.setSkill(1, 'a');
-
-  stats.deleteSkill(1);
-
-  t.true(player.emitDelete.calledWith({type: 'skill', index: 0}));
 });
 
 test('new skills are emitted', t => {
