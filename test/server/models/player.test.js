@@ -288,3 +288,14 @@ test('emitDelete emits a deleteItem event to the player', t => {
 
   t.true(player.socket.emit.calledWith('deleteItem', payload));
 });
+
+test('emitSkill emits a setSkill event to the player', t => {
+  const {player} = setup();
+
+  const skill = 'skill';
+  player.stats.__STATICS__.skill1 = skill;
+
+  player.emitSkill(0);
+
+  t.true(player.socket.emit.calledWith('setSkill', {index: 0, skill}));
+});

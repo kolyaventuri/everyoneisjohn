@@ -8,6 +8,7 @@ const genPlayer = () => {
   const {player} = setup();
   player.emitUpdate = stub();
   player.emitDelete = stub();
+  player.emitSkill = stub();
 
   return player;
 };
@@ -154,7 +155,7 @@ test('new skills are emitted', t => {
 
   stats.setSkill(1, 'a');
 
-  t.true(player.emitUpdate.called);
+  t.true(player.emitSkill.calledWith(0));
 });
 
 test('spends 3 willpower if the 3rd skill is set', t => {

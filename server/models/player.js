@@ -169,6 +169,15 @@ export default class Player {
     });
   }
 
+  emitSkill(index: number) {
+    const skill = this.stats.skills[index];
+
+    this.socket.emit('setSkill', {
+      index,
+      skill
+    });
+  }
+
   get id(): string {
     return this.__STATICS__.id;
   }
