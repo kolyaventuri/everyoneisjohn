@@ -5,6 +5,12 @@
     border: 2px solid #DEDEDE;
     border-radius: 0.25em;
     padding: 1em;
+    position: relative;
+
+    .container {
+        position: relative;
+        top: 1em;
+    }
 
     .name {
         font-weight: bold;
@@ -24,5 +30,13 @@
         &.winner {
           color: $green;
         }
+    }
+
+    .kick {
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        font-size: 1.25em;
     }
 }

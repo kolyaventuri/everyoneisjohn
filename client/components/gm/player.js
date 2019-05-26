@@ -71,29 +71,31 @@ class Player extends React.Component<Props> {
 
     return (
       <div className={styles.player}>
-        <h1
-          data-type="name"
-          className={cx(styles.name, {[styles.winner]: winner})}
-        >
-          {name}
-        </h1>
-        <Kick player={playerId}/>
-        <Willpower
-          value={willpower}
-          onChange={this.handleWillpowerChange}
-        />
-        <Score
-          value={score}
-          onChange={this.handleScoreChange}
-        />
-        <Goal
-          player={playerId}
-          name={goal}
-          value={goalLevel}
-          onChange={this.handleGoalChange}
-          onComplete={() => this.handleScoreChange(goalLevel)}
-        />
-        <SkillList player={playerId}>{skills}</SkillList>
+        <Kick player={playerId} className={styles.kick}/>
+        <span className={styles.container}>
+          <h1
+            data-type="name"
+            className={cx(styles.name, {[styles.winner]: winner})}
+          >
+            {name}
+          </h1>
+          <Willpower
+            value={willpower}
+            onChange={this.handleWillpowerChange}
+          />
+          <Score
+            value={score}
+            onChange={this.handleScoreChange}
+          />
+          <Goal
+            player={playerId}
+            name={goal}
+            value={goalLevel}
+            onChange={this.handleGoalChange}
+            onComplete={() => this.handleScoreChange(goalLevel)}
+          />
+          <SkillList player={playerId}>{skills}</SkillList>
+        </span>
       </div>
     );
   }
