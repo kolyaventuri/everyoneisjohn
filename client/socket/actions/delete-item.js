@@ -9,16 +9,10 @@ type Payload = {|
 
 const deleteItem = ({type, index}: Payload) => {
   if (type === 'skill') {
-    const {
-      player: {skills}
-    } = store.getState();
-
-    skills[index] = '';
-
     store.dispatch({
       type: 'SET_PLAYER_INFO',
       payload: {
-        skills
+        [`skill${index}`]: ''
       }
     });
   }
