@@ -85,6 +85,7 @@
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
     "react-flexbox-grid": "^2.1.2",
+    "react-ga": "^2.5.7",
     "react-redux": "^7.0.2",
     "react-router": "^5.0.0",
     "react-router-dom": "^4.3.1",
