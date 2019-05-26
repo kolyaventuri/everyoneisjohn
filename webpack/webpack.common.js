@@ -9,7 +9,8 @@ module.exports = {
   ],
   plugins: [
     new webpack.EnvironmentPlugin({
-      ENV: 'local'
+      ENV: 'local',
+      GA_TRACKING: process.env.GA_TRACKING || null
     })
   ],
   module: {
