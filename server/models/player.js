@@ -5,13 +5,17 @@ import Chance from 'chance';
 import {diff, updatedDiff} from 'deep-object-diff';
 
 import {logInfo} from '../lib/logger';
+import type {RoomsType, Room} from '../constants/types';
 import {gameRepository, playerRepository} from '../repositories';
 import Game from './game';
 import Stats from './stats';
 
 const chance = new Chance();
 
-type Socket = {[string]: any};
+type Socket = {
+  [string]: any,
+  rooms?: RoomsType
+};
 
 type IdType = string | null;
 
@@ -38,6 +42,7 @@ export default class Player {
   constructor(socket: Socket, id: IdType = null) {
     id = id || uuid();
     socket.playerId = socket.playerId || id;
+    socket.rooms = socket.rooms || {};
 
     const name = chance.name({middle: true, prefix: true});
 
@@ -91,6 +96,11 @@ export default class Player {
     }
 
     this.__game = id;
+  }
+
+  assignRoom(type: Room, name: string) {
+    this.socket.join(name);
+    this.socket.rooms[type] = name;
   }
 
   resetStats() {

@@ -6,6 +6,7 @@ import {logInfo} from '../lib/logger';
 import Slug from '../lib/slug';
 import * as GameModes from '../lib/game-mode';
 import {gameRepository, playerRepository} from '../repositories';
+import {rooms} from '../constants';
 import Player from './player';
 import Auction from './auction';
 
@@ -82,8 +83,9 @@ export default class Game {
     }
 
     const {prefix} = this.__STATICS__;
-    player.socket.join(`${prefix}/all`);
-    player.socket.join(`${prefix}/player/${player.id}`);
+    player.assignRoom(rooms.GAME, `${prefix}/all`);
+    player.assignRoom(rooms.PRIVATE, `${prefix}/player/${player.id}`);
+
     player.socket.emit('gameJoinSuccess', this.id);
 
     player.emitUpdate(false);
@@ -96,8 +98,9 @@ export default class Game {
     const {prefix} = this.__STATICS__;
     this.owner.setGame(this);
 
-    this.owner.socket.join(`${prefix}/gm`);
-    this.owner.socket.join(`${prefix}/all`);
+    this.owner.assignRoom(rooms.GM, `${prefix}/gm`);
+    this.owner.assignRoom(rooms.GAME, `${prefix}/all`);
+
     this.emitGameMode('gm');
     this.owner.socket.emit('startGame', this.id);
   }

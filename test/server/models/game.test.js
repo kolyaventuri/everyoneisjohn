@@ -222,19 +222,21 @@ test('joins a user to the public room upon joining the game', t => {
   const {game, player} = setup();
 
   const room = `game/${game.id}/all`;
+  const roomName = 'game';
 
-  t.true(player.socket.join.calledWith(room));
+  t.is(player.socket.rooms[roomName], room);
 });
 
 test('joins a user to the private room upon joining', t => {
   const game = genGame();
   const player = new Player(new MockSocket(), 'id');
 
+  const roomName = 'private';
   const room = `game/${game.id}/player/${player.id}`;
 
   game.addPlayer(player);
 
-  t.true(player.socket.join.calledWith(room));
+  t.is(player.socket.rooms[roomName], room);
 });
 
 test('can emit to all players in the game', t => {
@@ -256,8 +258,14 @@ test('can emit to all players in the game', t => {
 test('subscribes owner to GM and "all" rooms', t => {
   const {game, player: owner} = setup(true, true);
 
-  t.true(owner.socket.join.calledWith(`game/${game.id}/gm`));
-  t.true(owner.socket.join.calledWith(`game/${game.id}/all`));
+  const roomName = 'gm';
+  const room = `game/${game.id}/gm`;
+
+  const allRoomName = 'game';
+  const allRoom = `game/${game.id}/all`;
+
+  t.is(owner.socket.rooms[roomName], room);
+  t.is(owner.socket.rooms[allRoomName], allRoom);
 });
 
 test('subtracts willpower from auction winner and enters playing mode', t => {

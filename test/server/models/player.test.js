@@ -165,6 +165,7 @@ test('is subscribed to the public game room upon joining the game', t => {
   player.joinGame(game.id);
 
   t.true(player.socket.join.calledWith(room));
+  t.is(player.socket.rooms.game, room);
 });
 
 test('is subscribed to the private channel upon joining the game', t => {
@@ -177,6 +178,7 @@ test('is subscribed to the private channel upon joining the game', t => {
   game.addPlayer(player);
 
   t.true(player.socket.join.calledWith(room));
+  t.is(player.socket.rooms.private, room);
 });
 
 test('has a disconnect timeout set if they leave', t => {
@@ -322,4 +324,16 @@ test('emitUpdate emits only the changed values', t => {
   player.stats.willpower = willpower;
 
   t.true(player.socket.emit.calledWithExactly('updatePlayer', {id, willpower}));
+});
+
+test('#assignRoom sets the room', t => {
+  const {player} = setup();
+
+  const roomType = 'gm';
+  const roomName = 'room/name';
+
+  player.assignRoom(roomType, roomName);
+
+  t.true(player.socket.join.calledWith(roomName));
+  t.is(player.socket.rooms[roomType], roomName);
 });

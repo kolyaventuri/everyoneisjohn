@@ -12,7 +12,8 @@ const methods = [
   'disconnect',
   'reconnect',
   'destroy',
-  'emitUpdate'
+  'emitUpdate',
+  'assignRoom'
 ];
 
 const gameMethods = [
