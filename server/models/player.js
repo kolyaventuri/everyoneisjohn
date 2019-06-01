@@ -14,8 +14,7 @@ import Stats from './stats';
 const chance = new Chance();
 
 type Socket = {
-  [string]: any,
-  rooms?: RoomsType
+  [string]: any
 };
 
 type IdType = string | null;
@@ -26,7 +25,8 @@ type StaticsType = {
   active: boolean,
   name: string,
   disconnectTimer: ?TimeoutID,
-  lastSerialized: {[string]: any}
+  lastSerialized: {[string]: any},
+  rooms: RoomsType
 };
 
 export default class Player {
@@ -43,7 +43,6 @@ export default class Player {
   constructor(socket: Socket, id: IdType = null) {
     id = id || uuid();
     socket.playerId = socket.playerId || id;
-    socket.rooms = socket.rooms || {};
 
     const name = chance.name({middle: true, prefix: true});
 
@@ -53,7 +52,8 @@ export default class Player {
       active: true,
       disconnectTimer: null,
       name,
-      lastSerialized: {}
+      lastSerialized: {},
+      rooms: {}
     };
 
     this.resetStats();
@@ -101,7 +101,11 @@ export default class Player {
 
   assignRoom(type: Room, name: string) {
     this.socket.join(name);
-    this.socket.rooms[type] = name;
+    this.__STATICS__.rooms[type] = name;
+  }
+
+  get rooms(): RoomsType {
+    return this.__STATICS__.rooms;
   }
 
   resetStats() {
@@ -221,7 +225,7 @@ export default class Player {
   }
 
   emitToMe({event, payload}: {event: string, payload?: any}) {
-    const channel = this.socket.rooms.private;
+    const channel = this.rooms.private;
 
     emit({channel, event, payload});
   }

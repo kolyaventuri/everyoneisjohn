@@ -6,6 +6,7 @@ import uuid from 'uuid/v4';
 import {repositories} from '../mocks';
 import {MockSocket} from '../mocks/socket';
 import setup from '../stubs/create-socket';
+import {rooms} from '../../../server/constants';
 import Stats from '../../../server/models/stats';
 import Game from '../../../server/models/game';
 
@@ -167,7 +168,7 @@ test('is subscribed to the public game room upon joining the game', t => {
   player.joinGame(game.id);
 
   t.true(player.socket.join.calledWith(room));
-  t.is(player.socket.rooms.game, room);
+  t.is(player.rooms.game, room);
 });
 
 test('is subscribed to the private channel upon joining the game', t => {
@@ -179,8 +180,7 @@ test('is subscribed to the private channel upon joining the game', t => {
 
   game.addPlayer(player);
 
-  t.true(player.socket.join.calledWith(room));
-  t.is(player.socket.rooms.private, room);
+  t.true(player.assignRoom.calledWith(rooms.PRIVATE, room));
 });
 
 test('has a disconnect timeout set if they leave', t => {
@@ -304,7 +304,7 @@ test('emitSkill emits a setSkill event to the player', t => {
   player.emitSkill(0);
   const event = 'setSkill';
   const payload = {index: 0, skill};
-  const channel = player.socket.rooms.private;
+  const channel = player.rooms.private;
 
   t.true(emit.calledWith({channel, event, payload}));
 });
@@ -339,7 +339,7 @@ test('#assignRoom sets the room', t => {
   player.assignRoom(roomType, roomName);
 
   t.true(player.socket.join.calledWith(roomName));
-  t.is(player.socket.rooms[roomType], roomName);
+  t.is(player.rooms[roomType], roomName);
 });
 
 test('#emitToMe emits to my channel', t => {
@@ -351,7 +351,7 @@ test('#emitToMe emits to my channel', t => {
   player.emitToMe({event, payload});
 
   t.true(emit.calledWith({
-    channel: player.socket.rooms.private,
+    channel: player.rooms.private,
     event,
     payload
   }));

@@ -5,6 +5,7 @@ import {stub} from 'sinon';
 import Player from '../../../server/models/player';
 import {repositories} from '../mocks';
 import {MockSocket, socketToMocks} from '../mocks/socket';
+import {rooms} from '../../../server/constants';
 import * as GameMode from '../../../server/lib/game-mode';
 import setup from '../stubs/create-socket';
 
@@ -222,9 +223,9 @@ test('joins a user to the public room upon joining the game', t => {
   const {game, player} = setup();
 
   const room = `game/${game.id}/all`;
-  const roomName = 'game';
+  const roomName = rooms.GAME;
 
-  t.is(player.socket.rooms[roomName], room);
+  t.is(player.rooms[roomName], room);
 });
 
 test('joins a user to the private room upon joining', t => {
@@ -236,7 +237,7 @@ test('joins a user to the private room upon joining', t => {
 
   game.addPlayer(player);
 
-  t.is(player.socket.rooms[roomName], room);
+  t.is(player.rooms[roomName], room);
 });
 
 test('can emit to all players in the game', t => {
@@ -264,8 +265,8 @@ test('subscribes owner to GM and "all" rooms', t => {
   const allRoomName = 'game';
   const allRoom = `game/${game.id}/all`;
 
-  t.is(owner.socket.rooms[roomName], room);
-  t.is(owner.socket.rooms[allRoomName], allRoom);
+  t.is(owner.rooms[roomName], room);
+  t.is(owner.rooms[allRoomName], allRoom);
 });
 
 test('subtracts willpower from auction winner and enters playing mode', t => {
