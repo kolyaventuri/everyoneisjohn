@@ -7,6 +7,7 @@ import {diff, updatedDiff} from 'deep-object-diff';
 import {logInfo} from '../lib/logger';
 import type {RoomsType, Room} from '../constants/types';
 import {gameRepository, playerRepository} from '../repositories';
+import {emit} from '../socket/emitter';
 import Game from './game';
 import Stats from './stats';
 
@@ -74,7 +75,7 @@ export default class Player {
       return game.addPlayer(this);
     }
 
-    this.socket.emit('gameError', 'error.game.doesntExist');
+    this.emitToMe('gameError', 'error.game.doesntExist');
   }
 
   leaveGame({silent}: {silent: boolean} = {silent: false}) {
@@ -184,7 +185,7 @@ export default class Player {
 
     const event = 'updatePlayer';
     if (emitToPlayer) {
-      this.socket.emit(event, payload);
+      this.emitToMe(event, payload);
     }
 
     if (this.game && emitToGm) {
@@ -199,9 +200,12 @@ export default class Player {
   emitSkill(index: number) {
     const skill = this.stats.skills[index];
 
-    this.socket.emit('setSkill', {
-      index,
-      skill
+    this.emitToMe({
+      event: 'setSkill',
+      payload: {
+        index,
+        skill
+      }
     });
 
     if (this.game) {
@@ -214,6 +218,12 @@ export default class Player {
         }
       });
     }
+  }
+
+  emitToMe({event, payload}: {event: string, payload?: any}) {
+    const channel = this.socket.rooms.private;
+
+    emit({channel, event, payload});
   }
 
   get id(): string {

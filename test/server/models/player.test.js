@@ -9,8 +9,10 @@ import setup from '../stubs/create-socket';
 import Stats from '../../../server/models/stats';
 import Game from '../../../server/models/game';
 
+const emit = stub();
 const Player = proxyquire('../../../server/models/player', {
-  '../repositories': repositories
+  '../repositories': repositories,
+  '../socket/emitter': {emit}
 }).default;
 const {gameRepository, playerRepository} = repositories;
 
@@ -294,26 +296,28 @@ test('player is booted from the old game if they join a new one', t => {
 });
 
 test('emitSkill emits a setSkill event to the player', t => {
-  const {player} = setup();
+  const player = genPlayer();
 
   const skill = 'skill';
   player.stats.__STATICS__.skill1 = skill;
 
   player.emitSkill(0);
+  const event = 'setSkill';
+  const payload = {index: 0, skill};
+  const channel = player.socket.rooms.private;
 
-  t.true(player.socket.emit.calledWith('setSkill', {index: 0, skill}));
+  t.true(emit.calledWith({channel, event, payload}));
 });
 
 test('emitUpdate does not emit anything if there has been no change since the last update', t => {
   const {player} = setup();
 
+  player.__STATICS__.lastSerialized = {}; // Mock initial state
+
+  player.emitUpdate();
   player.emitUpdate();
 
-  t.true(player.socket.emit.calledWith('updatePlayer'));
-  const calls = player.socket.emit.args;
-  const updateCalls = calls.filter(call => call[0] === 'updatePlayer');
-
-  t.is(updateCalls.length, 1); // Account for the one call when player is created
+  t.is(player.emitToMe.callCount, 1); // Account for the one call when player is created
 });
 
 test('emitUpdate emits only the changed values', t => {
@@ -323,7 +327,7 @@ test('emitUpdate emits only the changed values', t => {
 
   player.stats.willpower = willpower;
 
-  t.true(player.socket.emit.calledWithExactly('updatePlayer', {id, willpower}));
+  t.true(player.emitToMe.calledWithExactly('updatePlayer', {id, willpower}));
 });
 
 test('#assignRoom sets the room', t => {
@@ -336,4 +340,19 @@ test('#assignRoom sets the room', t => {
 
   t.true(player.socket.join.calledWith(roomName));
   t.is(player.socket.rooms[roomType], roomName);
+});
+
+test('#emitToMe emits to my channel', t => {
+  const player = genPlayer();
+
+  const event = 'somEvent';
+  const payload = 'somePayload';
+
+  player.emitToMe({event, payload});
+
+  t.true(emit.calledWith({
+    channel: player.socket.rooms.private,
+    event,
+    payload
+  }));
 });
