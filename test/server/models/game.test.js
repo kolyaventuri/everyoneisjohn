@@ -254,18 +254,6 @@ test('joins a user to the public room upon joining the game', t => {
   t.is(player.rooms[roomName], room);
 });
 
-test('joins a user to the private room upon joining', t => {
-  const game = genGame();
-  const player = new Player(new MockSocket(), 'id');
-
-  const roomName = 'private';
-  const room = `game/${game.id}/player/${player.id}`;
-
-  game.addPlayer(player);
-
-  t.is(player.rooms[roomName], room);
-});
-
 test('subscribes owner to GM and "all" rooms', t => {
   const {game, player: owner} = setup(true, true);
 

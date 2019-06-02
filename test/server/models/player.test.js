@@ -98,6 +98,13 @@ test('has a socket', t => {
   t.is(player.__STATICS__.socket, socket);
 });
 
+test('is subscribed to the private room upon instantiation', t => {
+  const {player} = setup();
+  const room = `player/${player.id}`;
+
+  t.is(player.rooms[rooms.PRIVATE], room);
+});
+
 test('gets stored in the repository', t => {
   const player = genPlayer();
 
@@ -169,18 +176,6 @@ test('is subscribed to the public game room upon joining the game', t => {
 
   t.true(player.__STATICS__.socket.join.calledWith(room));
   t.is(player.rooms.game, room);
-});
-
-test('is subscribed to the private channel upon joining the game', t => {
-  const {game, player} = setup();
-
-  gameRepository.find = stub().returns(game);
-
-  const room = `game/${game.id}/player/${player.id}`;
-
-  game.addPlayer(player);
-
-  t.true(player.assignRoom.calledWith(rooms.PRIVATE, room));
 });
 
 test('has a disconnect timeout set if they leave', t => {
@@ -344,7 +339,10 @@ test('emitUpdate emits only the changed values', t => {
 
   player.stats.willpower = willpower;
 
-  t.true(player.emitToMe.calledWithExactly('updatePlayer', {id, willpower}));
+  t.true(player.emitToMe.calledWithExactly({
+    event: 'updatePlayer',
+    payload: {id, willpower}
+  }));
 });
 
 test('#assignRoom sets the room', t => {

@@ -6,6 +6,7 @@ import {diff, updatedDiff} from 'deep-object-diff';
 
 import {logInfo} from '../lib/logger';
 import type {RoomsType, Room} from '../constants/types';
+import {rooms} from '../constants';
 import {gameRepository, playerRepository} from '../repositories';
 import {emit} from '../socket/emitter';
 import Game from './game';
@@ -55,6 +56,8 @@ export default class Player {
       lastSerialized: {},
       rooms: {}
     };
+
+    this.assignRoom(rooms.PRIVATE, `player/${this.id}`);
 
     this.resetStats();
 
@@ -201,7 +204,7 @@ export default class Player {
 
     const event = 'updatePlayer';
     if (emitToPlayer) {
-      this.emitToMe(event, payload);
+      this.emitToMe({event, payload});
     }
 
     if (this.game && emitToGm) {

@@ -72,7 +72,6 @@ export default class Game {
 
     const {prefix} = this.__STATICS__;
     player.assignRoom(rooms.GAME, `${prefix}/all`);
-    player.assignRoom(rooms.PRIVATE, `${prefix}/player/${player.id}`);
 
     emit({
       channel: player.rooms.private,
