@@ -13,7 +13,8 @@ const methods = [
   'destroy',
   'emitUpdate',
   'assignRoom',
-  'emitToMe'
+  'emitToMe',
+  'clearRooms'
 ];
 
 const gameMethods = [

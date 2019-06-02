@@ -21,6 +21,8 @@ export class MockSocket {
 
   join = spy();
 
+  leave = spy();
+
   to = stub().returns(socketToMocks);
 
   emit = spy();

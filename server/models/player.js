@@ -83,6 +83,8 @@ export default class Player {
       this.game.removePlayer(this, silent);
     }
 
+    this.clearRooms();
+
     this.__game = '';
   }
 
@@ -102,6 +104,16 @@ export default class Player {
   assignRoom(type: Room, name: string) {
     this.socket.join(name);
     this.__STATICS__.rooms[type] = name;
+  }
+
+  clearRooms() {
+    const roomNames = Object.values(this.rooms);
+
+    for (const room of roomNames) {
+      this.socket.leave(room);
+    }
+
+    this.__STATICS__.rooms = {};
   }
 
   get rooms(): RoomsType {

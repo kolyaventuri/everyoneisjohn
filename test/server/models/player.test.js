@@ -373,3 +373,26 @@ test('#emitToMe emits to my channel', t => {
     payload
   }));
 });
+
+test('#leaveGame calls #clearRooms', t => {
+  const {player} = setup();
+
+  player.leaveGame();
+
+  t.true(player.clearRooms.called);
+});
+
+test('#clearRooms removes the players from all rooms', t => {
+  const {player} = setup();
+
+  const rooms = {...player.rooms};
+  const roomNames = Object.values(rooms);
+
+  player.clearRooms();
+
+  for (const room of roomNames) {
+    t.true(player.socket.leave.calledWith(room));
+  }
+
+  t.deepEqual(player.rooms, {});
+});
