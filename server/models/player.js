@@ -102,7 +102,7 @@ export default class Player {
   }
 
   assignRoom(type: Room, name: string) {
-    this.socket.join(name);
+    this.__STATICS__.socket.join(name);
     this.__STATICS__.rooms[type] = name;
   }
 
@@ -110,7 +110,7 @@ export default class Player {
     const roomNames = Object.values(this.rooms);
 
     for (const room of roomNames) {
-      this.socket.leave(room);
+      this.__STATICS__.socket.leave(room);
     }
 
     this.__STATICS__.rooms = {};
@@ -246,10 +246,6 @@ export default class Player {
 
   get active(): boolean {
     return this.__STATICS__.active;
-  }
-
-  get socket(): Socket {
-    return this.__STATICS__.socket;
   }
 
   get game(): Game {

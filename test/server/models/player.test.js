@@ -30,7 +30,7 @@ test('it has an ID', t => {
 test('it appends the ID to the socket', t => {
   const player = new Player(new MockSocket());
 
-  t.is(player.socket.playerId, player.id);
+  t.is(player.__STATICS__.socket.playerId, player.id);
 });
 
 test('it has a default name', t => {
@@ -95,7 +95,7 @@ test('can be instantiated with a given ID', t => {
 test('has a socket', t => {
   const player = genPlayer();
 
-  t.is(player.socket, socket);
+  t.is(player.__STATICS__.socket, socket);
 });
 
 test('gets stored in the repository', t => {
@@ -167,7 +167,7 @@ test('is subscribed to the public game room upon joining the game', t => {
 
   player.joinGame(game.id);
 
-  t.true(player.socket.join.calledWith(room));
+  t.true(player.__STATICS__.socket.join.calledWith(room));
   t.is(player.rooms.game, room);
 });
 
@@ -355,7 +355,7 @@ test('#assignRoom sets the room', t => {
 
   player.assignRoom(roomType, roomName);
 
-  t.true(player.socket.join.calledWith(roomName));
+  t.true(player.__STATICS__.socket.join.calledWith(roomName));
   t.is(player.rooms[roomType], roomName);
 });
 
@@ -391,7 +391,7 @@ test('#clearRooms removes the players from all rooms', t => {
   player.clearRooms();
 
   for (const room of roomNames) {
-    t.true(player.socket.leave.calledWith(room));
+    t.true(player.__STATICS__.socket.leave.calledWith(room));
   }
 
   t.deepEqual(player.rooms, {});
