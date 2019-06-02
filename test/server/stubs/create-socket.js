@@ -2,7 +2,6 @@ import proxyquire from 'proxyquire';
 import {stub} from 'sinon';
 
 import {MockSocket} from '../mocks/socket';
-import Game from '../../../server/models/game';
 
 const methods = [
   'deactivate',
@@ -22,8 +21,10 @@ const gameMethods = [
   'removePlayer',
   'addBid',
   'destroy',
-  'emit',
-  'gmEmitPlayers'
+  'gmEmitPlayers',
+  'emitToGm',
+  'gmInitGame',
+  'emitToAll'
 ];
 
 const stubAndCallThrough = (obj, func) => {
@@ -36,6 +37,9 @@ const stubAndCallThrough = (obj, func) => {
 const setup = (createGame = true, playerIsOwner = false, joinToGame = true) => {
   const emit = stub();
   const Player = proxyquire('../../../server/models/player', {
+    '../socket/emitter': {emit}
+  }).default;
+  const Game = proxyquire('../../../server/models/game', {
     '../socket/emitter': {emit}
   }).default;
   const owner = new Player(new MockSocket());

@@ -309,6 +309,23 @@ test('emitSkill emits a setSkill event to the player', t => {
   t.true(emit.calledWith({channel, event, payload}));
 });
 
+test('emitSkill calls game.emitToGm', t => {
+  const {game, player} = setup();
+
+  const skill = 'skill';
+  player.stats.__STATICS__.skill1 = skill;
+
+  player.emitSkill(0);
+
+  t.true(game.emitToGm.calledWith({
+    event: 'updatePlayer',
+    payload: {
+      id: player.id,
+      skill1: skill
+    }
+  }));
+});
+
 test('emitUpdate does not emit anything if there has been no change since the last update', t => {
   const {player} = setup();
 

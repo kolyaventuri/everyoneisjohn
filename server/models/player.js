@@ -193,8 +193,7 @@ export default class Player {
     }
 
     if (this.game && emitToGm) {
-      this.game.emit({
-        channel: 'gm',
+      this.game.emitToGm({
         event,
         payload
       });
@@ -213,8 +212,7 @@ export default class Player {
     });
 
     if (this.game) {
-      this.game.emit({
-        channel: 'gm',
+      this.game.emitToGm({
         event: 'updatePlayer',
         payload: {
           id: this.id,

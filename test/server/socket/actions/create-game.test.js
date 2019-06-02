@@ -10,5 +10,8 @@ test('creates a game', t => {
   createGame(socket);
 
   t.true(player.socket.join.calledWith(match.string));
-  t.true(player.socket.emit.calledWith('startGame', match.string));
+  t.true(player.emitToMe.calledWith({
+    event: 'startGame',
+    payload: match.string
+  }));
 });
