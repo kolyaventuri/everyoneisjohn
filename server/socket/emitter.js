@@ -16,8 +16,9 @@ if (process.env.NODE_ENV === 'test') {
 }
 
 export const emit = ({event, payload, channel}: EmitArgs) => {
-  const {emit: fn} = channel ? socket.to(channel) : socket;
-  const emitFn = fn.bind(socket);
+  const context = channel ? socket.to(channel) : socket;
+  const fn = context.emit;
+  const emitFn = fn.bind(context);
 
   emitFn(event, payload);
 };
