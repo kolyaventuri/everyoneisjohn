@@ -26,7 +26,10 @@ const joinGm = (socket: SocketType, gameId: string) => {
     logError(`Game ${gameId} not found`);
   }
 
-  socket.emit('gameError', 'error.game.doesntExist');
+  player.emitToMe({
+    event: 'gameError',
+    payload: 'error.game.doesntExist'
+  });
 };
 
 export default joinGm;
