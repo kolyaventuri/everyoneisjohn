@@ -166,7 +166,7 @@ test('emits mode to players', t => {
   game.mode = GameMode.VOTING;
 
   const payload = {
-    channel: 'all',
+    channel: game.__STATICS__.rooms[rooms.GAME],
     event: 'setGameMode',
     payload: 'VOTING'
   };
@@ -334,5 +334,28 @@ test('#emitToAll emits to the GAME room', t => {
     channel: owner.rooms.game,
     event,
     payload
+  }));
+});
+
+test('#emitGameMode emits to the GAME room by default', t => {
+  const {game, emit} = setup();
+
+  game.emitGameMode();
+
+  t.true(emit.calledWith({
+    channel: game.__STATICS__.rooms[rooms.GAME],
+    event: 'setGameMode',
+    payload: 'SETUP'
+  }));
+});
+
+test('#emitGameMode emits to the GM room if specificed', t => {
+  const {game} = setup();
+
+  game.emitGameMode(rooms.GM);
+
+  t.true(game.emitToGm.calledWith({
+    event: 'setGameMode',
+    payload: 'SETUP'
   }));
 });

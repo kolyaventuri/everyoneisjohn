@@ -7,6 +7,7 @@ import Slug from '../lib/slug';
 import * as GameModes from '../lib/game-mode';
 import {gameRepository, playerRepository} from '../repositories';
 import {rooms} from '../constants';
+import type {RoomsType, Rooms} from '../constants/types';
 import {emit} from '../socket/emitter';
 import Player from './player';
 import Auction from './auction';
@@ -18,7 +19,8 @@ type StaticsType = {
   id: string,
   slug: string,
   owner: string,
-  prefix: string
+  prefix: string,
+  rooms: RoomsType
 };
 type EmitPayload = {|
   event: string,
@@ -45,6 +47,9 @@ export default class Game {
       id,
       slug,
       prefix,
+      rooms: {
+        [rooms.GAME]: `${prefix}/all`
+      },
       owner: owner.id
     };
 
@@ -92,7 +97,7 @@ export default class Game {
     this.owner.assignRoom(rooms.GM, `${prefix}/gm`);
     this.owner.assignRoom(rooms.GAME, `${prefix}/all`);
 
-    this.emitGameMode('gm');
+    this.emitGameMode(rooms.GM);
     this.emitToGm({
       event: 'startGame',
       payload: this.id
@@ -205,13 +210,19 @@ export default class Game {
     this.emitGameMode();
   }
 
-  emitGameMode(channel: string = 'all') {
+  emitGameMode(channel: ?Rooms) {
     const payload = {
-      channel,
+      channel: this.__STATICS__.rooms[rooms.GAME],
       event: 'setGameMode',
       payload: this.mode.toString().toString().slice(7, -1)
     };
+    let emitFn = emit;
 
-    emit(payload);
+    if (channel === rooms.GM) {
+      emitFn = this.emitToGm.bind(this);
+      delete payload.channel;
+    }
+
+    emitFn(payload);
   }
 }
