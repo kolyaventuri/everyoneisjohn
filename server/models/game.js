@@ -105,7 +105,7 @@ export default class Game {
   }
 
   gmEmitPlayers() {
-    this.owner.emitToMe({
+    this.emitToGm({
       event: 'setPlayers',
       payload: this.players.map(p => p && p.serialize && p.serialize()).filter(p => p !== null)
     });

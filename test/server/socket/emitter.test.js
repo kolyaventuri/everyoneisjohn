@@ -13,19 +13,14 @@ const payload = {
   some: 'payload'
 };
 
-test('when no channel provided, calls emit directly', t => {
-  emit({event, payload});
-
-  t.true(socket.emit.calledWith(event, payload));
-});
-
 test('does not require a paylaod', t => {
-  emit({event});
+  emit({channel, event});
 
-  t.true(socket.emit.calledWith(event, undefined));
+  t.true(socket.to.calledWith(channel));
+  t.true(socketToMocks.emit.calledWith(event, undefined));
 });
 
-test('when a channel is provided, calls socket.to then emit', t => {
+test('can emit with a payload', t => {
   emit({channel, event, payload});
 
   t.true(socket.to.calledWith(channel));

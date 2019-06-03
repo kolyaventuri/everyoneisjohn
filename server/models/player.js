@@ -110,13 +110,19 @@ export default class Player {
   }
 
   clearRooms() {
-    const roomNames = Object.values(this.rooms);
+    const types = Object.values(rooms);
 
-    for (const room of roomNames) {
-      this.__STATICS__.socket.leave(room);
+    const privateRoom = this.rooms[rooms.PRIVATE];
+
+    for (const type of types) {
+      if (type === rooms.PRIVATE) {
+        continue;
+      }
+
+      this.__STATICS__.socket.leave(this.rooms[type]);
     }
 
-    this.__STATICS__.rooms = {};
+    this.__STATICS__.rooms = {[rooms.PRIVATE]: privateRoom};
   }
 
   get rooms(): RoomsType {

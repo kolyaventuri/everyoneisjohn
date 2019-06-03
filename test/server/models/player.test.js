@@ -380,17 +380,21 @@ test('#leaveGame calls #clearRooms', t => {
   t.true(player.clearRooms.called);
 });
 
-test('#clearRooms removes the players from all rooms', t => {
+test('#clearRooms removes the players from all game rooms', t => {
   const {player} = setup();
 
-  const rooms = {...player.rooms};
-  const roomNames = Object.values(rooms);
+  const roomObj = {...player.rooms};
+  const privateRoom = roomObj[rooms.PRIVATE];
+  delete roomObj[rooms.PRIVATE];
+  const roomValues = Object.values(roomObj);
+
+  const newRooms = {[rooms.PRIVATE]: privateRoom};
 
   player.clearRooms();
 
-  for (const room of roomNames) {
+  for (const room of roomValues) {
     t.true(player.__STATICS__.socket.leave.calledWith(room));
   }
 
-  t.deepEqual(player.rooms, {});
+  t.deepEqual(player.rooms, newRooms);
 });
