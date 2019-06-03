@@ -26,3 +26,9 @@ test('can emit with a payload', t => {
   t.true(socket.to.calledWith(channel));
   t.true(socketToMocks.emit.calledWith(event, payload));
 });
+
+test('if called without a channel, eits globally', t => {
+  emit({event, payload});
+
+  t.true(socket.emit.calledWith(event, payload));
+});

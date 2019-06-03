@@ -2,7 +2,7 @@
 
 type EmitArgs = {|
   event: 'string',
-  channel: string,
+  channel?: string,
   payload?: any,
 |};
 
@@ -16,5 +16,9 @@ if (process.env.NODE_ENV === 'test') {
 }
 
 export const emit = ({event, payload, channel}: EmitArgs) => {
-  return socket.to(channel).emit(event, payload);
+  const context = channel ? socket.to(channel) : socket;
+  const fn = context.emit;
+  const emitFn = fn.bind(context);
+
+  return emitFn(event, payload);
 };
