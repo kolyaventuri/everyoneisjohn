@@ -10,3 +10,10 @@ test('puts the game in PLAYING mode', t => {
 
   t.is(game.mode, GameModes.PLAYING);
 });
+
+test('emits startPlaying to all players & gm', t => {
+  const {socket, game} = setup(true, true);
+  startPlaying(socket);
+
+  t.true(game.emitToAll.calledWith({event: 'startPlaying'}));
+});

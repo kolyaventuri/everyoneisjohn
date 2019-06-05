@@ -4,7 +4,8 @@ import {stub} from 'sinon';
 
 import Player from '../../../server/models/player';
 import {repositories} from '../mocks';
-import {MockSocket, socketToMocks} from '../mocks/socket';
+import {MockSocket} from '../mocks/socket';
+import {rooms} from '../../../server/constants';
 import * as GameMode from '../../../server/lib/game-mode';
 import setup from '../stubs/create-socket';
 
@@ -12,12 +13,10 @@ const mockBid = stub();
 class Auction {
   bid = mockBid;
 }
-const globalSocket = new MockSocket();
 
 const Game = proxyquire('../../../server/models/game', {
   '../repositories': repositories,
-  './auction': {default: Auction},
-  '../socket': {default: globalSocket}
+  './auction': {default: Auction}
 }).default;
 const {gameRepository, playerRepository} = repositories;
 
@@ -45,6 +44,16 @@ test('has an owner', t => {
   t.is(game.owner.id, owner.id);
 });
 
+test('emits a `startGame` event to the GM upon starting the game', t => {
+  const {game} = setup();
+
+  const event = 'startGame';
+  const payload = game.id;
+
+  game.gmInitGame();
+  t.true(game.emitToGm.calledWith({event, payload}));
+});
+
 test('can hold players', t => {
   const {game} = setup();
 
@@ -62,6 +71,19 @@ test('can add players', t => {
 
   t.is(game.players[0].id, players[0].id);
   t.is(game.players[1].id, players[1].id);
+});
+
+test('emits a `gameJoinSuccess` event to the players private room upon joining', t => {
+  const player = genPlayer();
+  const {game, emit} = setup(true, false, false);
+
+  game.addPlayer(player);
+
+  t.true(emit.calledWith({
+    channel: player.rooms.private,
+    event: 'gameJoinSuccess',
+    payload: game.id
+  }));
 });
 
 test('cannot add duplicate players', t => {
@@ -85,23 +107,29 @@ test('can remove players', t => {
 });
 
 test('emits a gameKick event to the player when kicked', t => {
-  const {game, player} = setup();
+  const {game, player, emit} = setup();
 
   game.addPlayer(player);
 
   game.removePlayer(player);
 
-  t.true(player.socket.emit.calledWith('gameKick'));
+  t.true(emit.calledWith({
+    channel: player.rooms.private,
+    event: 'gameKick'
+  }));
 });
 
 test('does not emit a gameKick event to the player if silent is true', t => {
-  const {game, player} = setup();
+  const {game, player, emit} = setup();
 
   game.addPlayer(player);
 
   game.removePlayer(player, true);
 
-  t.false(player.socket.emit.calledWith('gameKick'));
+  t.false(emit.calledWith({
+    channel: player.rooms.private,
+    event: 'gameKick'
+  }));
 });
 
 test('gets stored in the game repository during the constructor', t => {
@@ -133,18 +161,17 @@ test('can change modes', t => {
 });
 
 test('emits mode to players', t => {
-  const {game} = setup();
-  game.emit = stub();
+  const {game, emit} = setup();
 
   game.mode = GameMode.VOTING;
 
   const payload = {
-    channel: 'all',
+    channel: game.__STATICS__.rooms[rooms.GAME],
     event: 'setGameMode',
     payload: 'VOTING'
   };
 
-  t.true(game.emit.calledWith(payload));
+  t.true(emit.calledWith(payload));
 });
 
 test('cannot set invalid modes', t => {
@@ -222,42 +249,22 @@ test('joins a user to the public room upon joining the game', t => {
   const {game, player} = setup();
 
   const room = `game/${game.id}/all`;
+  const roomName = rooms.GAME;
 
-  t.true(player.socket.join.calledWith(room));
-});
-
-test('joins a user to the private room upon joining', t => {
-  const game = genGame();
-  const player = new Player(new MockSocket(), 'id');
-
-  const room = `game/${game.id}/player/${player.id}`;
-
-  game.addPlayer(player);
-
-  t.true(player.socket.join.calledWith(room));
-});
-
-test('can emit to all players in the game', t => {
-  const game = genGame();
-
-  const event = 'event';
-  const payload = 'payload';
-
-  game.emit({
-    channel: 'all',
-    event,
-    payload
-  });
-
-  t.true(globalSocket.to.calledWith(`game/${game.id}/all`));
-  t.true(socketToMocks.emit.calledWith(event, payload));
+  t.is(player.rooms[roomName], room);
 });
 
 test('subscribes owner to GM and "all" rooms', t => {
   const {game, player: owner} = setup(true, true);
 
-  t.true(owner.socket.join.calledWith(`game/${game.id}/gm`));
-  t.true(owner.socket.join.calledWith(`game/${game.id}/all`));
+  const roomName = 'gm';
+  const room = `game/${game.id}/gm`;
+
+  const allRoomName = 'game';
+  const allRoom = `game/${game.id}/all`;
+
+  t.is(owner.rooms[roomName], room);
+  t.is(owner.rooms[allRoomName], allRoom);
 });
 
 test('subtracts willpower from auction winner and enters playing mode', t => {
@@ -282,37 +289,73 @@ test('emits players to GM upon adding player to game', t => {
   const {game} = setup(true, true);
   const {player} = setup(false);
 
-  const payload = [player.serialize()];
-
-  const expected = {
-    channel: 'gm',
-    event: 'setPlayers',
-    payload
-  };
-
-  game.emit = stub();
   game.addPlayer(player);
 
-  t.true(player.emitUpdate.calledWith(false));
-  t.true(game.emit.calledWith(expected));
+  t.true(game.gmEmitPlayers.called);
 });
 
 test('#gmEmitPlayers emits players to GM', t => {
-  const {game} = setup(true, true);
+  const {game, player: owner} = setup(true, true);
   const {player} = setup(false);
 
   const payload = [player.serialize()];
 
   const expected = {
-    channel: 'gm',
     event: 'setPlayers',
     payload
   };
 
-  game.emit = stub();
   game.addPlayer(player);
-  game.emit.reset();
 
-  game.gmEmitPlayers();
-  t.true(game.emit.calledWith(expected));
+  t.true(owner.emitToMe.calledWith(expected));
+});
+
+test('#emitToGm emits to the GMs private channel', t => {
+  const {game, player: owner} = setup(true, true);
+
+  const event = 'blah';
+  const payload = 'payload';
+  game.emitToGm({event, payload});
+
+  t.true(owner.emitToMe.calledWith({
+    event,
+    payload
+  }));
+});
+
+test('#emitToAll emits to the GAME room', t => {
+  const {game, emit, player: owner} = setup(true, true);
+
+  const event = 'blah';
+  const payload = 'payload';
+  game.emitToAll({event, payload});
+
+  t.true(emit.calledWith({
+    channel: owner.rooms.game,
+    event,
+    payload
+  }));
+});
+
+test('#emitGameMode emits to the GAME room by default', t => {
+  const {game, emit} = setup();
+
+  game.emitGameMode();
+
+  t.true(emit.calledWith({
+    channel: game.__STATICS__.rooms[rooms.GAME],
+    event: 'setGameMode',
+    payload: 'SETUP'
+  }));
+});
+
+test('#emitGameMode emits to the GM room if specificed', t => {
+  const {game} = setup();
+
+  game.emitGameMode(rooms.GM);
+
+  t.true(game.emitToGm.calledWith({
+    event: 'setGameMode',
+    payload: 'SETUP'
+  }));
 });

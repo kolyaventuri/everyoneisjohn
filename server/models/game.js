@@ -6,6 +6,9 @@ import {logInfo} from '../lib/logger';
 import Slug from '../lib/slug';
 import * as GameModes from '../lib/game-mode';
 import {gameRepository, playerRepository} from '../repositories';
+import {rooms} from '../constants';
+import type {RoomsType, Rooms} from '../constants/types';
+import {emit} from '../socket/emitter';
 import Player from './player';
 import Auction from './auction';
 
@@ -16,27 +19,15 @@ type StaticsType = {
   id: string,
   slug: string,
   owner: string,
-  prefix: string
+  prefix: string,
+  rooms: RoomsType
 };
-
-type EmitPayload = string | {[string]: any} | Array<any>;
-
-type EmitType = {
-  channel: string,
+type EmitPayload = {|
   event: string,
-  payload?: EmitPayload
-};
+  payload?: any
+|};
 
 const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-
-let socket = null;
-if (process.env.NODE_ENV === 'test') {
-  socket = require('../socket').default;
-} else {
-  setImmediate(() => {
-    socket = require('../socket').default;
-  });
-}
 
 export default class Game {
   __STATICS__: StaticsType;
@@ -56,6 +47,9 @@ export default class Game {
       id,
       slug,
       prefix,
+      rooms: {
+        [rooms.GAME]: `${prefix}/all`
+      },
       owner: owner.id
     };
 
@@ -82,9 +76,13 @@ export default class Game {
     }
 
     const {prefix} = this.__STATICS__;
-    player.socket.join(`${prefix}/all`);
-    player.socket.join(`${prefix}/player/${player.id}`);
-    player.socket.emit('gameJoinSuccess', this.id);
+    player.assignRoom(rooms.GAME, `${prefix}/all`);
+
+    emit({
+      channel: player.rooms.private,
+      event: 'gameJoinSuccess',
+      payload: this.id
+    });
 
     player.emitUpdate(false);
     this.gmEmitPlayers();
@@ -96,17 +94,32 @@ export default class Game {
     const {prefix} = this.__STATICS__;
     this.owner.setGame(this);
 
-    this.owner.socket.join(`${prefix}/gm`);
-    this.owner.socket.join(`${prefix}/all`);
-    this.emitGameMode('gm');
-    this.owner.socket.emit('startGame', this.id);
+    this.owner.assignRoom(rooms.GM, `${prefix}/gm`);
+    this.owner.assignRoom(rooms.GAME, `${prefix}/all`);
+
+    this.emitGameMode(rooms.GM);
+    this.emitToGm({
+      event: 'startGame',
+      payload: this.id
+    });
   }
 
   gmEmitPlayers() {
-    this.emit({
-      channel: 'gm',
+    this.emitToGm({
       event: 'setPlayers',
       payload: this.players.map(p => p && p.serialize && p.serialize()).filter(p => p !== null)
+    });
+  }
+
+  emitToGm({event, payload}: EmitPayload) {
+    this.owner.emitToMe({event, payload});
+  }
+
+  emitToAll({event, payload}: EmitPayload) {
+    emit({
+      channel: this.owner.rooms.game,
+      event,
+      payload
     });
   }
 
@@ -121,7 +134,10 @@ export default class Game {
       this.gmEmitPlayers();
 
       if (!silent) {
-        player.socket.emit('gameKick');
+        emit({
+          channel: player.rooms.private,
+          event: 'gameKick'
+        });
       }
     }
   }
@@ -135,15 +151,6 @@ export default class Game {
   destroy() {
     logInfo(`Game ${this.id} is being destroyed!`);
     gameRepository.destroy(this);
-  }
-
-  emit({channel, event, payload}: EmitType) {
-    const {prefix} = this.__STATICS__;
-    channel = `${prefix}/${channel}`;
-
-    if (socket) {
-      socket.to(channel).emit(event, payload);
-    }
   }
 
   endAuction(winner: Player, amount: number) {
@@ -203,13 +210,19 @@ export default class Game {
     this.emitGameMode();
   }
 
-  emitGameMode(channel: string = 'all') {
+  emitGameMode(channel: ?Rooms) {
     const payload = {
-      channel,
+      channel: this.__STATICS__.rooms[rooms.GAME],
       event: 'setGameMode',
       payload: this.mode.toString().toString().slice(7, -1)
     };
+    let emitFn = emit;
 
-    this.emit(payload);
+    if (channel === rooms.GM) {
+      emitFn = this.emitToGm.bind(this);
+      delete payload.channel;
+    }
+
+    emitFn(payload);
   }
 }

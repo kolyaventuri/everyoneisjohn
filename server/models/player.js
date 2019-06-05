@@ -5,13 +5,18 @@ import Chance from 'chance';
 import {diff, updatedDiff} from 'deep-object-diff';
 
 import {logInfo} from '../lib/logger';
+import type {RoomsType, Room} from '../constants/types';
+import {rooms} from '../constants';
 import {gameRepository, playerRepository} from '../repositories';
+import {emit} from '../socket/emitter';
 import Game from './game';
 import Stats from './stats';
 
 const chance = new Chance();
 
-type Socket = {[string]: any};
+type Socket = {
+  [string]: any
+};
 
 type IdType = string | null;
 
@@ -21,7 +26,8 @@ type StaticsType = {
   active: boolean,
   name: string,
   disconnectTimer: ?TimeoutID,
-  lastSerialized: {[string]: any}
+  lastSerialized: {[string]: any},
+  rooms: RoomsType
 };
 
 export default class Player {
@@ -47,8 +53,11 @@ export default class Player {
       active: true,
       disconnectTimer: null,
       name,
-      lastSerialized: {}
+      lastSerialized: {},
+      rooms: {}
     };
+
+    this.assignRoom(rooms.PRIVATE, `player/${this.id}`);
 
     this.resetStats();
 
@@ -69,13 +78,15 @@ export default class Player {
       return game.addPlayer(this);
     }
 
-    this.socket.emit('gameError', 'error.game.doesntExist');
+    this.emitToMe('gameError', 'error.game.doesntExist');
   }
 
   leaveGame({silent}: {silent: boolean} = {silent: false}) {
     if (this.game) {
       this.game.removePlayer(this, silent);
     }
+
+    this.clearRooms();
 
     this.__game = '';
   }
@@ -91,6 +102,31 @@ export default class Player {
     }
 
     this.__game = id;
+  }
+
+  assignRoom(type: Room, name: string) {
+    this.__STATICS__.socket.join(name);
+    this.__STATICS__.rooms[type] = name;
+  }
+
+  clearRooms() {
+    const types = Object.values(rooms);
+
+    const privateRoom = this.rooms[rooms.PRIVATE];
+
+    for (const type of types) {
+      if (type === rooms.PRIVATE) {
+        continue;
+      }
+
+      this.__STATICS__.socket.leave(this.rooms[type]);
+    }
+
+    this.__STATICS__.rooms = {[rooms.PRIVATE]: privateRoom};
+  }
+
+  get rooms(): RoomsType {
+    return this.__STATICS__.rooms;
   }
 
   resetStats() {
@@ -174,12 +210,11 @@ export default class Player {
 
     const event = 'updatePlayer';
     if (emitToPlayer) {
-      this.socket.emit(event, payload);
+      this.emitToMe({event, payload});
     }
 
     if (this.game && emitToGm) {
-      this.game.emit({
-        channel: 'gm',
+      this.game.emitToGm({
         event,
         payload
       });
@@ -189,14 +224,16 @@ export default class Player {
   emitSkill(index: number) {
     const skill = this.stats.skills[index];
 
-    this.socket.emit('setSkill', {
-      index,
-      skill
+    this.emitToMe({
+      event: 'setSkill',
+      payload: {
+        index,
+        skill
+      }
     });
 
     if (this.game) {
-      this.game.emit({
-        channel: 'gm',
+      this.game.emitToGm({
         event: 'updatePlayer',
         payload: {
           id: this.id,
@@ -206,16 +243,18 @@ export default class Player {
     }
   }
 
+  emitToMe({event, payload}: {event: string, payload?: any}) {
+    const channel = this.rooms.private;
+
+    emit({channel, event, payload});
+  }
+
   get id(): string {
     return this.__STATICS__.id;
   }
 
   get active(): boolean {
     return this.__STATICS__.active;
-  }
-
-  get socket(): Socket {
-    return this.__STATICS__.socket;
   }
 
   get game(): Game {

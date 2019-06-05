@@ -27,7 +27,10 @@ test('pings back an error if the game exists, but the player is not the GM', t =
   joinGm(socket, game.id);
 
   t.is(player.game, null);
-  t.true(player.socket.emit.calledWith('gameError', 'error.game.doesntExist'));
+  t.true(player.emitToMe.calledWith({
+    event: 'gameError',
+    payload: 'error.game.doesntExist'
+  }));
 });
 
 test('pings back an error if the game does not exist', t => {
@@ -37,5 +40,8 @@ test('pings back an error if the game does not exist', t => {
   joinGm(socket, 'ABCDE');
 
   t.is(player.game, null);
-  t.true(player.socket.emit.calledWith('gameError', 'error.game.doesntExist'));
+  t.true(player.emitToMe.calledWith({
+    event: 'gameError',
+    payload: 'error.game.doesntExist'
+  }));
 });

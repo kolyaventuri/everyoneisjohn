@@ -7,8 +7,7 @@ const startPlaying = (socket: SocketType) => {
   const {game} = socket;
 
   game.mode = GameModes.PLAYING;
-  game.emit({
-    channel: 'all',
+  game.emitToAll({
     event: 'startPlaying'
   });
 };
