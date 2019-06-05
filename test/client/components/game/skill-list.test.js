@@ -90,3 +90,21 @@ test('it updates the state with the new skill on input', t => {
 
   t.deepEqual(state.items, expected);
 });
+
+test('it updates the state when the props are updated', t => {
+  const items = ['', '', ''];
+  const wrapper = render({items});
+
+  const instance = wrapper.instance();
+  const {items: oldItems} = instance.state;
+
+  t.deepEqual(oldItems, items);
+
+  const newItems = ['a', 'b', 'c'];
+  wrapper.setProps({items: newItems});
+  wrapper.update();
+
+  const {items: updatedItems} = instance.state;
+
+  t.deepEqual(updatedItems, newItems);
+});

@@ -42,6 +42,17 @@ export default class SkillList extends React.Component<Props, State> {
     });
   }
 
+  static getDerivedStateFromProps(props: Props, state: State): ?State {
+    const {items: newItems} = props;
+    const {items} = state;
+
+    if (JSON.stringify(newItems) !== JSON.stringify(items)) {
+      return {items: newItems};
+    }
+
+    return null;
+  }
+
   handleInput = (e: SyntheticInputEvent<HTMLInputElement>, index: number) => {
     e.persist();
 
