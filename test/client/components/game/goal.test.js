@@ -7,13 +7,9 @@ import {MockSocket} from '../../../server/mocks/socket';
 import {DEBOUNCE_AMOUNT} from '../../../../client/constants/sockets';
 
 const socket = new MockSocket();
-const store = {
-  dispatch: stub()
-};
 
 const Goal = proxyquire('../../../../client/components/game/goal', {
-  '../../socket': {default: socket},
-  '../../store': {store}
+  '../../socket': {default: socket}
 }).default;
 
 const render = (props = {}) => shallow(<Goal frozen {...props}/>);
@@ -55,16 +51,16 @@ test('it emits the value to the server as you type', t => {
   clock.reset();
 });
 
-test('it updates the store with the new goal on input', t => {
+test('it updates the state with the new goal on input', t => {
   const wrapper = render({value: '', frozen: false});
 
   const value = 'Some goal';
   const input = wrapper.find('input');
+  const instance = wrapper.instance();
 
   input.simulate('input', {target: {value}, persist: () => {}});
 
-  t.true(store.dispatch.calledWith({
-    type: 'SET_PLAYER_INFO',
-    payload: {goal: value}
-  }));
+  const {state} = instance;
+
+  t.is(state.value, value);
 });
