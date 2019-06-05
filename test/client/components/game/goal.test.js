@@ -1,7 +1,7 @@
 import test from 'ava';
 import React from 'react';
 import proxyquire from 'proxyquire';
-import sinon, {stub} from 'sinon';
+import sinon from 'sinon';
 import {shallow} from 'enzyme';
 import {MockSocket} from '../../../server/mocks/socket';
 import {DEBOUNCE_AMOUNT} from '../../../../client/constants/sockets';

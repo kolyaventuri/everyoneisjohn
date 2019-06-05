@@ -1,19 +1,15 @@
 import test from 'ava';
 import React from 'react';
 import proxyquire from 'proxyquire';
-import sinon, {stub} from 'sinon';
+import sinon from 'sinon';
 import {shallow} from 'enzyme';
 import {MockSocket} from '../../../server/mocks/socket';
 import {DEBOUNCE_AMOUNT} from '../../../../client/constants/sockets';
 
 const socket = new MockSocket();
-const store = {
-  dispatch: stub()
-};
 
 const SkillList = proxyquire('../../../../client/components/game/skill-list', {
-  '../../socket': {default: socket},
-  '../../store': {store}
+  '../../socket': {default: socket}
 }).default;
 
 const render = (props = {}) => shallow(<SkillList frozen {...props}/>);
@@ -75,7 +71,7 @@ test('it emits the skill to the server on input', t => {
   }));
 });
 
-test('it updates the store with the new skill on input', t => {
+test('it updates the state with the new skill on input', t => {
   const items = ['', '', ''];
   const index = 0;
   const wrapper = render({items, frozen: false});
@@ -85,13 +81,12 @@ test('it updates the store with the new skill on input', t => {
   const input = lis.at(index).find('input');
 
   const value = 'abcde';
+  const expected = [...items];
+  expected[index] = value;
 
   input.simulate('input', {target: {value}, persist: () => {}});
 
-  t.true(store.dispatch.calledWith({
-    type: 'SET_PLAYER_INFO',
-    payload: {
-      [`skill${index + 1}`]: value
-    }
-  }));
+  const {state} = wrapper.instance();
+
+  t.deepEqual(state.items, expected);
 });

@@ -6,7 +6,6 @@ import debounce from 'debounce';
 
 import {DEBOUNCE_AMOUNT} from '../../constants/sockets';
 
-import {store} from '../../store';
 import globalStyles from '../../sass/global.scss';
 import socket from '../../socket';
 
@@ -18,7 +17,8 @@ type Props = {|
 |};
 
 type State = {|
-  ids: Array<string>
+  ids: Array<string>,
+  items: Array<string>
 |};
 
 export default class SkillList extends React.Component<Props, State> {
@@ -32,7 +32,10 @@ export default class SkillList extends React.Component<Props, State> {
       ids[i] = uuid();
     }
 
-    this.state = {ids};
+    this.state = {
+      ids,
+      items: this.props.items || new Array(3).fill('')
+    };
 
     this.changeHandler = new Array(3).fill(0).map((_, i) => {
       return debounce(this.handleChange.bind(this, i), DEBOUNCE_AMOUNT);
@@ -48,12 +51,10 @@ export default class SkillList extends React.Component<Props, State> {
       }
     } = e;
 
-    store.dispatch({
-      type: 'SET_PLAYER_INFO',
-      payload: {
-        [`skill${index + 1}`]: value
-      }
-    });
+    const {items} = this.state;
+    items[index] = value;
+
+    this.setState({items});
 
     this.changeHandler[index](value);
   }
@@ -93,8 +94,7 @@ export default class SkillList extends React.Component<Props, State> {
   }
 
   render() {
-    const {ids} = this.state;
-    const {items} = this.props;
+    const {ids, items} = this.state;
 
     return (
       <div className={styles.section}>
