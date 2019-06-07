@@ -18,7 +18,9 @@ type Props = {|
 
 type State = {|
   ids: Array<string>,
-  items: Array<string>
+  skill1: string,
+  skill2: string,
+  skill3: string
 |};
 
 export default class SkillList extends React.Component<Props, State> {
@@ -32,9 +34,12 @@ export default class SkillList extends React.Component<Props, State> {
       ids[i] = uuid();
     }
 
+    const [skill1, skill2, skill3] = this.props.items || [];
     this.state = {
       ids,
-      items: this.props.items || new Array(3).fill('')
+      skill1: skill1 || '',
+      skill2: skill2 || '',
+      skill3: skill3 || ''
     };
 
     this.changeHandler = new Array(3).fill(0).map((_, i) => {
@@ -42,15 +47,35 @@ export default class SkillList extends React.Component<Props, State> {
     });
   }
 
-  static getDerivedStateFromProps(props: Props, state: State): ?State {
-    const {items: newItems} = props;
-    const {items} = state;
-
-    if (JSON.stringify(newItems) !== JSON.stringify(items)) {
-      return {items: newItems};
+  componentDidUpdate(prevProps: Props): void {
+    if (JSON.stringify(prevProps) === JSON.stringify(this.props)) {
+      // Props have not changed, ignore
+      return;
     }
 
-    return null;
+    const {
+      skill1: s1,
+      skill2: s2,
+      skill3: s3
+    } = this.state;
+    const items = [s1, s2, s3];
+
+    const {items: newItems} = this.props;
+
+    if (JSON.stringify(newItems) !== JSON.stringify(items)) {
+      // The incoming props changed, we must update the state (i.e., rejected)
+      const [skill1, skill2, skill3] = newItems;
+
+      /*
+         (6/6/19) Disabling the rule here, since the skill rejection is a fairly specific case
+         and we actually do need the state updated to properly reflect the data to the user, due
+         to the input value being changed by a socket event / redux action.
+
+         I intend to revisit this in a future bug, and address this properly.
+      */
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({skill1, skill2, skill3});
+    }
   }
 
   handleInput = (e: SyntheticInputEvent<HTMLInputElement>, index: number) => {
@@ -62,10 +87,11 @@ export default class SkillList extends React.Component<Props, State> {
       }
     } = e;
 
-    const {items} = this.state;
-    items[index] = value;
+    console.log('Skill', index + 1, value);
 
-    this.setState({items});
+    this.setState({
+      [`skill${index + 1}`]: value
+    });
 
     this.changeHandler[index](value);
   }
@@ -105,7 +131,14 @@ export default class SkillList extends React.Component<Props, State> {
   }
 
   render() {
-    const {ids, items} = this.state;
+    const {
+      ids,
+      skill1,
+      skill2,
+      skill3
+    } = this.state;
+
+    const items = [skill1, skill2, skill3];
 
     return (
       <div className={styles.section}>
