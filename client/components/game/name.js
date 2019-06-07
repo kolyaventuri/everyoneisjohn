@@ -16,19 +16,18 @@ class Name extends React.Component<Props> {
   constructor(...args) {
     super(...args);
 
-    this.debounced = (e: SyntheticInputEvent<HTMLInputElement>) => {
-      e.persist();
-      const {
-        target: {
-          value: name
-        }
-      } = e;
-
-      debounce(this.handleChange, DEBOUNCE_AMOUNT)(name);
-    };
+    this.handleChange = debounce(this.handleChange, DEBOUNCE_AMOUNT);
   }
 
-  handleChange = (name: string) => {
+  handleChange = (e: SyntheticInputEvent<HTMLInputElement>) => {
+    e.persist();
+
+    const {
+      target: {
+        value: name
+      }
+    } = e;
+
     socket.emit('updatePlayer', {name});
   }
 
@@ -42,7 +41,7 @@ class Name extends React.Component<Props> {
           className={styles.text}
           data-type="name"
           defaultValue={value}
-          onChange={this.debounced}
+          onChange={this.handleChange}
         />
       </div>
     );
