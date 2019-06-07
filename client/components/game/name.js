@@ -12,27 +12,41 @@ type Props = {|
   value: string
 |};
 
-class Name extends React.Component<Props> {
+type State = {|
+  value: string
+|};
+
+class Name extends React.Component<Props, State> {
   constructor(...args) {
     super(...args);
 
-    this.handleChange = debounce(this.handleChange, DEBOUNCE_AMOUNT);
+    this.state = {
+      value: this.props.value
+    };
+
+    this.submitName = debounce(this.submitName, DEBOUNCE_AMOUNT);
   }
 
-  handleChange = (e: SyntheticInputEvent<HTMLInputElement>) => {
+  handleInput = (e: SyntheticInputEvent<HTMLInputElement>) => {
     e.persist();
 
     const {
       target: {
-        value: name
+        value
       }
     } = e;
 
+    this.setState({value});
+
+    this.submitName(value);
+  };
+
+  submitName = (name: string) => {
     socket.emit('updatePlayer', {name});
   }
 
   render() {
-    const {value} = this.props;
+    const {value} = this.state;
 
     return (
       <div className={styles.name}>
@@ -40,8 +54,9 @@ class Name extends React.Component<Props> {
         <input
           className={styles.text}
           data-type="name"
-          defaultValue={value}
-          onChange={this.handleChange}
+          value={value}
+          onInput={this.handleInput}
+          onChange={this.handleInput}
         />
       </div>
     );
