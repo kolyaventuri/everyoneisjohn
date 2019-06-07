@@ -12,7 +12,6 @@ const setSpecificPlayer = (state: GameStateType, {payload}: ActionType) => {
   }
 
   players[index] = deepMerge(players[index], payload);
-  console.log(players[index].id, payload);
   return {
     ...state,
     players
