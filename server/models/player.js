@@ -149,6 +149,7 @@ export default class Player {
     this.__STATICS__.lastSerialized = {};
 
     clearTimeout(this.__STATICS__.disconnectTimer);
+    this.emitGameSuccess(this.game.id);
   }
 
   destroy() {
@@ -247,6 +248,13 @@ export default class Player {
     const channel = this.rooms.private;
 
     emit({channel, event, payload});
+  }
+
+  emitGameSuccess(id: string) {
+    this.emitToMe({
+      event: 'gameJoinSuccess',
+      payload: id
+    });
   }
 
   get id(): string {

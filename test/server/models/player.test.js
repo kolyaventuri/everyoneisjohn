@@ -224,6 +224,24 @@ test('has the discount timeout cleared if they return within the time allowed', 
   clock.restore();
 });
 
+test('#reconnect emits a game join success event', t => {
+  const {game, player} = setup();
+
+  gameRepository.find = stub().returns(game);
+
+  game.addPlayer(player);
+  player.emitToMe.resetHistory();
+  const clock = sinon.useFakeTimers();
+
+  player.reconnect();
+
+  t.true(player.emitToMe.calledWith({
+    event: 'gameJoinSuccess',
+    payload: game.id
+  }));
+  clock.restore();
+});
+
 test('#destroyGame destroys the game they own, if one exists', t => {
   const {game, player} = setup(true, true);
 

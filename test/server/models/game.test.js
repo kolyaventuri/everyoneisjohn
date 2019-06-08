@@ -74,13 +74,11 @@ test('can add players', t => {
 });
 
 test('emits a `gameJoinSuccess` event to the players private room upon joining', t => {
-  const player = genPlayer();
-  const {game, emit} = setup(true, false, false);
+  const {game, player} = setup(true, false, false);
 
   game.addPlayer(player);
 
-  t.true(emit.calledWith({
-    channel: player.rooms.private,
+  t.true(player.emitToMe.calledWith({
     event: 'gameJoinSuccess',
     payload: game.id
   }));

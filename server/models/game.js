@@ -78,8 +78,7 @@ export default class Game {
     const {prefix} = this.__STATICS__;
     player.assignRoom(rooms.GAME, `${prefix}/all`);
 
-    emit({
-      channel: player.rooms.private,
+    player.emitToMe({
       event: 'gameJoinSuccess',
       payload: this.id
     });
