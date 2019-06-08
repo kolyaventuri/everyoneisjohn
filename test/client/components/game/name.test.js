@@ -21,10 +21,10 @@ test('it renders the players name', t => {
   const name = wrapper.find('input[data-type="name"]');
 
   t.is(name.length, 1);
-  t.is(name.props().defaultValue, value);
+  t.is(name.props().value, value);
 });
 
-test('it updates the name on change, after a delay', t => {
+test('it sends the name to the server on update', t => {
   const clock = sinon.useFakeTimers();
 
   const value = 'new value';
@@ -41,4 +41,18 @@ test('it updates the name on change, after a delay', t => {
   }));
 
   clock.restore();
+});
+
+test('it updates the state with the new name on input', t => {
+  const wrapper = render({vlaue: 'Joe'});
+
+  const value = 'Some name';
+  const input = wrapper.find('input');
+  const instance = wrapper.instance();
+
+  input.simulate('input', {target: {value}, persist: () => {}});
+
+  const {state} = instance;
+
+  t.is(state.value, value);
 });

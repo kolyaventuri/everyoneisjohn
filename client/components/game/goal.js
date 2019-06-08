@@ -6,7 +6,6 @@ import debounce from 'debounce';
 import socket from '../../socket';
 import {DEBOUNCE_AMOUNT} from '../../constants/sockets';
 
-import {store} from '../../store';
 import globalStyles from '../../sass/global.scss';
 import styles from './section.scss';
 
@@ -15,9 +14,17 @@ type Props = {|
   frozen: boolean
 |};
 
-export default class Goal extends React.Component<Props> {
+type State = {|
+  value: string
+|};
+
+export default class Goal extends React.Component<Props, State> {
   constructor(...args) {
     super(...args);
+
+    this.state = {
+      value: this.props.value || ''
+    };
 
     this.submitGoal = debounce(this.submitGoal, DEBOUNCE_AMOUNT);
   }
@@ -31,10 +38,7 @@ export default class Goal extends React.Component<Props> {
       }
     } = e;
 
-    store.dispatch({
-      type: 'SET_PLAYER_INFO',
-      payload: {goal}
-    });
+    this.setState({value: goal});
 
     this.submitGoal(goal);
   }
@@ -44,7 +48,8 @@ export default class Goal extends React.Component<Props> {
   }
 
   renderGoal = () => {
-    const {frozen, value} = this.props;
+    const {frozen} = this.props;
+    const {value} = this.state;
 
     if (frozen) {
       return <span data-type="goal">{value}</span>;

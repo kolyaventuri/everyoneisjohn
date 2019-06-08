@@ -17,7 +17,9 @@ import styles from './player-info.scss';
 type Props = {|
   name: string,
   willpower: number,
-  skills: Array<string>,
+  skill1: string,
+  skill2: string,
+  skill3: string,
   goal: string,
   points: number,
   frozen: boolean,
@@ -48,11 +50,15 @@ class PlayerInfo extends React.Component<Props> {
       name,
       willpower,
       goal,
-      skills: items,
+      skill1,
+      skill2,
+      skill3,
       points: score,
       frozen,
       winner
     } = this.props;
+
+    const skills = {skill1, skill2, skill3};
 
     return (
       <div className={styles.player}>
@@ -62,7 +68,7 @@ class PlayerInfo extends React.Component<Props> {
         {this.renderBidding()}
         <Score value={score}/>
         <Goal value={goal} frozen={frozen}/>
-        <SkillList items={items} frozen={frozen}/>
+        <SkillList frozen={frozen} {...skills}/>
       </div>
     );
   }
@@ -82,12 +88,13 @@ const mapStateToProps = ({player, game}: GameStateType) => {
   } = player;
 
   const {mode} = game;
-  const skills = [skill1, skill2, skill3];
 
   return {
     name,
     willpower,
-    skills,
+    skill1,
+    skill2,
+    skill3,
     goal,
     points,
     frozen,
