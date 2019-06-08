@@ -6,7 +6,11 @@ import {diff, updatedDiff} from 'deep-object-diff';
 
 import {logInfo} from '../lib/logger';
 import type {RoomsType, Room} from '../constants/types';
-import {rooms} from '../constants';
+import {
+  rooms,
+  POLL_INTERVAL,
+  MAX_POLL_COUNT
+} from '../constants';
 import {gameRepository, playerRepository} from '../repositories';
 import {emit} from '../socket/emitter';
 import Game from './game';
@@ -82,7 +86,10 @@ export default class Player {
       return game.addPlayer(this);
     }
 
-    this.emitToMe('gameError', 'error.game.doesntExist');
+    this.emitToMe({
+      event: 'gameError',
+      payload: 'error.game.doesntExist'
+    });
   }
 
   leaveGame({silent}: {silent: boolean} = {silent: false}) {
@@ -266,11 +273,19 @@ export default class Player {
     emit({channel, event, payload});
   }
 
-  emitGameJoinSuccess(id: string) {
-    this.emitToMe({
-      event: 'gameJoinSuccess',
-      payload: id
-    });
+  emitGameJoinSuccess(id: string, pollCount: number = 0) {
+    if (this.ready) {
+      return this.emitToMe({
+        event: 'gameJoinSuccess',
+        payload: id
+      });
+    }
+
+    if (pollCount === MAX_POLL_COUNT) {
+      return this.__STATICS__.socket.emit('gameError', 'error.app.timeout');
+    }
+
+    setTimeout(() => this.emitGameJoinSuccess(id, pollCount + 1), POLL_INTERVAL);
   }
 
   get id(): string {

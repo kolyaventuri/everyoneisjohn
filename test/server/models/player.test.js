@@ -6,7 +6,11 @@ import uuid from 'uuid/v4';
 import {repositories} from '../mocks';
 import {MockSocket} from '../mocks/socket';
 import setup from '../stubs/create-socket';
-import {rooms} from '../../../server/constants';
+import {
+  rooms,
+  POLL_INTERVAL,
+  MAX_POLL_COUNT
+} from '../../../server/constants';
 import Stats from '../../../server/models/stats';
 import Game from '../../../server/models/game';
 
@@ -455,7 +459,7 @@ test('player.ready is true after initialization', t => {
 
 test('#reconnect sets player.ready to false', t => {
   const {game, player} = setup();
-  player.rejoinRooms = () => {};
+  player.rejoinRooms = () => {}; // Prevent the value from being reset to true
 
   gameRepository.find = stub().returns(game);
 
@@ -477,4 +481,44 @@ test('#rejoinRooms sets player.ready to true after completing', t => {
   player.rejoinRooms();
 
   t.true(player.ready);
+});
+
+test('#emitGameJoinSuccess polls if not ready', t => {
+  const {player} = setup();
+  const id = 'ABCDE';
+
+  player.__STATICS__.ready = false;
+
+  const clock = sinon.useFakeTimers();
+
+  player.emitGameJoinSuccess(id);
+  t.false(player.emitToMe.called);
+
+  player.__STATICS__.ready = true;
+  clock.tick(POLL_INTERVAL);
+
+  t.true(player.emitToMe.calledWith({
+    event: 'gameJoinSuccess',
+    payload: id
+  }));
+
+  clock.restore();
+});
+
+test('#emitGameJoinSuccess direct emits error to player socket if max poll count is reached', t => {
+  const {player, socket} = setup();
+
+  player.__STATICS__.ready = false;
+
+  const clock = sinon.useFakeTimers();
+
+  player.emitGameJoinSuccess('ABCDE');
+  t.false(player.emitToMe.called);
+
+  clock.tick(POLL_INTERVAL * MAX_POLL_COUNT);
+
+  t.false(player.emitToMe.called);
+  t.true(socket.emit.calledWith('gameError', 'error.app.timeout'));
+
+  clock.restore();
 });
