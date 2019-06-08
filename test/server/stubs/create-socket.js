@@ -15,7 +15,8 @@ const methods = [
   'assignRoom',
   'emitToMe',
   'clearRooms',
-  'emitGameJoinSuccess'
+  'emitGameJoinSuccess',
+  'rejoinRooms'
 ];
 
 const gameMethods = [

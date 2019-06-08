@@ -125,6 +125,15 @@ export default class Player {
     this.__STATICS__.rooms = {[rooms.PRIVATE]: privateRoom};
   }
 
+  rejoinRooms() {
+    const rooms = {...this.rooms};
+    const names = Object.keys(rooms);
+
+    for (const name of names) {
+      this.assignRoom(name, rooms[name]);
+    }
+  }
+
   get rooms(): RoomsType {
     return this.__STATICS__.rooms;
   }
@@ -149,6 +158,7 @@ export default class Player {
     this.__STATICS__.lastSerialized = {};
 
     clearTimeout(this.__STATICS__.disconnectTimer);
+    this.rejoinRooms();
     this.emitGameJoinSuccess(this.game.id);
   }
 

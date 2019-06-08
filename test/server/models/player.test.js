@@ -239,6 +239,21 @@ test('#reconnect calls #emitGameJoinSuccess', t => {
   clock.restore();
 });
 
+test('#reconnet calls #rejoinRooms', t => {
+  const {game, player} = setup();
+
+  gameRepository.find = stub().returns(game);
+
+  game.addPlayer(player);
+  const clock = sinon.useFakeTimers();
+
+  player.reconnect();
+
+  t.true(player.rejoinRooms.called);
+
+  clock.restore();
+});
+
 test('#destroyGame destroys the game they own, if one exists', t => {
   const {game, player} = setup(true, true);
 
@@ -424,4 +439,25 @@ test('#emitGameJoinSuccess emits a gameJoinSuccess event', t => {
     event: 'gameJoinSuccess',
     payload: id
   }));
+});
+
+test('#rejoinRooms rejoins the player to their rooms', t => {
+  const {game, player} = setup();
+
+  gameRepository.find = stub().returns(game);
+
+  game.addPlayer(player);
+  player.assignRoom.resetHistory();
+
+  const rooms = {...player.rooms};
+
+  player.rejoinRooms();
+
+  const roomNames = Object.keys(rooms);
+
+  for (const room of roomNames) {
+    t.true(player.assignRoom.calledWith(room, rooms[room]));
+  }
+
+  t.deepEqual(player.rooms, rooms);
 });
