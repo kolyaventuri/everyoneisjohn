@@ -27,7 +27,8 @@ type StaticsType = {
   name: string,
   disconnectTimer: ?TimeoutID,
   lastSerialized: {[string]: any},
-  rooms: RoomsType
+  rooms: RoomsType,
+  ready: boolean
 };
 
 export default class Player {
@@ -54,7 +55,8 @@ export default class Player {
       disconnectTimer: null,
       name,
       lastSerialized: {},
-      rooms: {}
+      rooms: {},
+      ready: false
     };
 
     this.assignRoom(rooms.PRIVATE, `player/${this.id}`);
@@ -65,6 +67,8 @@ export default class Player {
     this.destroyGame = this.destroyGame.bind(this);
 
     logInfo(`Player ${name} (${id}) created`);
+
+    this.__STATICS__.ready = true;
   }
 
   deactivate() {
@@ -132,6 +136,8 @@ export default class Player {
     for (const name of names) {
       this.assignRoom(name, rooms[name]);
     }
+
+    this.__STATICS__.ready = true;
   }
 
   get rooms(): RoomsType {
@@ -154,6 +160,7 @@ export default class Player {
   }
 
   reconnect() {
+    this.__STATICS__.ready = false;
     this.__STATICS__.active = true;
     this.__STATICS__.lastSerialized = {};
 
@@ -290,5 +297,9 @@ export default class Player {
     }
 
     return this.__STATICS__.name;
+  }
+
+  get ready(): boolean {
+    return this.__STATICS__.ready;
   }
 }

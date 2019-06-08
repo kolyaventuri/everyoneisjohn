@@ -395,7 +395,7 @@ test('#leaveGame calls #clearRooms', t => {
   t.true(player.clearRooms.called);
 });
 
-test('#clearRooms removes the players from all game rooms', t => {
+test('#clearRooms removes the players from all game rooms EXCEPT private', t => {
   const {player} = setup();
 
   const roomObj = {...player.rooms};
@@ -445,4 +445,36 @@ test('#rejoinRooms rejoins the player to their rooms', t => {
   }
 
   t.deepEqual(player.rooms, rooms);
+});
+
+test('player.ready is true after initialization', t => {
+  const {player} = setup();
+
+  t.true(player.ready);
+});
+
+test('#reconnect sets player.ready to false', t => {
+  const {game, player} = setup();
+  player.rejoinRooms = () => {};
+
+  gameRepository.find = stub().returns(game);
+
+  game.addPlayer(player);
+  const clock = sinon.useFakeTimers();
+
+  player.reconnect();
+
+  t.false(player.ready);
+
+  clock.restore();
+});
+
+test('#rejoinRooms sets player.ready to true after completing', t => {
+  const {player} = setup();
+
+  player.__STATICS__.ready = false;
+
+  player.rejoinRooms();
+
+  t.true(player.ready);
 });
