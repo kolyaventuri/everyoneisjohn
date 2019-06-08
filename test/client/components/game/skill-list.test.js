@@ -12,45 +12,58 @@ const SkillList = proxyquire('../../../../client/components/game/skill-list', {
   '../../socket': {default: socket}
 }).default;
 
-const render = (props = {}) => shallow(<SkillList frozen {...props}/>);
+const render = (props = {}) => shallow(<SkillList {...props}/>);
 
 test('it renders player skills', t => {
-  const items = ['a', 'b', 'c'];
-  const wrapper = render({items});
+  const props = {
+    skill1: 'a',
+    skill2: 'b',
+    skill3: 'c',
+    frozen: true
+  };
+  const wrapper = render(props);
   const skills = wrapper.find('[data-type="skills"]');
 
   t.is(skills.length, 1);
 
   const lis = skills.find('li');
-  t.is(lis.length, items.length);
+  t.is(lis.length, 3);
 
-  for (let i = 0; i < items.length; i++) {
+  for (let i = 0; i < 3; i++) {
     const li = lis.at(i);
 
-    t.is(li.text(), items[i]);
+    t.is(li.text(), props[`skill${i + 1}`]);
   }
 });
 
 test('it renders players skils as text boxes if editing is not frozen', t => {
-  const items = ['a', 'b', 'c'];
-  const wrapper = render({items, frozen: false});
+  const props = {
+    skill1: 'a',
+    skill2: 'b',
+    skill3: 'c'
+  };
+  const wrapper = render(props);
   const skills = wrapper.find('[data-type="skills"]');
   const lis = skills.find('li');
 
-  for (let i = 0; i < items.length; i++) {
+  for (let i = 0; i < 3; i++) {
     const li = lis.at(i);
     const input = li.find('input');
 
     t.is(input.length, 1);
-    t.is(input.props().value, items[i]);
+    t.is(input.props().value, props[`skill${i + 1}`]);
   }
 });
 
 test('it emits the skill to the server on input', t => {
   const clock = sinon.useFakeTimers();
 
-  const items = ['a', 'b', 'c'];
-  const wrapper = render({items, frozen: false});
+  const props = {
+    skill1: '',
+    skill2: '',
+    skill3: ''
+  };
+  const wrapper = render(props);
   const skills = wrapper.find('[data-type="skills"]');
   const lis = skills.find('li');
   const input = lis.at(0).find('input');
@@ -72,9 +85,13 @@ test('it emits the skill to the server on input', t => {
 });
 
 test('it updates the state with the new skill on input', t => {
-  const items = ['', '', ''];
+  const props = {
+    skill1: '',
+    skill2: '',
+    skill3: ''
+  };
   const index = 0;
-  const wrapper = render({items, frozen: false});
+  const wrapper = render(props);
 
   const skills = wrapper.find('[data-type="skills"]');
   const lis = skills.find('li');
@@ -94,11 +111,19 @@ test('it updates the state with the new skill on input', t => {
 });
 
 test('it updates the state when the props are updated', t => {
-  const items = ['', '', ''];
-  const wrapper = render({items});
+  const props = {
+    skill1: '',
+    skill2: '',
+    skill3: ''
+  };
+  const wrapper = render(props);
 
-  const newItems = ['a', 'b', 'c'];
-  wrapper.setProps({items: newItems});
+  const newProps = {
+    skill1: 'a',
+    skill2: 'b',
+    skill3: 'c'
+  };
+  wrapper.setProps(newProps);
   wrapper.update();
 
   const instance = wrapper.instance();

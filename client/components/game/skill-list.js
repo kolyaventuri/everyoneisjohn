@@ -3,6 +3,7 @@
 import React from 'react';
 import uuid from 'uuid/v4';
 import debounce from 'debounce';
+import {updatedDiff} from 'deep-object-diff';
 
 import {DEBOUNCE_AMOUNT} from '../../constants/sockets';
 
@@ -13,7 +14,9 @@ import styles from './section.scss';
 
 type Props = {|
   frozen: boolean,
-  items: Array<string>
+  skill1: string,
+  skill2: string,
+  skill3: string
 |};
 
 type State = {|
@@ -27,14 +30,13 @@ export default class SkillList extends React.Component<Props, State> {
   constructor(...args: any) {
     super(...args);
 
-    const {items} = this.props;
     const ids = [];
 
-    for (let i = 0; i < items.length; i++) {
+    for (let i = 0; i < 3; i++) {
       ids[i] = uuid();
     }
 
-    const [skill1, skill2, skill3] = this.props.items || [];
+    const {skill1, skill2, skill3} = this.props;
     this.state = {
       ids,
       skill1: skill1 || '',
@@ -48,34 +50,21 @@ export default class SkillList extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props): void {
-    if (JSON.stringify(prevProps) === JSON.stringify(this.props)) {
+    const diff = updatedDiff(prevProps, this.props);
+    if (Object.keys(diff).length === 0) {
       // Props have not changed, ignore
       return;
     }
 
-    const {
-      skill1: s1,
-      skill2: s2,
-      skill3: s3
-    } = this.state;
-    const items = [s1, s2, s3];
+    /*
+       (6/6/19) Disabling the rule here, since the skill rejection is a fairly specific case
+       and we actually do need the state updated to properly reflect the data to the user, due
+       to the input value being changed by a socket event / redux action.
 
-    const {items: newItems} = this.props;
-
-    if (JSON.stringify(newItems) !== JSON.stringify(items)) {
-      // The incoming props changed, we must update the state (i.e., rejected)
-      const [skill1, skill2, skill3] = newItems;
-
-      /*
-         (6/6/19) Disabling the rule here, since the skill rejection is a fairly specific case
-         and we actually do need the state updated to properly reflect the data to the user, due
-         to the input value being changed by a socket event / redux action.
-
-         I intend to revisit this in a future bug, and address this properly.
-      */
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({skill1, skill2, skill3});
-    }
+       I intend to revisit this in a future bug, and address this properly.
+     */
+    // eslint-disable-next-line react/no-did-update-set-state
+    this.setState(diff);
   }
 
   handleInput = (e: SyntheticInputEvent<HTMLInputElement>, index: number) => {
@@ -86,8 +75,6 @@ export default class SkillList extends React.Component<Props, State> {
         value
       }
     } = e;
-
-    console.log('Skill', index + 1, value);
 
     this.setState({
       [`skill${index + 1}`]: value
