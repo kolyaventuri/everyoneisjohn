@@ -224,21 +224,6 @@ test('has the discount timeout cleared if they return within the time allowed', 
   clock.restore();
 });
 
-test('#reconnect calls #emitGameJoinSuccess', t => {
-  const {game, player} = setup();
-
-  gameRepository.find = stub().returns(game);
-
-  game.addPlayer(player);
-  const clock = sinon.useFakeTimers();
-
-  player.reconnect();
-
-  t.true(player.emitGameJoinSuccess.calledWith(game.id));
-
-  clock.restore();
-});
-
 test('#reconnet calls #rejoinRooms', t => {
   const {game, player} = setup();
 

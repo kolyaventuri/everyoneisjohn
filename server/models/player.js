@@ -159,7 +159,6 @@ export default class Player {
 
     clearTimeout(this.__STATICS__.disconnectTimer);
     this.rejoinRooms();
-    this.emitGameJoinSuccess(this.game.id);
   }
 
   destroy() {
