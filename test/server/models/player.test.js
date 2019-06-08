@@ -224,21 +224,18 @@ test('has the discount timeout cleared if they return within the time allowed', 
   clock.restore();
 });
 
-test('#reconnect emits a game join success event', t => {
+test('#reconnect calls #emitGameJoinSuccess', t => {
   const {game, player} = setup();
 
   gameRepository.find = stub().returns(game);
 
   game.addPlayer(player);
-  player.emitToMe.resetHistory();
   const clock = sinon.useFakeTimers();
 
   player.reconnect();
 
-  t.true(player.emitToMe.calledWith({
-    event: 'gameJoinSuccess',
-    payload: game.id
-  }));
+  t.true(player.emitGameJoinSuccess.calledWith(game.id));
+
   clock.restore();
 });
 
@@ -415,4 +412,16 @@ test('#clearRooms removes the players from all game rooms', t => {
   }
 
   t.deepEqual(player.rooms, newRooms);
+});
+
+test('#emitGameJoinSuccess emits a gameJoinSuccess event', t => {
+  const {player} = setup();
+  const id = 'ABCDE';
+
+  player.emitGameJoinSuccess(id);
+
+  t.true(player.emitToMe.calledWith({
+    event: 'gameJoinSuccess',
+    payload: id
+  }));
 });

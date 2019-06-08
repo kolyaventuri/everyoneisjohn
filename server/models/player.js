@@ -149,7 +149,7 @@ export default class Player {
     this.__STATICS__.lastSerialized = {};
 
     clearTimeout(this.__STATICS__.disconnectTimer);
-    this.emitGameSuccess(this.game.id);
+    this.emitGameJoinSuccess(this.game.id);
   }
 
   destroy() {
@@ -250,7 +250,7 @@ export default class Player {
     emit({channel, event, payload});
   }
 
-  emitGameSuccess(id: string) {
+  emitGameJoinSuccess(id: string) {
     this.emitToMe({
       event: 'gameJoinSuccess',
       payload: id

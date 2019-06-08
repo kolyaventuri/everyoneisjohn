@@ -73,15 +73,12 @@ test('can add players', t => {
   t.is(game.players[1].id, players[1].id);
 });
 
-test('emits a `gameJoinSuccess` event to the players private room upon joining', t => {
+test('calls player.emitGameJoinSuccess upon joining', t => {
   const {game, player} = setup(true, false, false);
 
   game.addPlayer(player);
 
-  t.true(player.emitToMe.calledWith({
-    event: 'gameJoinSuccess',
-    payload: game.id
-  }));
+  t.true(player.emitGameJoinSuccess.calledWith(game.id));
 });
 
 test('cannot add duplicate players', t => {
