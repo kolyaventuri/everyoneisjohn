@@ -376,6 +376,15 @@ test('#assignRoom sets the room', t => {
   t.is(player.rooms[roomType], roomName);
 });
 
+test('#assignRoom can accept a callback', t => {
+  const {player} = setup();
+  const callback = stub();
+
+  player.assignRoom('type', 'name', callback);
+
+  t.true(callback.called);
+});
+
 test('#emitToMe emits to my channel', t => {
   const player = genPlayer();
 
@@ -473,14 +482,12 @@ test('#reconnect sets player.ready to false', t => {
   clock.restore();
 });
 
-test('#rejoinRooms sets player.ready to true after completing', t => {
+test('#rejoinRooms calls #waitForRooms after completing', t => {
   const {player} = setup();
-
-  player.__STATICS__.ready = false;
 
   player.rejoinRooms();
 
-  t.true(player.ready);
+  t.true(player.waitForRooms.called);
 });
 
 test('#emitGameJoinSuccess polls if not ready', t => {
@@ -506,7 +513,7 @@ test('#emitGameJoinSuccess polls if not ready', t => {
 });
 
 test('#emitGameJoinSuccess direct emits error to player socket if max poll count is reached', t => {
-  const {player, socket} = setup();
+  const {player} = setup();
 
   player.__STATICS__.ready = false;
 
@@ -518,7 +525,110 @@ test('#emitGameJoinSuccess direct emits error to player socket if max poll count
   clock.tick(POLL_INTERVAL * MAX_POLL_COUNT);
 
   t.false(player.emitToMe.called);
-  t.true(socket.emit.calledWith('gameError', 'error.app.timeout'));
+  t.true(player.emitTimeout.called);
 
   clock.restore();
+});
+
+test('#waitForRooms sets player.ready to true if rooms are set', t => {
+  const {player} = setup();
+
+  player.__STATICS__.ready = false;
+
+  player.waitForRooms();
+
+  t.true(player.ready);
+});
+
+test('#waitForRooms polls socket.rooms until the expected rooms exist', t => {
+  const {player, socket} = setup();
+
+  player.__STATICS__.ready = false;
+  const rooms = {...socket.rooms};
+  socket.rooms = {};
+
+  const clock = sinon.useFakeTimers();
+
+  player.waitForRooms();
+
+  socket.rooms = rooms;
+
+  clock.tick(POLL_INTERVAL);
+
+  t.true(player.ready);
+
+  clock.restore();
+});
+
+test('#hardEmit emits directly to the player socket', t => {
+  const {player, socket} = setup();
+  const event = 'someEvent';
+  const payload = 'somePayload';
+
+  player.hardEmit({event, payload});
+
+  t.true(socket.emit.calledWith(event, payload));
+});
+
+test('#emitTimeout emits a timeout error directly', t => {
+  const {player} = setup();
+  const event = 'gameError';
+  const payload = 'error.app.timeout';
+
+  player.emitTimeout();
+
+  t.true(player.hardEmit.calledWith({event, payload}));
+});
+
+test('#waitForSocketConnection polls for the socket to be connected', async t => {
+  const {player, socket} = setup();
+  socket.connected = false;
+
+  const timeout = setTimeout;
+
+  const clock = sinon.useFakeTimers();
+
+  player.waitForSocketConnection.restore();
+
+  timeout(() => {
+    socket.connected = true;
+    clock.tick(POLL_INTERVAL);
+  }, POLL_INTERVAL);
+
+  try {
+    const result = await player.waitForSocketConnection();
+    t.true(socket.connected);
+    t.true(result);
+    clock.restore();
+  } catch (error) {
+    t.fail('waitForSocketConnection rejected');
+  } finally {
+    clock.restore();
+  }
+});
+
+test('#waitForSocketConnection times out eventually', async t => {
+  const {player, socket} = setup();
+  socket.connected = false;
+
+  const timeout = setTimeout;
+
+  const clock = sinon.useFakeTimers({
+    toFake: ['setTimeout']
+  });
+
+  player.waitForSocketConnection.restore();
+
+  timeout(() => {
+    clock.tick(POLL_INTERVAL * MAX_POLL_COUNT);
+  }, POLL_INTERVAL);
+
+  try {
+    const result = await player.waitForSocketConnection();
+    t.fail(`waitForSocketConnection RESOLVED with ${result}`);
+  } catch (error) {
+    t.pass();
+  } finally {
+    clock.restore();
+  }
 });

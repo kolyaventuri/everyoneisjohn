@@ -1,5 +1,5 @@
 import proxyquire from 'proxyquire';
-import {stub} from 'sinon';
+import sinon, {stub} from 'sinon';
 
 import {MockSocket} from '../mocks/socket';
 
@@ -16,7 +16,10 @@ const methods = [
   'emitToMe',
   'clearRooms',
   'emitGameJoinSuccess',
-  'rejoinRooms'
+  'rejoinRooms',
+  'waitForRooms',
+  'hardEmit',
+  'emitTimeout'
 ];
 
 const gameMethods = [
@@ -29,6 +32,13 @@ const gameMethods = [
   'gmInitGame',
   'emitToAll'
 ];
+
+const mockPromise = {
+  then: cb => {
+    cb();
+    return {catch: () => {}};
+  }
+};
 
 const stubAndCallThrough = (obj, func) => {
   const original = obj[func].bind(obj);
@@ -72,6 +82,8 @@ const setup = (createGame = true, playerIsOwner = false, joinToGame = true) => {
 
     socket.game = game;
   }
+
+  sinon.stub(player, 'waitForSocketConnection').returns(mockPromise);
 
   return {player, socket, game, emit};
 };
