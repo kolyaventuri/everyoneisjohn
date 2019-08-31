@@ -358,20 +358,24 @@ export default class Player {
   }
 
   emitGameJoinSuccess(id: string, pollCount: number = 0) {
-    if (this.ready) {
-      logInfo(`Player ${this.id} successfully joined game ${id}`);
-      return this.emitToMe({
-        event: 'gameJoinSuccess',
-        payload: id
-      });
-    }
+    return new Promise(resolve => {
+      if (this.ready) {
+        logInfo(`Player ${this.id} successfully joined game ${id}`);
+        this.emitToMe({
+          event: 'gameJoinSuccess',
+          payload: id
+        });
 
-    if (pollCount === MAX_POLL_COUNT) {
-      logError(`Player ${this.id} not ready in time.`);
-      return this.emitTimeout();
-    }
+        return resolve();
+      }
 
-    setTimeout(() => this.emitGameJoinSuccess(id, pollCount + 1), POLL_INTERVAL);
+      if (pollCount === MAX_POLL_COUNT) {
+        logError(`Player ${this.id} not ready in time.`);
+        return this.emitTimeout();
+      }
+
+      setTimeout(() => this.emitGameJoinSuccess(id, pollCount + 1), POLL_INTERVAL);
+    });
   }
 
   emitTimeout() {

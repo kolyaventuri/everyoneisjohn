@@ -2,7 +2,7 @@
 
 import Chance from 'chance';
 
-import {logInfo} from '../lib/logger';
+import {logInfo, logError} from '../lib/logger';
 import Slug from '../lib/slug';
 import * as GameModes from '../lib/game-mode';
 import {gameRepository, playerRepository} from '../repositories';
@@ -65,7 +65,7 @@ export default class Game {
     logInfo(`Game ${id} created by player ${owner.id}`);
   }
 
-  addPlayer(player: Player) {
+  async addPlayer(player: Player) {
     const {id} = player;
     const players = this.__players;
 
@@ -78,10 +78,14 @@ export default class Game {
     const {prefix} = this.__STATICS__;
     player.assignRoom(rooms.GAME, `${prefix}/all`);
 
-    player.emitGameJoinSuccess(this.id);
-    player.emitUpdate(false);
-    this.gmEmitPlayers();
-    this.emitGameMode(`player/${player.id}`);
+    try {
+      await player.emitGameJoinSuccess(this.id);
+      player.emitUpdate(false);
+      this.gmEmitPlayers();
+      this.emitGameMode(`player/${player.id}`);
+    } catch (error) {
+      logError(error);
+    }
   }
 
   gmInitGame() {
