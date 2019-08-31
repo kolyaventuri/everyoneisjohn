@@ -347,8 +347,17 @@ export default class Player {
     }
   }
 
-  emitToMe({event, payload}: EmitType) {
+  emitToMe({event, payload}: EmitType, tries?: number = 0) {
     const channel = this.rooms.private;
+
+    if (tries === 10) {
+      logError(`Player ${this.id} not ready in time.`);
+      return this.emitTimeout();
+    }
+
+    if (!this.ready) {
+      return setTimeout(() => this.emitToMe({event, payload}, tries + 1), 50);
+    }
 
     emit({channel, event, payload});
   }
