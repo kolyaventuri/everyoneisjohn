@@ -13,6 +13,7 @@ import {
 } from '../constants';
 import {gameRepository, playerRepository} from '../repositories';
 import {emit} from '../socket/emitter';
+import poller from '../util/poller';
 import Game from './game';
 import Stats from './stats';
 
@@ -347,19 +348,17 @@ export default class Player {
     }
   }
 
-  emitToMe({event, payload}: EmitType, tries?: number = 0) {
+  emitToMe({event, payload}: EmitType) {
     const channel = this.rooms.private;
 
-    if (tries === 10) {
-      logError(`Player ${this.id} not ready in time.`);
-      return this.emitTimeout();
-    }
-
-    if (!this.ready) {
-      return setTimeout(() => this.emitToMe({event, payload}, tries + 1), 50);
-    }
-
-    emit({channel, event, payload});
+    poller(() => this.ready)
+      .then(() => {
+        emit({channel, event, payload});
+      })
+      .catch(() => {
+        logError(`Player ${this.id} not ready in time.`);
+        this.emitTimeout();
+      });
   }
 
   hardEmit({event, payload}: EmitType) {
