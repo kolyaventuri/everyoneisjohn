@@ -332,13 +332,13 @@ test('#emitToAll emits to the GAME room', t => {
   }));
 });
 
-test('#emitGameMode emits to the GAME room by default', t => {
+test('#emitGameMode emits to the ALL room by default', t => {
   const {game, emit} = setup();
 
   game.emitGameMode();
 
   t.true(emit.calledWith({
-    channel: game.__STATICS__.rooms[rooms.GAME],
+    channel: game.__STATICS__.rooms[rooms.ALL],
     event: 'setGameMode',
     payload: 'SETUP'
   }));
