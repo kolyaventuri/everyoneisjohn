@@ -211,7 +211,7 @@ export default class Game {
 
   emitGameMode(channel: ?Rooms) {
     const payload = {
-      channel: this.__STATICS__.rooms[rooms.GAME],
+      channel: this.__STATICS__.rooms[rooms.ALL],
       event: 'setGameMode',
       payload: this.mode.toString().toString().slice(7, -1)
     };
