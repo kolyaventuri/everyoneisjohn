@@ -161,7 +161,7 @@ test('emits mode to players', t => {
   game.mode = GameMode.VOTING;
 
   const payload = {
-    channel: game.__STATICS__.rooms[rooms.GAME],
+    channel: game.__STATICS__.rooms[rooms.ALL],
     event: 'setGameMode',
     payload: 'VOTING'
   };
