@@ -4,11 +4,16 @@ import uuid from 'uuid/v1';
 import Chance from 'chance';
 import {diff, updatedDiff} from 'deep-object-diff';
 
-import {logInfo} from '../lib/logger';
+import {logInfo, logError} from '../lib/logger';
 import type {RoomsType, Room} from '../constants/types';
-import {rooms} from '../constants';
+import {
+  rooms,
+  POLL_INTERVAL,
+  MAX_POLL_COUNT
+} from '../constants';
 import {gameRepository, playerRepository} from '../repositories';
 import {emit} from '../socket/emitter';
+import poller from '../util/poller';
 import Game from './game';
 import Stats from './stats';
 
@@ -27,8 +32,11 @@ type StaticsType = {
   name: string,
   disconnectTimer: ?TimeoutID,
   lastSerialized: {[string]: any},
-  rooms: RoomsType
+  rooms: RoomsType,
+  ready: boolean
 };
+
+type EmitType = {event: string, payload?: any};
 
 export default class Player {
   __STATICS__: StaticsType;
@@ -54,7 +62,8 @@ export default class Player {
       disconnectTimer: null,
       name,
       lastSerialized: {},
-      rooms: {}
+      rooms: {},
+      ready: false
     };
 
     this.assignRoom(rooms.PRIVATE, `player/${this.id}`);
@@ -65,6 +74,8 @@ export default class Player {
     this.destroyGame = this.destroyGame.bind(this);
 
     logInfo(`Player ${name} (${id}) created`);
+
+    this.__STATICS__.ready = true;
   }
 
   deactivate() {
@@ -78,7 +89,10 @@ export default class Player {
       return game.addPlayer(this);
     }
 
-    this.emitToMe('gameError', 'error.game.doesntExist');
+    this.emitToMe({
+      event: 'gameError',
+      payload: 'error.game.doesntExist'
+    });
   }
 
   leaveGame({silent}: {silent: boolean} = {silent: false}) {
@@ -104,8 +118,12 @@ export default class Player {
     this.__game = id;
   }
 
-  assignRoom(type: Room, name: string) {
-    this.__STATICS__.socket.join(name);
+  assignRoom(type: Room, name: string, callback: ?(err: ?Error) => void) {
+    this.__STATICS__.socket.join(name, err => {
+      if (typeof callback === 'function') {
+        callback(err);
+      }
+    });
     this.__STATICS__.rooms[type] = name;
   }
 
@@ -123,6 +141,90 @@ export default class Player {
     }
 
     this.__STATICS__.rooms = {[rooms.PRIVATE]: privateRoom};
+  }
+
+  rejoinRooms() {
+    const rooms = {...this.rooms};
+    const names = Object.keys(rooms);
+    let rejoinedRoomCount = 0;
+
+    this.waitForSocketConnection().then(() => {
+      logInfo(`Socket ready for player ${this.id}`);
+      for (const name of names) {
+        this.assignRoom(name, rooms[name], err => {
+          if (err) {
+            logError(`Player ${this.id} encountered the following error while joining ${name} (${rooms[name]})`);
+            logError(err);
+          } else {
+            logInfo(`Player ${this.id} rejoined ${name} (${rooms[name]})`);
+          }
+
+          rejoinedRoomCount += 1;
+
+          if (rejoinedRoomCount === names.length) {
+            this.waitForRooms();
+          }
+        });
+      }
+    }).catch(() => {
+      logError(`Socket not ready in time for player ${this.id}`);
+      this.emitTimeout();
+    });
+  }
+
+  waitForSocketConnection() {
+    return new Promise((resolve, reject) => {
+      let pollCount = 0;
+
+      const fn = () => {
+        if (pollCount === MAX_POLL_COUNT) {
+          return reject();
+        }
+
+        const {
+          connected
+        } = this.__STATICS__.socket;
+
+        if (connected) {
+          return resolve(true);
+        }
+
+        pollCount += 1;
+        setTimeout(fn, POLL_INTERVAL);
+      };
+
+      fn();
+    });
+  }
+
+  waitForRooms() {
+    const expectedRooms = Object.values(this.rooms);
+
+    let pollCount = 0;
+    const fn = () => {
+      if (pollCount === MAX_POLL_COUNT) {
+        logError(`Player ${this.id} did not join rooms in time.`);
+        this.emitTimeout();
+      }
+
+      const inRooms = this.__STATICS__.socket.rooms;
+      let totalInRooms = 0;
+      for (const room of expectedRooms) {
+        if (inRooms[room]) {
+          totalInRooms += 1;
+        }
+      }
+
+      if (totalInRooms === expectedRooms.length) {
+        this.__STATICS__.ready = true;
+        return;
+      }
+
+      pollCount += 1;
+      setTimeout(fn, POLL_INTERVAL);
+    };
+
+    fn();
   }
 
   get rooms(): RoomsType {
@@ -145,10 +247,13 @@ export default class Player {
   }
 
   reconnect() {
+    logInfo(`Player ${this.id} reconnecting.`);
+    this.__STATICS__.ready = false;
     this.__STATICS__.active = true;
     this.__STATICS__.lastSerialized = {};
 
     clearTimeout(this.__STATICS__.disconnectTimer);
+    this.rejoinRooms();
   }
 
   destroy() {
@@ -243,10 +348,47 @@ export default class Player {
     }
   }
 
-  emitToMe({event, payload}: {event: string, payload?: any}) {
+  emitToMe({event, payload}: EmitType) {
     const channel = this.rooms.private;
 
-    emit({channel, event, payload});
+    const emitFn = () => emit({channel, event, payload});
+
+    if (this.ready) {
+      emitFn();
+    }
+
+    poller(() => this.ready)
+      .then(emitFn)
+      .catch(() => {
+        logError(`Player ${this.id} not ready in time.`);
+        this.emitTimeout();
+      });
+  }
+
+  hardEmit({event, payload}: EmitType) {
+    this.__STATICS__.socket.emit(event, payload);
+  }
+
+  emitGameJoinSuccess(id: string) {
+    poller(() => this.ready)
+      .then(() => {
+        logInfo(`Player ${this.id} successfully joined game ${id}`);
+        this.emitToMe({
+          event: 'gameJoinSuccess',
+          payload: id
+        });
+      })
+      .catch(() => {
+        logError(`Player ${this.id} not ready in time.`);
+        this.emitTimeout();
+      });
+  }
+
+  emitTimeout() {
+    this.hardEmit({
+      event: 'gameError',
+      payload: 'error.app.timeout'
+    });
   }
 
   get id(): string {
@@ -273,5 +415,9 @@ export default class Player {
     }
 
     return this.__STATICS__.name;
+  }
+
+  get ready(): boolean {
+    return this.__STATICS__.ready;
   }
 }

@@ -6,9 +6,14 @@ import uuid from 'uuid/v4';
 import {repositories} from '../mocks';
 import {MockSocket} from '../mocks/socket';
 import setup from '../stubs/create-socket';
-import {rooms} from '../../../server/constants';
+import {
+  rooms,
+  POLL_INTERVAL,
+  MAX_POLL_COUNT
+} from '../../../server/constants';
 import Stats from '../../../server/models/stats';
 import Game from '../../../server/models/game';
+import {waitForCall} from '../../helpers/wait-for-call';
 
 const emit = stub();
 const Player = proxyquire('../../../server/models/player', {
@@ -224,6 +229,21 @@ test('has the discount timeout cleared if they return within the time allowed', 
   clock.restore();
 });
 
+test('#reconnet calls #rejoinRooms', t => {
+  const {game, player} = setup();
+
+  gameRepository.find = stub().returns(game);
+
+  game.addPlayer(player);
+  const clock = sinon.useFakeTimers();
+
+  player.reconnect();
+
+  t.true(player.rejoinRooms.called);
+
+  clock.restore();
+});
+
 test('#destroyGame destroys the game they own, if one exists', t => {
   const {game, player} = setup(true, true);
 
@@ -248,7 +268,7 @@ test('#destroyGame does not error if they do not own a game', t => {
   t.notThrows(fn);
 });
 
-test('emitUpdate is called when a player joins a game', t => {
+test('emitUpdate is called when a player joins a game', async t => {
   const {game, player} = setup();
   const {owner} = game;
 
@@ -258,7 +278,7 @@ test('emitUpdate is called when a player joins a game', t => {
 
   game.addPlayer(player);
 
-  t.true(player.emitUpdate.called);
+  await waitForCall(t, player.emitUpdate);
 });
 
 test('stats are destroyed upon joining new game', t => {
@@ -295,6 +315,7 @@ test('emitSkill emits a setSkill event to the player', t => {
 
   const skill = 'skill';
   player.stats.__STATICS__.skill1 = skill;
+  player.__STATICS__.ready = true;
 
   player.emitSkill(0);
   const event = 'setSkill';
@@ -334,9 +355,10 @@ test('emitUpdate does not emit anything if there has been no change since the la
 
 test('emitUpdate emits only the changed values', t => {
   const {player} = setup();
-  const willpower = 7;
+  const willpower = 6;
   const {id} = player;
 
+  player.emitUpdate();
   player.stats.willpower = willpower;
 
   t.true(player.emitToMe.calledWithExactly({
@@ -355,6 +377,15 @@ test('#assignRoom sets the room', t => {
 
   t.true(player.__STATICS__.socket.join.calledWith(roomName));
   t.is(player.rooms[roomType], roomName);
+});
+
+test('#assignRoom can accept a callback', t => {
+  const {player} = setup();
+  const callback = stub();
+
+  player.assignRoom('type', 'name', callback);
+
+  t.true(callback.called);
 });
 
 test('#emitToMe emits to my channel', t => {
@@ -380,7 +411,7 @@ test('#leaveGame calls #clearRooms', t => {
   t.true(player.clearRooms.called);
 });
 
-test('#clearRooms removes the players from all game rooms', t => {
+test('#clearRooms removes the players from all game rooms EXCEPT private', t => {
   const {player} = setup();
 
   const roomObj = {...player.rooms};
@@ -397,4 +428,170 @@ test('#clearRooms removes the players from all game rooms', t => {
   }
 
   t.deepEqual(player.rooms, newRooms);
+});
+
+test('#emitGameJoinSuccess emits a gameJoinSuccess event', async t => {
+  const {player} = setup();
+  const id = 'ABCDE';
+
+  await player.emitGameJoinSuccess(id);
+
+  t.true(player.emitToMe.calledWith({
+    event: 'gameJoinSuccess',
+    payload: id
+  }));
+});
+
+test('#rejoinRooms rejoins the player to their rooms', t => {
+  const {game, player} = setup();
+
+  gameRepository.find = stub().returns(game);
+
+  game.addPlayer(player);
+  player.assignRoom.resetHistory();
+
+  const rooms = {...player.rooms};
+
+  player.rejoinRooms();
+
+  const roomNames = Object.keys(rooms);
+
+  for (const room of roomNames) {
+    t.true(player.assignRoom.calledWith(room, rooms[room]));
+  }
+
+  t.deepEqual(player.rooms, rooms);
+});
+
+test('player.ready is true after initialization', t => {
+  const {player} = setup();
+
+  t.true(player.ready);
+});
+
+test('#reconnect sets player.ready to false', t => {
+  const {game, player} = setup();
+  player.rejoinRooms = () => {}; // Prevent the value from being reset to true
+
+  gameRepository.find = stub().returns(game);
+
+  game.addPlayer(player);
+  const clock = sinon.useFakeTimers();
+
+  player.reconnect();
+
+  t.false(player.ready);
+
+  clock.restore();
+});
+
+test('#rejoinRooms calls #waitForRooms after completing', t => {
+  const {player} = setup();
+
+  player.rejoinRooms();
+
+  t.true(player.waitForRooms.called);
+});
+
+test('#waitForRooms sets player.ready to true if rooms are set', t => {
+  const {player} = setup();
+
+  player.__STATICS__.ready = false;
+
+  player.waitForRooms();
+
+  t.true(player.ready);
+});
+
+test('#waitForRooms polls socket.rooms until the expected rooms exist', t => {
+  const {player, socket} = setup();
+
+  player.__STATICS__.ready = false;
+  const rooms = {...socket.rooms};
+  socket.rooms = {};
+
+  const clock = sinon.useFakeTimers();
+
+  player.waitForRooms();
+
+  socket.rooms = rooms;
+
+  clock.tick(POLL_INTERVAL);
+
+  t.true(player.ready);
+
+  clock.restore();
+});
+
+test('#hardEmit emits directly to the player socket', t => {
+  const {player, socket} = setup();
+  const event = 'someEvent';
+  const payload = 'somePayload';
+
+  player.hardEmit({event, payload});
+
+  t.true(socket.emit.calledWith(event, payload));
+});
+
+test('#emitTimeout emits a timeout error directly', t => {
+  const {player} = setup();
+  const event = 'gameError';
+  const payload = 'error.app.timeout';
+
+  player.emitTimeout();
+
+  t.true(player.hardEmit.calledWith({event, payload}));
+});
+
+test('#waitForSocketConnection polls for the socket to be connected', async t => {
+  const {player, socket} = setup();
+  socket.connected = false;
+
+  const timeout = setTimeout;
+
+  const clock = sinon.useFakeTimers();
+
+  player.waitForSocketConnection.restore();
+
+  timeout(() => {
+    socket.connected = true;
+    clock.tick(POLL_INTERVAL);
+  }, POLL_INTERVAL);
+
+  try {
+    const result = await player.waitForSocketConnection();
+    t.true(socket.connected);
+    t.true(result);
+    clock.restore();
+  } catch (error) {
+    t.fail('waitForSocketConnection rejected');
+  } finally {
+    clock.restore();
+  }
+});
+
+test('#waitForSocketConnection times out eventually', async t => {
+  const {player, socket} = setup();
+  socket.connected = false;
+
+  const timeout = setTimeout;
+
+  const clock = sinon.useFakeTimers({
+    toFake: ['setTimeout']
+  });
+
+  player.waitForSocketConnection.restore();
+
+  timeout(() => {
+    clock.tick(POLL_INTERVAL * MAX_POLL_COUNT);
+  }, POLL_INTERVAL);
+
+  try {
+    const result = await player.waitForSocketConnection();
+    t.fail(`waitForSocketConnection RESOLVED with ${result}`);
+  } catch (error) {
+    t.pass();
+  } finally {
+    clock.restore();
+  }
 });

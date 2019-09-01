@@ -19,7 +19,12 @@ const stubEvent = (name, event, handler) => {
 export class MockSocket {
   playerId = null;
 
-  join = spy();
+  join = stub().callsFake((name, callback) => {
+    this.rooms[name] = name;
+    if (callback) {
+      callback();
+    }
+  });
 
   leave = spy();
 
@@ -34,6 +39,10 @@ export class MockSocket {
   });
 
   listen = stub().returns(this);
+
+  rooms = {}
+
+  connected = true
 
   __invoke = (name, event, data) => {
     const handler = stubCache[name];

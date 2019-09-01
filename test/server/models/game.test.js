@@ -73,17 +73,12 @@ test('can add players', t => {
   t.is(game.players[1].id, players[1].id);
 });
 
-test('emits a `gameJoinSuccess` event to the players private room upon joining', t => {
-  const player = genPlayer();
-  const {game, emit} = setup(true, false, false);
+test('calls player.emitGameJoinSuccess upon joining', t => {
+  const {game, player} = setup(true, false, false);
 
   game.addPlayer(player);
 
-  t.true(emit.calledWith({
-    channel: player.rooms.private,
-    event: 'gameJoinSuccess',
-    payload: game.id
-  }));
+  t.true(player.emitGameJoinSuccess.calledWith(game.id));
 });
 
 test('cannot add duplicate players', t => {
@@ -285,16 +280,16 @@ test('subtracts willpower from auction winner and enters playing mode', t => {
   t.is(game.mode, GameMode.PLAYING);
 });
 
-test('emits players to GM upon adding player to game', t => {
+test('emits players to GM upon adding player to game', async t => {
   const {game} = setup(true, true);
   const {player} = setup(false);
 
-  game.addPlayer(player);
+  await game.addPlayer(player);
 
   t.true(game.gmEmitPlayers.called);
 });
 
-test('#gmEmitPlayers emits players to GM', t => {
+test('#gmEmitPlayers emits players to GM', async t => {
   const {game, player: owner} = setup(true, true);
   const {player} = setup(false);
 
@@ -305,7 +300,7 @@ test('#gmEmitPlayers emits players to GM', t => {
     payload
   };
 
-  game.addPlayer(player);
+  await game.addPlayer(player);
 
   t.true(owner.emitToMe.calledWith(expected));
 });
