@@ -18,7 +18,8 @@ const methods = [
   'rejoinRooms',
   'waitForRooms',
   'hardEmit',
-  'emitTimeout'
+  'emitTimeout',
+  'emitGameJoinSuccess'
 ];
 
 const gameMethods = [

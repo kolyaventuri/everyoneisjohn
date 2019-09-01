@@ -351,10 +351,14 @@ export default class Player {
   emitToMe({event, payload}: EmitType) {
     const channel = this.rooms.private;
 
+    const emitFn = () => emit({channel, event, payload});
+
+    if (this.ready) {
+      emitFn();
+    }
+
     poller(() => this.ready)
-      .then(() => {
-        emit({channel, event, payload});
-      })
+      .then(emitFn)
       .catch(() => {
         logError(`Player ${this.id} not ready in time.`);
         this.emitTimeout();
@@ -365,25 +369,19 @@ export default class Player {
     this.__STATICS__.socket.emit(event, payload);
   }
 
-  emitGameJoinSuccess(id: string, pollCount: number = 0) {
-    return new Promise(resolve => {
-      if (this.ready) {
+  emitGameJoinSuccess(id: string) {
+    poller(() => this.ready)
+      .then(() => {
         logInfo(`Player ${this.id} successfully joined game ${id}`);
         this.emitToMe({
           event: 'gameJoinSuccess',
           payload: id
         });
-
-        return resolve();
-      }
-
-      if (pollCount === MAX_POLL_COUNT) {
+      })
+      .catch(() => {
         logError(`Player ${this.id} not ready in time.`);
-        return this.emitTimeout();
-      }
-
-      setTimeout(() => this.emitGameJoinSuccess(id, pollCount + 1), POLL_INTERVAL);
-    });
+        this.emitTimeout();
+      });
   }
 
   emitTimeout() {

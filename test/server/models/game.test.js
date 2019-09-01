@@ -280,16 +280,16 @@ test('subtracts willpower from auction winner and enters playing mode', t => {
   t.is(game.mode, GameMode.PLAYING);
 });
 
-test('emits players to GM upon adding player to game', t => {
+test('emits players to GM upon adding player to game', async t => {
   const {game} = setup(true, true);
   const {player} = setup(false);
 
-  game.addPlayer(player);
+  await game.addPlayer(player);
 
   t.true(game.gmEmitPlayers.called);
 });
 
-test('#gmEmitPlayers emits players to GM', t => {
+test('#gmEmitPlayers emits players to GM', async t => {
   const {game, player: owner} = setup(true, true);
   const {player} = setup(false);
 
@@ -300,7 +300,7 @@ test('#gmEmitPlayers emits players to GM', t => {
     payload
   };
 
-  game.addPlayer(player);
+  await game.addPlayer(player);
 
   t.true(owner.emitToMe.calledWith(expected));
 });
