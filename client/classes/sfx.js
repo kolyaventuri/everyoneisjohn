@@ -1,9 +1,11 @@
 // @flow
 
+const formats = ['mp3', 'ogg'];
+const mimeTypes = ['audio/mpeg', 'audio/ogg'];
+
 export default class SFX {
   constructor(file: string) {
     const audio = new Audio();
-    audio.src = file;
     audio.preload = 'auto';
 
     audio.addEventListener('error', () => {
@@ -15,6 +17,22 @@ export default class SFX {
 
     this._ready = false;
     this._audio = audio;
+    this._src = file;
+
+    this._loadAudio();
+  }
+
+  _loadAudio() {
+    for (let i = 0; i < formats.length; i++) {
+      const format = formats[i];
+      const mime = mimeTypes[i];
+
+      const source = document.createElement('source');
+
+      source.type = mime;
+      source.src = `${this._src}.${format}`;
+      this._audio.append(source);
+    }
   }
 
   play() {

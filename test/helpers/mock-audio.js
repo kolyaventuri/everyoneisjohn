@@ -18,5 +18,7 @@ export default class Audio {
     this[`on${type}`] = fn;
   }
 
+  append = stub();
+
   play = stub();
 }

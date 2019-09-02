@@ -12,8 +12,20 @@ test('it loads the specified audio file', t => {
   const file = '../../some/file';
   const sfx = new SFX(file);
 
-  t.is(sfx._audio.src, file);
+  t.is(sfx._src, file);
   t.is(sfx._audio.preload, 'auto');
+});
+
+test('it loads mp3 + ogg variants of the file', t => {
+  const file = '/some/file';
+  const sfx = new SFX(file);
+
+  t.is(sfx._audio.append.callCount, 2);
+
+  const {args} = sfx._audio.append;
+
+  t.true(args[0][0].src.endsWith(`${file}.mp3`));
+  t.true(args[1][0].src.endsWith(`${file}.ogg`));
 });
 
 test('#play plays the specified audio file', t => {
