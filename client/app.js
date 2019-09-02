@@ -12,6 +12,7 @@ import RouteController from './route-controller';
 import './socket';
 import './app.scss';
 import './utils/error-trap';
+import './lib/sfx';
 /* eslint-enable import/no-unassigned-import */
 
 ReactGA.initialize(process.env.GA_TRACKING);
