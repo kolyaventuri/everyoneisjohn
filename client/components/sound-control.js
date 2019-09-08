@@ -6,6 +6,8 @@ import {faVolume, faVolumeMute} from '@fortawesome/pro-regular-svg-icons';
 import {connect} from 'react-redux';
 
 import {store} from '../store';
+import {SOUND, ON, OFF} from '../constants/settings';
+import {set} from '../utils/local-storage';
 import type {GameStateType} from '../apps/game';
 import styles from './sound-control.scss';
 
@@ -14,6 +16,8 @@ type Props = {|
 |};
 
 const setSound = (sound: boolean) => {
+  set(SOUND, sound ? ON : OFF);
+
   store.dispatch({
     type: 'SET_SOUND',
     payload: {sound}
