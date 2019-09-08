@@ -104,7 +104,7 @@ const Rules = () => (
 
 export default () => (
   <React.Fragment>
-    <Header/>
+    <Header inGame={false}/>
     <Rules/>
   </React.Fragment>
 );

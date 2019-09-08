@@ -13,6 +13,7 @@ test('SET_ERROR should be able to set the game GM', t => {
   const type = 'fatal';
 
   const expected = {
+    sound: false,
     error: {
       error,
       type
@@ -39,6 +40,23 @@ test('CLEAR_ERROR should clear any errors', t => {
     }
   }, {
     type: 'CLEAR_ERROR'
+  });
+
+  t.deepEqual(result, expected);
+});
+
+test('SET_SOUND should set the sound value', t => {
+  const expected = {
+    sound: true,
+    error: null
+  };
+
+  const result = reducer({
+    error: null,
+    sound: false
+  }, {
+    type: 'SET_SOUND',
+    payload: {sound: true}
   });
 
   t.deepEqual(result, expected);

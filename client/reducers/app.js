@@ -1,9 +1,12 @@
 // @flow
 
+import {SOUND, ON} from '../constants/settings';
+import {get} from '../utils/local-storage';
 import {AppStateType, ActionType} from './types';
 
 export const defaultState = {
-  error: null
+  error: null,
+  sound: get(SOUND) === ON
 };
 
 const AppReducer = (state: AppStateType = defaultState, action: ActionType): AppStateType => {
@@ -22,6 +25,11 @@ const AppReducer = (state: AppStateType = defaultState, action: ActionType): App
       return {
         ...state,
         error: null
+      };
+    case 'SET_SOUND':
+      return {
+        ...state,
+        sound: payload.sound
       };
     default:
       return state;

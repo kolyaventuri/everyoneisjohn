@@ -3,6 +3,7 @@
 .header {
   width: 100%;
   padding: 0.75em;
+  position: relative;
 
   background: $blue;
 
@@ -18,5 +19,13 @@
     &:hover {
       text-decoration: underline;
     }
+  }
+
+  .soundControl {
+      position: absolute;
+      top: 50%;
+      right: 0;
+
+      transform: translate(-100%, -50%);
   }
 }

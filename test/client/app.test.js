@@ -3,6 +3,11 @@ import proxyquire from 'proxyquire';
 import {shallow} from 'enzyme';
 import {stub} from 'sinon';
 
+import defaultSettings from '../../client/constants/defaults';
+import Audio from '../helpers/mock-audio';
+
+global.Audio = Audio;
+
 const ReactGA = {
   initialize: stub()
 };
@@ -40,3 +45,16 @@ test('it initialized Google Analytics', t => {
   t.true(ReactGA.initialize.calledWith(tracking));
 });
 
+test('it sets defaults on localStorage', t => {
+  const defaults = stub();
+
+  proxyquire(path, {
+    'react-ga': {default: ReactGA},
+    'react-dom': {
+      render: stub()
+    },
+    './utils/local-storage': {defaults}
+  });
+
+  t.true(defaults.calledWith(defaultSettings));
+});
