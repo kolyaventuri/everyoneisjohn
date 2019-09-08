@@ -7,6 +7,8 @@ import ReactGA from 'react-ga';
 
 import {store} from './store';
 import RouteController from './route-controller';
+import defaultSettings from './constants/defaults';
+import {defaults} from './utils/local-storage';
 
 /* eslint-disable import/no-unassigned-import */
 import './socket';
@@ -16,6 +18,7 @@ import './lib/sfx';
 /* eslint-enable import/no-unassigned-import */
 
 ReactGA.initialize(process.env.GA_TRACKING);
+defaults(defaultSettings);
 
 render(
   <Provider store={store}>
