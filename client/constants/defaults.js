@@ -1,5 +1,7 @@
 // @flow
 
+import {SOUND} from './settings';
+
 export default {
-  sound: 'on'
+  [SOUND]: 'on'
 };
