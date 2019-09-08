@@ -1,5 +1,7 @@
 // @flow
 
+export const ALERT = 'alert';
+
 export default [
-  {name: 'alert', file: '/audio/alert'}
+  {name: ALERT, file: '/audio/alert'}
 ];

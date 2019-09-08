@@ -4,6 +4,10 @@ import proxyquire from 'proxyquire';
 import {shallow} from 'enzyme';
 import {stub} from 'sinon';
 
+import Audio from '../../../helpers/mock-audio';
+
+global.Audio = Audio;
+
 const PlayerInfo = proxyquire('../../../../client/components/game/player-info', {
   'react-redux': {connect: stub().returns(stub().returnsArg(0))}
 }).default;

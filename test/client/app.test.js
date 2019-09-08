@@ -3,6 +3,10 @@ import proxyquire from 'proxyquire';
 import {shallow} from 'enzyme';
 import {stub} from 'sinon';
 
+import Audio from '../helpers/mock-audio';
+
+global.Audio = Audio;
+
 const ReactGA = {
   initialize: stub()
 };

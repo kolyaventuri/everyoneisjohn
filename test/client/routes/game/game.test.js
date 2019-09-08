@@ -4,6 +4,10 @@ import proxyquire from 'proxyquire';
 import {stub} from 'sinon';
 import React from 'react';
 
+import Audio from '../../../helpers/mock-audio';
+
+global.Audio = Audio;
+
 const Game = proxyquire('../../../../client/routes/game/index.js', {
   'react-router-dom': {withRouter: stub().returnsArg(0)},
   'react-redux': {connect: stub().returns(stub().returnsArg(0))}

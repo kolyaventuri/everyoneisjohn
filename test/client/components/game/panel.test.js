@@ -3,6 +3,10 @@ import React from 'react';
 import proxyquire from 'proxyquire';
 import {shallow} from 'enzyme';
 
+import Audio from '../../../helpers/mock-audio';
+
+global.Audio = Audio;
+
 class PlayerInfo extends React.Component {
   render() {
     return null;
