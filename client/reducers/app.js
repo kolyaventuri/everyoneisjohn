@@ -26,6 +26,11 @@ const AppReducer = (state: AppStateType = defaultState, action: ActionType): App
         ...state,
         error: null
       };
+    case 'SET_SOUND':
+      return {
+        ...state,
+        sound: payload.sound
+      };
     default:
       return state;
   }

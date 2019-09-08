@@ -5,7 +5,10 @@ import proxyquire from 'proxyquire';
 import {shallow} from 'enzyme';
 import {faVolume, faVolumeMute} from '@fortawesome/pro-regular-svg-icons';
 
+const store = {dispatch: stub()};
+
 const SoundControl = proxyquire('../../../client/components/sound-control', {
+  '../store': {store},
   'react-redux': {connect: () => stub().returnsArg(0)}
 }).default;
 
@@ -33,4 +36,28 @@ test('it renders the volume-mute icon if the sound is on', t => {
   const props = icon.props();
 
   t.is(props.icon, faVolumeMute);
+});
+
+test('it dispatches a SET_SOUND even when clicked, that turns the sound off', t => {
+  const wrapper = render();
+  const icon = wrapper.find('FontAwesomeIcon');
+
+  icon.simulate('click');
+
+  t.true(store.dispatch.calledWith({
+    type: 'SET_SOUND',
+    payload: {sound: false}
+  }));
+});
+
+test('it dispatches a SET_SOUND even when clicked, that turns the sound on if it was off', t => {
+  const wrapper = render({soundOn: false});
+  const icon = wrapper.find('FontAwesomeIcon');
+
+  icon.simulate('click');
+
+  t.true(store.dispatch.calledWith({
+    type: 'SET_SOUND',
+    payload: {sound: true}
+  }));
 });
