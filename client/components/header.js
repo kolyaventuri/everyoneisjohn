@@ -3,6 +3,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 
+import SoundControl from './sound-control';
 import styles from './header.scss';
 
 const Header = () => (
@@ -14,6 +15,9 @@ const Header = () => (
         Everyone is John
       </Link>
     </p>
+    <span className={styles.soundControl}>
+      <SoundControl/>
+    </span>
   </div>
 );
 
