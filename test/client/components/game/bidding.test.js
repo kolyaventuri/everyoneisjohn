@@ -3,24 +3,11 @@ import React from 'react';
 import proxyquire from 'proxyquire';
 import {shallow} from 'enzyme';
 import {MockSocket} from '../../../server/mocks/socket';
-import Audio from '../../../helpers/mock-audio';
-import SFX from '../../mocks/sfx';
-import {ALERT} from '../../../../client/constants/effects';
 
-global.Audio = Audio;
 const socket = new MockSocket();
 
-const sfxs = {
-  [ALERT]: new SFX(ALERT)
-};
-
-const manager = {
-  get: name => sfxs[name]
-};
-
 const Bidding = proxyquire('../../../../client/components/game/bidding', {
-  '../../socket': {default: socket},
-  '../../lib/sfx': {default: manager}
+  '../../socket': {default: socket}
 }).default;
 
 const render = (props = {}) => shallow(<Bidding max={10} {...props}/>);
@@ -98,35 +85,4 @@ test('once you have submitted your bid, the component vanishes', t => {
   wrapper.update();
 
   t.is(wrapper.type(), null);
-});
-
-test('loads in the `alert` effect upon being constructed', t => {
-  const wrapper = render();
-  const instance = wrapper.instance();
-
-  const {_alertEffect} = instance;
-
-  t.true(_alertEffect instanceof SFX);
-  t.is(_alertEffect.name, ALERT);
-});
-
-test('plays the alert effect file upon mounting', t => {
-  const wrapper = render();
-  const instance = wrapper.instance();
-
-  const {_alertEffect} = instance;
-
-  instance.componentDidMount();
-
-  t.true(_alertEffect.play.called);
-});
-
-test('does not error if alert effect didn\'t load properly', t => {
-  const wrapper = render();
-  const instance = wrapper.instance();
-  instance._alertEffect = null;
-
-  const fn = () => instance.componentDidMount();
-
-  t.notThrows(fn);
 });
