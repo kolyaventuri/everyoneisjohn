@@ -10,7 +10,10 @@ export default class SFXManager {
   }
 
   add({name, file}: {name: string, file: string}) {
-    this._sfxs[name] = new SFX(file);
+    const sfx = new SFX(file);
+    this._sfxs[name] = sfx;
+
+    return sfx;
   }
 
   get(name: string): ?SFX {
