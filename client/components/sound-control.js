@@ -6,8 +6,8 @@ import {faVolume, faVolumeMute} from '@fortawesome/pro-regular-svg-icons';
 import {connect} from 'react-redux';
 
 import {store} from '../store';
-import {ON} from '../constants/settings';
 import type {GameStateType} from '../apps/game';
+import styles from './sound-control.scss';
 
 type Props = {|
   soundOn: boolean
@@ -26,6 +26,7 @@ const SoundControl = ({soundOn}: Props) => {
 
   return (
     <FontAwesomeIcon
+      className={styles.soundControl}
       icon={icon}
       onClick={onClick}
     />
@@ -34,7 +35,7 @@ const SoundControl = ({soundOn}: Props) => {
 
 const mapStateToProps = ({app}: GameStateType) => {
   return {
-    soundOn: app.sound === ON
+    soundOn: app.sound
   };
 };
 
