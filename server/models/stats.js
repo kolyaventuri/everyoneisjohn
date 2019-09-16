@@ -5,9 +5,7 @@ import Player from './player';
 type StatsType = {
   goal: string,
   goalLevel: number,
-  skill1: string,
-  skill2: string,
-  skill3: string,
+  skills: Array<string>,
   frozen: boolean,
   willpower: number,
   points: number,
@@ -17,9 +15,7 @@ type StatsType = {
 export type StatsUpdateType = {
   goal?: string,
   goalLevel?: number,
-  skill1?: string,
-  skill2?: string,
-  skill3?: string,
+  skills?: Array<string>,
   frozen?: boolean,
   willpower?: number,
   points?: number,
@@ -41,9 +37,7 @@ export default class Stats {
     this.__STATICS__ = {
       goal: '',
       goalLevel: 1,
-      skill1: '',
-      skill2: '',
-      skill3: '',
+      skills: [],
       frozen: false,
       willpower: 10,
       points: 0,
@@ -82,8 +76,7 @@ export default class Stats {
   }
 
   get skills(): Array<string> {
-    const {skill1, skill2, skill3} = this.__STATICS__;
-    return [skill1, skill2, skill3];
+    return this.__STATICS__.skills;
   }
 
   get willpower(): number {
@@ -121,30 +114,33 @@ export default class Stats {
     return value;
   }
 
-  setSkill(index: number, skill: string) {
+  addSkill(skill: string) {
     if (this.__STATICS__.frozen) {
       return;
     }
 
-    if (index < 1 || index > MAX_SKILLS) {
+    const {skills} = this.__STATICS__;
+    if (skills.length === MAX_SKILLS) {
       return;
     }
 
-    this.__STATICS__[`skill${index}`] = skill;
+    skills.push(skill);
 
-    if (index === MAX_SKILLS) {
-      if (skill) {
-        this.willpower = 7;
-      } else {
-        this.willpower = 10;
-      }
+    if (skills.length === MAX_SKILLS) {
+      this.willpower = 7;
     }
 
-    this.player.emitSkill(index - 1);
+    this.__STATICS__.skills = skills;
+
+    this.player.emitSkills();
   }
 
   deleteSkill(index: number) {
-    this.setSkill(index, '');
+    this.__STATICS__.skills.splice(index - 1, 1);
+
+    if (this.__STATICS__.skills.length < MAX_SKILLS) {
+      this.willpower = 10;
+    }
   }
 
   deleteGoal() {

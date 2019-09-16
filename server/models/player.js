@@ -326,14 +326,13 @@ export default class Player {
     }
   }
 
-  emitSkill(index: number) {
-    const skill = this.stats.skills[index];
+  emitSkills() {
+    const {skills} = this.stats;
 
     this.emitToMe({
-      event: 'setSkill',
+      event: 'setSkills',
       payload: {
-        index,
-        skill
+        skills
       }
     });
 
@@ -342,7 +341,7 @@ export default class Player {
         event: 'updatePlayer',
         payload: {
           id: this.id,
-          [`skill${index + 1}`]: skill
+          skills
         }
       });
     }
