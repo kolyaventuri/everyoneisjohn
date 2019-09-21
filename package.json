@@ -27,7 +27,7 @@
   "homepage": "https://github.com/kolyaventuri/everyoneisjohn#readme",
   "devDependencies": {
     "@fortawesome/fontawesome-pro": "^5.8.2",
-    "ava": "^1.2.1",
+    "ava": "^2.4.0",
     "babel-eslint": "^10.0.1",
     "browser-env": "^3.2.6",
     "coveralls": "^3.0.6",
@@ -145,6 +145,9 @@
   "ava": {
     "files": [
       "test/**/*.test.js"
+    ],
+    "helpers": [
+      "test/helpers/**/*.js"
     ],
     "require": [
       "@babel/register",
