@@ -26,7 +26,7 @@ const updateStats = (socket: SocketType, payload: Payload) => {
 
   if (skill) {
     const {content} = skill;
-    player.stats.addSkil(content);
+    player.stats.addSkill(content);
   }
 };
 

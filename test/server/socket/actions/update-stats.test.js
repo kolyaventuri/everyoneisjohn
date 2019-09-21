@@ -24,5 +24,5 @@ test('sets a skill if provided', t => {
     }
   });
 
-  t.is(player.stats.__STATICS__.skill1, skill);
+  t.is(player.stats.__STATICS__.skills[0], skill);
 });

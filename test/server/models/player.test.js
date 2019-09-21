@@ -310,34 +310,34 @@ test('player is booted from the old game if they join a new one', t => {
   t.true(player.leaveGame.called);
 });
 
-test('emitSkill emits a setSkill event to the player', t => {
+test('emitSkills emits a setSkills event to the player', t => {
   const player = genPlayer();
 
-  const skill = 'skill';
-  player.stats.__STATICS__.skill1 = skill;
+  const skills = ['skill'];
+  player.stats.__STATICS__.skills = skills;
   player.__STATICS__.ready = true;
 
-  player.emitSkill(0);
-  const event = 'setSkill';
-  const payload = {index: 0, skill};
+  player.emitSkills();
+  const event = 'setSkills';
+  const payload = {skills};
   const channel = player.rooms.private;
 
   t.true(emit.calledWith({channel, event, payload}));
 });
 
-test('emitSkill calls game.emitToGm', t => {
+test('emitSkills calls game.emitToGm', t => {
   const {game, player} = setup();
 
-  const skill = 'skill';
-  player.stats.__STATICS__.skill1 = skill;
+  const skills = ['skill'];
+  player.stats.__STATICS__.skills = skills;
 
-  player.emitSkill(0);
+  player.emitSkills();
 
   t.true(game.emitToGm.calledWith({
     event: 'updatePlayer',
     payload: {
       id: player.id,
-      skill1: skill
+      skills
     }
   }));
 });
