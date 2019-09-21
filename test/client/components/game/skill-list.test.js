@@ -16,9 +16,7 @@ const render = (props = {}) => shallow(<SkillList {...props}/>);
 
 test('it renders player skills', t => {
   const props = {
-    skill1: 'a',
-    skill2: 'b',
-    skill3: 'c',
+    skills: ['a', 'b', 'c'],
     frozen: true
   };
   const wrapper = render(props);
@@ -32,15 +30,13 @@ test('it renders player skills', t => {
   for (let i = 0; i < 3; i++) {
     const li = lis.at(i);
 
-    t.is(li.text(), props[`skill${i + 1}`]);
+    t.is(li.text(), props.skills[i]);
   }
 });
 
 test('it renders players skils as text boxes if editing is not frozen', t => {
   const props = {
-    skill1: 'a',
-    skill2: 'b',
-    skill3: 'c'
+    skills: ['a', 'b', 'c']
   };
   const wrapper = render(props);
   const skills = wrapper.find('[data-type="skills"]');
@@ -51,7 +47,7 @@ test('it renders players skils as text boxes if editing is not frozen', t => {
     const input = li.find('input');
 
     t.is(input.length, 1);
-    t.is(input.props().value, props[`skill${i + 1}`]);
+    t.is(input.props().value, props.skills[i]);
   }
 });
 
@@ -59,9 +55,7 @@ test('it emits the skill to the server on input', t => {
   const clock = sinon.useFakeTimers();
 
   const props = {
-    skill1: '',
-    skill2: '',
-    skill3: ''
+    skills: []
   };
   const wrapper = render(props);
   const skills = wrapper.find('[data-type="skills"]');
@@ -86,9 +80,7 @@ test('it emits the skill to the server on input', t => {
 
 test('it updates the state with the new skill on input', t => {
   const props = {
-    skill1: '',
-    skill2: '',
-    skill3: ''
+    skills: []
   };
   const index = 0;
   const wrapper = render(props);
@@ -106,34 +98,28 @@ test('it updates the state with the new skill on input', t => {
 
   // Not totally sure why enzyme isn't capturing the updated state, but this works
   t.true(instance.setState.calledWith({
-    [`skill${index + 1}`]: value
+    skills: [value]
   }));
 });
 
 test('it updates the state when the props are updated', t => {
   const props = {
-    skill1: '',
-    skill2: '',
-    skill3: ''
+    skills: []
   };
   const wrapper = render(props);
 
   const newProps = {
-    skill1: 'a',
-    skill2: 'b',
-    skill3: 'c'
+    skills: ['a']
   };
   wrapper.setProps(newProps);
-  wrapper.update();
 
   const instance = wrapper.instance();
+  wrapper.update();
   const {state} = instance;
   const {ids} = state;
   const expected = {
     ids,
-    skill1: 'a',
-    skill2: 'b',
-    skill3: 'c'
+    skills: ['a']
   };
 
   t.deepEqual(state, expected);

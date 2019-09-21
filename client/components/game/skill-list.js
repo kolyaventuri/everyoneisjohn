@@ -3,7 +3,7 @@
 import React from 'react';
 import uuid from 'uuid/v4';
 import debounce from 'debounce';
-import {updatedDiff} from 'deep-object-diff';
+import {addedDiff, updatedDiff} from 'deep-object-diff';
 
 import {DEBOUNCE_AMOUNT} from '../../constants/sockets';
 
@@ -14,16 +14,12 @@ import styles from './section.scss';
 
 type Props = {|
   frozen: boolean,
-  skill1: string,
-  skill2: string,
-  skill3: string
+  skills: Array<string>
 |};
 
 type State = {|
   ids: Array<string>,
-  skill1: string,
-  skill2: string,
-  skill3: string
+  skills: Array<string>
 |};
 
 export default class SkillList extends React.Component<Props, State> {
@@ -36,12 +32,10 @@ export default class SkillList extends React.Component<Props, State> {
       ids[i] = uuid();
     }
 
-    const {skill1, skill2, skill3} = this.props;
+    const {skills} = this.props;
     this.state = {
       ids,
-      skill1: skill1 || '',
-      skill2: skill2 || '',
-      skill3: skill3 || ''
+      skills: skills || []
     };
 
     this.changeHandler = new Array(3).fill(0).map((_, i) => {
@@ -51,11 +45,13 @@ export default class SkillList extends React.Component<Props, State> {
 
   componentDidUpdate(prevProps: Props): void {
     const diff = updatedDiff(prevProps, this.props);
-    if (Object.keys(diff).length === 0) {
+    const addDiff = addedDiff(prevProps, this.props);
+    if (Object.keys(diff).length === 0 && Object.keys(addDiff).length === 0) {
       // Props have not changed, ignore
       return;
     }
 
+    const {skills} = this.props;
     /*
        (6/6/19) Disabling the rule here, since the skill rejection is a fairly specific case
        and we actually do need the state updated to properly reflect the data to the user, due
@@ -64,7 +60,7 @@ export default class SkillList extends React.Component<Props, State> {
        I intend to revisit this in a future bug, and address this properly.
      */
     // eslint-disable-next-line react/no-did-update-set-state
-    this.setState(diff);
+    this.setState({skills});
   }
 
   handleInput = (e: SyntheticInputEvent<HTMLInputElement>, index: number) => {
@@ -76,8 +72,11 @@ export default class SkillList extends React.Component<Props, State> {
       }
     } = e;
 
+    const {skills} = this.state;
+    skills[index] = value;
+
     this.setState({
-      [`skill${index + 1}`]: value
+      skills
     });
 
     this.changeHandler[index](value);
@@ -120,18 +119,21 @@ export default class SkillList extends React.Component<Props, State> {
   render() {
     const {
       ids,
-      skill1,
-      skill2,
-      skill3
+      skills
     } = this.state;
 
-    const items = [skill1, skill2, skill3];
+    // Prevent JavaScript object references from messing things up
+    const renderedSkills = [...skills];
+    if (renderedSkills.length < 3) {
+      // Force at least 1 blank skill box to render up to 3
+      renderedSkills.push('');
+    }
 
     return (
       <div className={styles.section}>
         <p className={styles.title}>You have a particular set of skills:</p>
         <ul data-type="skills">
-          {items.map((skill, index) => (
+          {renderedSkills.map((skill, index) => (
             <li key={`skill-index-${ids[index]}`}>
               {this.renderSkill(skill, index)}
             </li>
