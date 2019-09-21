@@ -278,7 +278,6 @@ export default class Player {
       winner
     } = this.stats;
     const {id, name} = this;
-    const [skill1, skill2, skill3] = skills;
 
     const payload = {
       id,
@@ -289,9 +288,7 @@ export default class Player {
       goalLevel,
       frozen,
       winner,
-      skill1,
-      skill2,
-      skill3
+      skills
     };
 
     return payload;
