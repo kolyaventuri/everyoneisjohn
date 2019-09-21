@@ -5,9 +5,7 @@ export type PlayerStateType = {
   id: string,
   willpower: number,
   points: number,
-  skill1: string,
-  skill2: string,
-  skill3: string,
+  skills: Array<string>,
   goal: string,
   goalLevel: number,
   frozen: boolean

@@ -3,17 +3,14 @@
 import {store} from '../../store';
 
 type Payload = {
-  index: number,
-  skill: string
+  skill: Array<string>
 };
 
-const setSkill = ({index, skill}: Payload) => {
-  index += 1;
-
+const setSkill = ({skills}: Payload) => {
   store.dispatch({
     type: 'SET_PLAYER_INFO',
     payload: {
-      [`skill${index}`]: skill
+      skills
     }
   });
 };
