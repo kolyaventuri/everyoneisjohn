@@ -72,11 +72,11 @@ export default class SkillList extends React.Component<Props, State> {
       }
     } = e;
 
-    const isEmpty = Boolean(value.trim());
+    const hasContent = Boolean(value.trim());
 
     const {skills} = this.state;
 
-    if (isEmpty) {
+    if (hasContent) {
       skills[index] = value;
     } else {
       skills.splice(index, 1);
@@ -86,7 +86,7 @@ export default class SkillList extends React.Component<Props, State> {
       skills
     });
 
-    this.changeHandler[index](isEmpty ? value : '');
+    this.changeHandler[index](hasContent ? value : '');
   }
 
   handleChange = (index: number, value: string) => {
@@ -117,7 +117,7 @@ export default class SkillList extends React.Component<Props, State> {
           value={skill}
           placeholder="Enter a skill"
           onInput={e => this.handleInput(e, index)}
-          onChange={e => this.handleInput(e, index)}
+          onChange={() => {}}
         />
       </div>
     );
