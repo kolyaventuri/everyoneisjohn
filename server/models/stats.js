@@ -149,7 +149,7 @@ export default class Stats {
     if (this.__STATICS__.skills[adjusted]) {
       if (content) {
         this.__STATICS__.skills[adjusted] = content;
-        this.player.emitSkills();
+        this.player.emitSkills(false);
       } else {
         this.deleteSkill(index);
       }

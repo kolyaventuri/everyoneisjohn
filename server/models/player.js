@@ -323,15 +323,17 @@ export default class Player {
     }
   }
 
-  emitSkills() {
+  emitSkills(emitToMe?: boolean = true) {
     const {skills} = this.stats;
 
-    this.emitToMe({
-      event: 'setSkills',
-      payload: {
-        skills
-      }
-    });
+    if (emitToMe) {
+      this.emitToMe({
+        event: 'setSkills',
+        payload: {
+          skills
+        }
+      });
+    }
 
     if (this.game) {
       this.game.emitToGm({
