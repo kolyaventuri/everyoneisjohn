@@ -72,14 +72,21 @@ export default class SkillList extends React.Component<Props, State> {
       }
     } = e;
 
+    const isEmpty = value.trim() || null;
+
     const {skills} = this.state;
-    skills[index] = value;
+
+    if (isEmpty) {
+      skills[index] = value;
+    } else {
+      skills.splice(index, 1);
+    }
 
     this.setState({
       skills
     });
 
-    this.changeHandler[index](value);
+    this.changeHandler[index](isEmpty ? value : null);
   }
 
   handleChange = (index: number, value: string) => {

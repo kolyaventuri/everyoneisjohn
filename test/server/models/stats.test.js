@@ -227,3 +227,13 @@ test('#updateSkill updates an existing skill', t => {
   t.is(stats.skills[0], newSkill);
   t.true(player.emitSkills.called);
 });
+
+test('#updateSkill deletes a skill if the content is empty', t => {
+  const stats = genStats();
+  stats.deleteSkill = stub();
+
+  stats.addSkill('abc');
+  stats.updateSkill(1, null);
+
+  t.true(stats.deleteSkill.calledWith(1));
+});

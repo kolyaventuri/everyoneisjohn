@@ -124,3 +124,28 @@ test('it updates the state when the props are updated', t => {
 
   t.deepEqual(state, expected);
 });
+
+test('#handleInput deletes the index if value now empty', t => {
+  const finalSkills = ['skill1', 'skill2'];
+  const props = {
+    skills: ['abcde', ...finalSkills]
+  };
+  const index = 0;
+  const wrapper = render(props);
+
+  const skills = wrapper.find('[data-type="skills"]');
+  const lis = skills.find('li');
+  const input = lis.at(index).find('input');
+
+  const instance = wrapper.instance();
+  instance.setState = stub();
+
+  const value = '    ';
+
+  input.simulate('input', {target: {value}, persist: () => {}});
+
+  t.true(instance.setState.calledWith({
+    skills: finalSkills
+  }));
+});
+
