@@ -12,6 +12,10 @@ const setSpecificPlayer = (state: GameStateType, {payload}: ActionType) => {
   }
 
   players[index] = deepMerge(players[index], payload);
+  if (payload.skills) {
+    players[index].skills = payload.skills;
+  }
+
   return {
     ...state,
     players

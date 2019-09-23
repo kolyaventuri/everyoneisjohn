@@ -141,6 +141,8 @@ export default class Stats {
     if (this.__STATICS__.skills.length < MAX_SKILLS) {
       this.willpower = 10;
     }
+
+    this.player.emitSkills();
   }
 
   updateSkill(index: number, content: string) {
