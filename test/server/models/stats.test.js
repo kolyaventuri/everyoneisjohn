@@ -215,3 +215,15 @@ test('it updates and emits the winner upon being changed', t => {
   t.true(stats.winner);
   t.true(player.emitUpdate.called);
 });
+
+test('#updateSkill updates an existing skill', t => {
+  const player = genPlayer();
+  const stats = genStats(player);
+  const newSkill = 'newContent';
+
+  stats.addSkill('abc');
+  stats.updateSkill(1, newSkill);
+
+  t.is(stats.skills[0], newSkill);
+  t.true(player.emitSkills.called);
+});

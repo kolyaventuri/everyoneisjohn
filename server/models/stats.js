@@ -143,6 +143,15 @@ export default class Stats {
     }
   }
 
+  updateSkill(index: number, content: string) {
+    index -= 1;
+
+    if (this.__STATICS__.skills[index]) {
+      this.__STATICS__.skills[index] = content;
+      this.player.emitSkills();
+    }
+  }
+
   deleteGoal() {
     this.goal = '';
   }
