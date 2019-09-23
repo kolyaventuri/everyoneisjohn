@@ -9,7 +9,7 @@ test('it should return the default state', t => {
   t.deepEqual(result, {});
 });
 
-test('SET_PLAYER_NAME should be able to set the player id / name', t => {
+test('SET_PLAYER_INFO should be able to set the player id / name', t => {
   const id = uuid();
   const name = uuid();
 
@@ -36,6 +36,20 @@ test('SET_PLAYER_NAME should be able to set the player name', t => {
   const result = reducer({}, {
     type: 'SET_PLAYER_NAME',
     payload: {name}
+  });
+
+  t.deepEqual(result, expected);
+});
+
+test('SET_PLAYER_INFO, when passed a skill array, should not merge the arrays', t => {
+  const skills = ['skilla'];
+  const newSkills = ['skillb'];
+
+  const expected = {skills: newSkills};
+
+  const result = reducer({skills}, {
+    type: 'SET_PLAYER_INFO',
+    payload: {skills: newSkills}
   });
 
   t.deepEqual(result, expected);
