@@ -3,7 +3,7 @@
 import React from 'react';
 import uuid from 'uuid/v4';
 import debounce from 'debounce';
-import {addedDiff, updatedDiff} from 'deep-object-diff';
+import {addedDiff, updatedDiff, deletedDiff} from 'deep-object-diff';
 
 import {DEBOUNCE_AMOUNT} from '../../constants/sockets';
 
@@ -21,6 +21,12 @@ type State = {|
   ids: Array<string>,
   skills: Array<string>
 |};
+
+const allZero = (objects: Array<{}>): boolean => {
+  const vals = objects.map(obj => Object.keys(obj).length);
+
+  return vals.every(val => val === 0);
+};
 
 export default class SkillList extends React.Component<Props, State> {
   constructor(...args: any) {
@@ -46,7 +52,9 @@ export default class SkillList extends React.Component<Props, State> {
   componentDidUpdate(prevProps: Props): void {
     const diff = updatedDiff(prevProps, this.props);
     const addDiff = addedDiff(prevProps, this.props);
-    if (Object.keys(diff).length === 0 && Object.keys(addDiff).length === 0) {
+    const subDiff = deletedDiff(prevProps, this.props);
+
+    if (allZero([diff, addDiff, subDiff])) {
       // Props have not changed, ignore
       return;
     }

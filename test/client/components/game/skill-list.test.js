@@ -125,6 +125,29 @@ test('it updates the state when the props are updated', t => {
   t.deepEqual(state, expected);
 });
 
+test('it updates the state when skills are removed', t => {
+  const props = {
+    skills: ['a', 'b']
+  };
+  const wrapper = render(props);
+
+  const newProps = {
+    skills: ['b']
+  };
+  wrapper.setProps(newProps);
+
+  const instance = wrapper.instance();
+  wrapper.update();
+  const {state} = instance;
+  const {ids} = state;
+  const expected = {
+    ids,
+    skills: ['b']
+  };
+
+  t.deepEqual(state, expected);
+});
+
 test('#handleInput deletes the index if value now empty', t => {
   const finalSkills = ['skill1', 'skill2'];
   const props = {
