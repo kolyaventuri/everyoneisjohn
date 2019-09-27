@@ -50,9 +50,22 @@ export default class SkillList extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props): void {
-    const diff = updatedDiff(prevProps, this.props);
-    const addDiff = addedDiff(prevProps, this.props);
-    const subDiff = deletedDiff(prevProps, this.props);
+    const newProps = {...this.props};
+    const {skills: curSkills, ids} = this.state;
+    for (let i = 0; i < 3; i++) {
+      const id = ids[i];
+
+      // Iterate over every incoming skill, and ignore updates to skills
+      // the player is editing
+      const elem = document.querySelector(`input[data-aid='${id}']`);
+      if (newProps.skills[i] !== curSkills[i] && document.hasFocus(elem)) {
+        newProps.skills[i] = curSkills[i];
+      }
+    }
+
+    const diff = updatedDiff(prevProps, newProps);
+    const addDiff = addedDiff(prevProps, newProps);
+    const subDiff = deletedDiff(prevProps, newProps);
 
     if (allZero([diff, addDiff, subDiff])) {
       // Props have not changed, ignore
@@ -120,6 +133,7 @@ export default class SkillList extends React.Component<Props, State> {
       <div className={styles.skill}>
         <input
           key={`skill-input-${ids[index]}`}
+          data-index={ids[index]}
           type="text"
           className={globalStyles.input}
           value={skill}

@@ -172,3 +172,35 @@ test('#handleInput deletes the index if value now empty', t => {
   }));
 });
 
+test('it does not update the state of a textbox if it has focus when the props are updated', t => {
+  const props = {
+    skills: ['a', 'b']
+  };
+  const wrapper = render(props);
+  const instance = wrapper.instance();
+  const value = 'abcd';
+
+  const getInput = () => {
+    const skills = wrapper.find('[data-type="skills"]');
+    const lis = skills.find('li');
+    return lis.at(2).find('input').shallow();
+  };
+
+  let input = getInput();
+  input.simulate('input', {target: {value}, persist: () => {}});
+
+  const {hasFocus} = global.document;
+  global.document.hasFocus = stub().returns(true);
+
+  const newProps = {
+    skills: ['a', 'b']
+  };
+  const prevProps = wrapper.props();
+  wrapper.setProps(newProps);
+  instance.componentDidUpdate(prevProps);
+
+  input = getInput();
+
+  t.is(input.props().value, value);
+  global.document.hasFocus = hasFocus;
+});
