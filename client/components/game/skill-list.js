@@ -3,28 +3,34 @@
 import React from 'react';
 import uuid from 'uuid/v4';
 import debounce from 'debounce';
-import {updatedDiff} from 'deep-object-diff';
+import {addedDiff, updatedDiff, deletedDiff} from 'deep-object-diff';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faPlus} from '@fortawesome/pro-regular-svg-icons';
 
 import {DEBOUNCE_AMOUNT} from '../../constants/sockets';
 
 import globalStyles from '../../sass/global.scss';
 import socket from '../../socket';
+import {store} from '../../store';
 
 import styles from './section.scss';
 
 type Props = {|
   frozen: boolean,
-  skill1: string,
-  skill2: string,
-  skill3: string
+  skills: Array<string>,
+  hasAccepted: boolean
 |};
 
 type State = {|
   ids: Array<string>,
-  skill1: string,
-  skill2: string,
-  skill3: string
+  skills: Array<string>
 |};
+
+const allZero = (objects: Array<{}>): boolean => {
+  const vals = objects.map(obj => Object.keys(obj).length);
+
+  return vals.every(val => val === 0);
+};
 
 export default class SkillList extends React.Component<Props, State> {
   constructor(...args: any) {
@@ -36,24 +42,47 @@ export default class SkillList extends React.Component<Props, State> {
       ids[i] = uuid();
     }
 
-    const {skill1, skill2, skill3} = this.props;
+    const {skills} = this.props;
     this.state = {
       ids,
-      skill1: skill1 || '',
-      skill2: skill2 || '',
-      skill3: skill3 || ''
+      skills: skills || []
     };
 
     this.changeHandler = new Array(3).fill(0).map((_, i) => {
       return debounce(this.handleChange.bind(this, i), DEBOUNCE_AMOUNT);
     });
+
+    if (skills.length === 3) {
+      this.setAccepted();
+    }
   }
 
   componentDidUpdate(prevProps: Props): void {
-    const diff = updatedDiff(prevProps, this.props);
-    if (Object.keys(diff).length === 0) {
+    const newProps = {...this.props};
+    const {skills: curSkills, ids} = this.state;
+    for (let i = 0; i < 3; i++) {
+      const id = ids[i];
+
+      // Iterate over every incoming skill, and ignore updates to skills
+      // the player is editing
+      const elem = document.querySelector(`input[data-aid='${id}']`);
+      if (newProps.skills[i] !== curSkills[i] && document.hasFocus(elem)) {
+        newProps.skills[i] = curSkills[i];
+      }
+    }
+
+    const diff = updatedDiff(prevProps, newProps);
+    const addDiff = addedDiff(prevProps, newProps);
+    const subDiff = deletedDiff(prevProps, newProps);
+
+    if (allZero([diff, addDiff, subDiff])) {
       // Props have not changed, ignore
       return;
+    }
+
+    const {skills} = this.props;
+    if (skills.length === 3) {
+      this.setAccepted();
     }
 
     /*
@@ -64,7 +93,7 @@ export default class SkillList extends React.Component<Props, State> {
        I intend to revisit this in a future bug, and address this properly.
      */
     // eslint-disable-next-line react/no-did-update-set-state
-    this.setState(diff);
+    this.setState({skills});
   }
 
   handleInput = (e: SyntheticInputEvent<HTMLInputElement>, index: number) => {
@@ -76,11 +105,21 @@ export default class SkillList extends React.Component<Props, State> {
       }
     } = e;
 
+    const hasContent = Boolean(value.trim());
+
+    const {skills} = this.state;
+
+    if (hasContent) {
+      skills[index] = value;
+    } else {
+      skills.splice(index, 1);
+    }
+
     this.setState({
-      [`skill${index + 1}`]: value
+      skills
     });
 
-    this.changeHandler[index](value);
+    this.changeHandler[index](hasContent ? value : '');
   }
 
   handleChange = (index: number, value: string) => {
@@ -103,39 +142,79 @@ export default class SkillList extends React.Component<Props, State> {
     }
 
     return (
-      <div className={styles.skill}>
+      <div>
         <input
           key={`skill-input-${ids[index]}`}
+          data-index={ids[index]}
           type="text"
           className={globalStyles.input}
           value={skill}
           placeholder="Enter a skill"
           onInput={e => this.handleInput(e, index)}
-          onChange={e => this.handleInput(e, index)}
+          onChange={() => {}}
         />
       </div>
     );
   }
 
+  setAccepted = () => {
+    store.dispatch({
+      type: 'SET_PLAYER_INFO',
+      payload: {
+        hasAcceptedThirdSkill: true
+      }
+    });
+  };
+
+  renderOptional = () => {
+    const {hasAccepted, frozen} = this.props;
+    const {skills} = this.state;
+
+    const canRender = skills.length === 2 && !hasAccepted && !frozen;
+
+    if (canRender) {
+      return (
+        <li>
+          <div className={styles.question}>
+            <span>Add a 3rd skill for 3 willpower?</span>
+            <FontAwesomeIcon
+              icon={faPlus}
+              className={styles.icon}
+              onClick={this.setAccepted}
+            />
+          </div>
+        </li>
+      );
+    }
+
+    return null;
+  };
+
   render() {
+    const {hasAccepted} = this.props;
     const {
       ids,
-      skill1,
-      skill2,
-      skill3
+      skills
     } = this.state;
 
-    const items = [skill1, skill2, skill3];
+    // Prevent JavaScript object references from messing things up
+    const renderedSkills = [...skills];
+    const max = hasAccepted ? 3 : 2;
+    if (renderedSkills.length < max) {
+      // Force at least 1 blank skill box to render up to 3
+      renderedSkills.push('');
+    }
 
     return (
       <div className={styles.section}>
         <p className={styles.title}>You have a particular set of skills:</p>
         <ul data-type="skills">
-          {items.map((skill, index) => (
+          {renderedSkills.map((skill, index) => (
             <li key={`skill-index-${ids[index]}`}>
               {this.renderSkill(skill, index)}
             </li>
           ))}
+          {this.renderOptional()}
         </ul>
       </div>
     );

@@ -278,7 +278,6 @@ export default class Player {
       winner
     } = this.stats;
     const {id, name} = this;
-    const [skill1, skill2, skill3] = skills;
 
     const payload = {
       id,
@@ -289,9 +288,7 @@ export default class Player {
       goalLevel,
       frozen,
       winner,
-      skill1,
-      skill2,
-      skill3
+      skills
     };
 
     return payload;
@@ -326,23 +323,24 @@ export default class Player {
     }
   }
 
-  emitSkill(index: number) {
-    const skill = this.stats.skills[index];
+  emitSkills(emitToMe?: boolean = true) {
+    const {skills} = this.stats;
 
-    this.emitToMe({
-      event: 'setSkill',
-      payload: {
-        index,
-        skill
-      }
-    });
+    if (emitToMe) {
+      this.emitToMe({
+        event: 'setSkills',
+        payload: {
+          skills
+        }
+      });
+    }
 
     if (this.game) {
       this.game.emitToGm({
         event: 'updatePlayer',
         payload: {
           id: this.id,
-          [`skill${index + 1}`]: skill
+          skills
         }
       });
     }

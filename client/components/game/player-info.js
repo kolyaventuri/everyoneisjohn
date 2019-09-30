@@ -17,14 +17,13 @@ import styles from './player-info.scss';
 type Props = {|
   name: string,
   willpower: number,
-  skill1: string,
-  skill2: string,
-  skill3: string,
+  skills: Array<string>,
   goal: string,
   points: number,
   frozen: boolean,
   mode: GameModeType,
-  winner: boolean
+  winner: boolean,
+  hasAcceptedThirdSkill: boolean
 |};
 
 class PlayerInfo extends React.Component<Props> {
@@ -50,15 +49,12 @@ class PlayerInfo extends React.Component<Props> {
       name,
       willpower,
       goal,
-      skill1,
-      skill2,
-      skill3,
+      skills,
       points: score,
       frozen,
-      winner
+      winner,
+      hasAcceptedThirdSkill
     } = this.props;
-
-    const skills = {skill1, skill2, skill3};
 
     return (
       <div className={styles.player}>
@@ -68,7 +64,7 @@ class PlayerInfo extends React.Component<Props> {
         {this.renderBidding()}
         <Score value={score}/>
         <Goal value={goal} frozen={frozen}/>
-        <SkillList frozen={frozen} {...skills}/>
+        <SkillList frozen={frozen} skills={skills} hasAccepted={Boolean(hasAcceptedThirdSkill)}/>
       </div>
     );
   }
@@ -78,13 +74,12 @@ const mapStateToProps = ({player, game}: GameStateType) => {
   const {
     name,
     willpower,
-    skill1,
-    skill2,
-    skill3,
+    skills,
     goal,
     points,
     frozen,
-    winner
+    winner,
+    hasAcceptedThirdSkill
   } = player;
 
   const {mode} = game;
@@ -92,14 +87,13 @@ const mapStateToProps = ({player, game}: GameStateType) => {
   return {
     name,
     willpower,
-    skill1,
-    skill2,
-    skill3,
+    skills,
     goal,
     points,
     frozen,
     mode,
-    winner
+    winner,
+    hasAcceptedThirdSkill
   };
 };
 

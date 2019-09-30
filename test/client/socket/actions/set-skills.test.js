@@ -6,20 +6,19 @@ const dispatch = stub();
 const store = {dispatch};
 
 proxyquire.noCallThru();
-const setSkill = proxyquire('../../../../client/socket/actions/set-skill', {
+const setSkill = proxyquire('../../../../client/socket/actions/set-skills', {
   '../../store': {store}
 }).default;
 
-test('updates the redux store with the new skill', t => {
-  const index = 0;
-  const skill = 'skill';
+test('updates the redux store with the new skills', t => {
+  const skills = ['skill'];
 
-  setSkill({index, skill});
+  setSkill({skills});
 
   t.true(dispatch.calledWith({
     type: 'SET_PLAYER_INFO',
     payload: {
-      [`skill${index + 1}`]: skill
+      skills
     }
   }));
 });

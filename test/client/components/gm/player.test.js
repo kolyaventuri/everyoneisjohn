@@ -18,9 +18,7 @@ const player = {
   willpower: 9,
   goal: 'Some goal',
   goalLevel: 2,
-  skill1: 'A',
-  skill2: 'B',
-  skill3: 'C',
+  skills: ['A', 'B', 'C'],
   points: 2
 };
 
@@ -118,8 +116,7 @@ test('it renders a SkillList component', t => {
   const skills = wrapper.find('SkillList');
   const props = skills.props();
 
-  const {skill1, skill2, skill3} = player;
-  const playerSkills = [skill1, skill2, skill3];
+  const {skills: playerSkills} = player;
 
   t.is(skills.length, 1);
   t.deepEqual(props.children, playerSkills);

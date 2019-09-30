@@ -102,3 +102,32 @@ test('SET_GAME_MODE should be able to define the game mode', t => {
 
   t.deepEqual(result, expected);
 });
+
+test('SET_GAME_PLAYER_INFO, when passed a skill array, should not merge the arrays', t => {
+  const skills = ['skilla'];
+  const newSkills = ['skillb'];
+  const players = [
+    {
+      id: 1,
+      skills
+    },
+    {
+      id: 2,
+      skills
+    }
+  ];
+
+  const updatedPlayers = [...players];
+  updatedPlayers[0].skills = newSkills;
+
+  const expected = {
+    players: updatedPlayers
+  };
+
+  const result = reducer({players}, {
+    type: 'SET_GAME_PLAYER_INFO',
+    payload: {id: players[0].id, skills: newSkills}
+  });
+
+  t.deepEqual(result, expected);
+});

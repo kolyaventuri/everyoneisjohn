@@ -15,15 +15,15 @@ test('deletes a given players skill, based on provided index', t => {
   game.addPlayer(player1);
   game.addPlayer(player2);
 
-  player1.stats.setSkill(1, skill1);
-  player1.stats.setSkill(2, skill2);
-  player2.stats.setSkill(1, skill1);
-  player2.stats.setSkill(2, skill2);
+  player1.stats.addSkill(skill1);
+  player1.stats.addSkill(skill2);
+  player2.stats.addSkill(skill1);
+  player2.stats.addSkill(skill2);
 
   rejectSkill(socket, {index: 1, player: player1.id});
 
   t.is(player1.stats.skills[0], skill1);
-  t.is(player1.stats.skills[1], '');
+  t.is(player1.stats.skills[1], undefined);
 
   t.is(player2.stats.skills[1], skill2);
 });

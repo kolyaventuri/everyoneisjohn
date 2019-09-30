@@ -7,7 +7,7 @@ import setup from '../stubs/create-socket';
 const genPlayer = () => {
   const {player} = setup();
   player.emitUpdate = stub();
-  player.emitSkill = stub();
+  player.emitSkills = stub();
 
   return player;
 };
@@ -116,12 +116,12 @@ test('goal can be deleted', t => {
 test('can set the 3 skills', t => {
   const stats = genStats();
 
-  stats.setSkill(1, 'a');
-  stats.setSkill(2, 'b');
-  stats.setSkill(3, 'c');
+  stats.addSkill('a');
+  stats.addSkill('b');
+  stats.addSkill('c');
   // Sad path
-  stats.setSkill(4, 'd');
-  stats.setSkill(0, 'e');
+  stats.addSkill('d');
+  stats.addSkill('e');
 
   t.deepEqual(stats.skills, ['a', 'b', 'c']);
 });
@@ -129,44 +129,32 @@ test('can set the 3 skills', t => {
 test('can delete skill by index', t => {
   const stats = genStats();
 
-  stats.setSkill(1, 'a');
-  stats.setSkill(2, 'b');
+  stats.addSkill('a');
+  stats.addSkill('b');
 
   stats.deleteSkill(2);
 
-  t.deepEqual(stats.skills, ['a', '', '']);
+  t.deepEqual(stats.skills, ['a']);
 });
 
 test('new skills are emitted', t => {
   const player = genPlayer();
   const stats = genStats(player);
 
-  stats.setSkill(1, 'a');
+  stats.addSkill('a');
 
-  t.true(player.emitSkill.calledWith(0));
+  t.true(player.emitSkills.called);
 });
 
 test('spends 3 willpower if the 3rd skill is set', t => {
   const stats = genStats();
 
-  stats.setSkill(1, 'a');
-  stats.setSkill(2, 'b');
+  stats.addSkill('a');
+  stats.addSkill('b');
 
   t.is(stats.willpower, 10);
 
-  stats.setSkill(3, 'c');
-
-  t.is(stats.willpower, 7);
-});
-
-test('does not spend willpower again if 3rd skill has already been set', t => {
-  const stats = genStats();
-
-  stats.setSkill(1, 'a');
-  stats.setSkill(2, 'b');
-  stats.setSkill(3, 'c');
-
-  stats.setSkill(3, 'd');
+  stats.addSkill('c');
 
   t.is(stats.willpower, 7);
 });
@@ -174,11 +162,11 @@ test('does not spend willpower again if 3rd skill has already been set', t => {
 test('returns willpower if 3rd skill is unset', t => {
   const stats = genStats();
 
-  stats.setSkill(1, 'a');
-  stats.setSkill(2, 'b');
-  stats.setSkill(3, 'c');
+  stats.addSkill('a');
+  stats.addSkill('b');
+  stats.addSkill('c');
 
-  stats.setSkill(3, '');
+  stats.deleteSkill(3);
 
   t.is(stats.willpower, 10);
 });
@@ -191,9 +179,9 @@ test('skills and goals cannot be set once they are frozen', t => {
   stats.freeze();
 
   stats.goal = goal;
-  stats.setSkill(1, 'Some skill');
+  stats.addSkill('Some skill');
 
-  t.deepEqual(stats.skills, ['', '', '']);
+  t.deepEqual(stats.skills, []);
   t.not(stats.goal, goal);
   t.true(player.emitUpdate.calledWith(false));
 });
@@ -226,4 +214,26 @@ test('it updates and emits the winner upon being changed', t => {
 
   t.true(stats.winner);
   t.true(player.emitUpdate.called);
+});
+
+test('#updateSkill updates an existing skill', t => {
+  const player = genPlayer();
+  const stats = genStats(player);
+  const newSkill = 'newContent';
+
+  stats.addSkill('abc');
+  stats.updateSkill(1, newSkill);
+
+  t.is(stats.skills[0], newSkill);
+  t.true(player.emitSkills.called);
+});
+
+test('#updateSkill deletes a skill if the content is empty', t => {
+  const stats = genStats();
+  stats.deleteSkill = stub();
+
+  stats.addSkill('abc');
+  stats.updateSkill(1, null);
+
+  t.true(stats.deleteSkill.calledWith(1));
 });

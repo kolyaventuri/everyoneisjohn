@@ -15,12 +15,11 @@ const PlayerInfo = proxyquire('../../../../client/components/game/player-info', 
 const defaultProps = {
   name: 'Mr. Some Name',
   willpower: 10,
-  skill1: 'A',
-  skill2: 'B',
-  skill3: 'C',
+  skills: ['A', 'B', 'C'],
   goal: 'Goal',
   points: 0,
-  mode: 'PLAYING'
+  mode: 'PLAYING',
+  hasAcceptedThirdSkill: false
 };
 
 const render = (props = defaultProps) => {
@@ -63,12 +62,11 @@ test('it renders a SkillList component', t => {
   const wrapper = render();
   const list = wrapper.find('SkillList');
 
-  const {skill1, skill2, skill3} = defaultProps;
+  const {skills} = defaultProps;
   const expected = {
     frozen: undefined,
-    skill1,
-    skill2,
-    skill3
+    skills,
+    hasAccepted: false
   };
 
   t.is(list.length, 1);

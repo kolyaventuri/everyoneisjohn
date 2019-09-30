@@ -13,3 +13,13 @@
     font-weight: bold;
   }
 }
+
+.question {
+    margin: 0.5em 0;
+    font-size: 0.9em;
+
+    .icon {
+        margin: 0 0.25em;
+        cursor: pointer;
+    }
+}

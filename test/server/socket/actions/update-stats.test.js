@@ -24,5 +24,21 @@ test('sets a skill if provided', t => {
     }
   });
 
-  t.is(player.stats.__STATICS__.skill1, skill);
+  t.is(player.stats.__STATICS__.skills[0], skill);
+});
+
+test('updates a players skill if the skills provided already exists', t => {
+  const {player, socket} = setup();
+  const skill = uuid();
+
+  player.stats.__STATICS__.skills[0] = 'abcde';
+
+  updateStats(socket, {
+    skill: {
+      number: 1,
+      content: skill
+    }
+  });
+
+  t.is(player.stats.__STATICS__.skills[0], skill);
 });

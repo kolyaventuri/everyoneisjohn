@@ -60,14 +60,10 @@ class Player extends React.Component<Props> {
       willpower,
       goal,
       goalLevel,
-      skill1,
-      skill2,
-      skill3,
+      skills,
       winner,
       points: score
     } = this.props.data;
-
-    const skills = [skill1, skill2, skill3];
 
     return (
       <div className={styles.player}>
