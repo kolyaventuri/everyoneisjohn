@@ -22,7 +22,8 @@ type Props = {|
   points: number,
   frozen: boolean,
   mode: GameModeType,
-  winner: boolean
+  winner: boolean,
+  hasAcceptedThirdSkill: boolean
 |};
 
 class PlayerInfo extends React.Component<Props> {
@@ -51,7 +52,8 @@ class PlayerInfo extends React.Component<Props> {
       skills,
       points: score,
       frozen,
-      winner
+      winner,
+      hasAcceptedThirdSkill
     } = this.props;
 
     return (
@@ -62,7 +64,7 @@ class PlayerInfo extends React.Component<Props> {
         {this.renderBidding()}
         <Score value={score}/>
         <Goal value={goal} frozen={frozen}/>
-        <SkillList frozen={frozen} skills={skills}/>
+        <SkillList frozen={frozen} skills={skills} hasAccepted={Boolean(hasAcceptedThirdSkill)}/>
       </div>
     );
   }
@@ -76,7 +78,8 @@ const mapStateToProps = ({player, game}: GameStateType) => {
     goal,
     points,
     frozen,
-    winner
+    winner,
+    hasAcceptedThirdSkill
   } = player;
 
   const {mode} = game;
@@ -89,7 +92,8 @@ const mapStateToProps = ({player, game}: GameStateType) => {
     points,
     frozen,
     mode,
-    winner
+    winner,
+    hasAcceptedThirdSkill
   };
 };
 

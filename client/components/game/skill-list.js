@@ -4,17 +4,21 @@ import React from 'react';
 import uuid from 'uuid/v4';
 import debounce from 'debounce';
 import {addedDiff, updatedDiff, deletedDiff} from 'deep-object-diff';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faPlus} from '@fortawesome/pro-regular-svg-icons';
 
 import {DEBOUNCE_AMOUNT} from '../../constants/sockets';
 
 import globalStyles from '../../sass/global.scss';
 import socket from '../../socket';
+import {store} from '../../store';
 
 import styles from './section.scss';
 
 type Props = {|
   frozen: boolean,
-  skills: Array<string>
+  skills: Array<string>,
+  hasAccepted: boolean
 |};
 
 type State = {|
@@ -47,6 +51,10 @@ export default class SkillList extends React.Component<Props, State> {
     this.changeHandler = new Array(3).fill(0).map((_, i) => {
       return debounce(this.handleChange.bind(this, i), DEBOUNCE_AMOUNT);
     });
+
+    if (skills.length === 3) {
+      this.setAccepted();
+    }
   }
 
   componentDidUpdate(prevProps: Props): void {
@@ -73,6 +81,10 @@ export default class SkillList extends React.Component<Props, State> {
     }
 
     const {skills} = this.props;
+    if (skills.length === 3) {
+      this.setAccepted();
+    }
+
     /*
        (6/6/19) Disabling the rule here, since the skill rejection is a fairly specific case
        and we actually do need the state updated to properly reflect the data to the user, due
@@ -130,7 +142,7 @@ export default class SkillList extends React.Component<Props, State> {
     }
 
     return (
-      <div className={styles.skill}>
+      <div>
         <input
           key={`skill-input-${ids[index]}`}
           data-index={ids[index]}
@@ -145,7 +157,39 @@ export default class SkillList extends React.Component<Props, State> {
     );
   }
 
+  setAccepted = () => {
+    store.dispatch({
+      type: 'SET_PLAYER_INFO',
+      payload: {
+        hasAcceptedThirdSkill: true
+      }
+    });
+  };
+
+  renderOptional = () => {
+    const {hasAccepted} = this.props;
+    const {skills} = this.state;
+
+    if (skills.length === 2 && !hasAccepted) {
+      return (
+        <li>
+          <div className={styles.question}>
+            <span>Add a 3rd skill for 3 willpower?</span>
+            <FontAwesomeIcon
+              icon={faPlus}
+              className={styles.icon}
+              onClick={this.setAccepted}
+            />
+          </div>
+        </li>
+      );
+    }
+
+    return null;
+  };
+
   render() {
+    const {hasAccepted} = this.props;
     const {
       ids,
       skills
@@ -153,7 +197,8 @@ export default class SkillList extends React.Component<Props, State> {
 
     // Prevent JavaScript object references from messing things up
     const renderedSkills = [...skills];
-    if (renderedSkills.length < 3) {
+    const max = hasAccepted ? 3 : 2;
+    if (renderedSkills.length < max) {
       // Force at least 1 blank skill box to render up to 3
       renderedSkills.push('');
     }
@@ -167,6 +212,7 @@ export default class SkillList extends React.Component<Props, State> {
               {this.renderSkill(skill, index)}
             </li>
           ))}
+          {this.renderOptional()}
         </ul>
       </div>
     );

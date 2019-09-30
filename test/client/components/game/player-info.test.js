@@ -18,7 +18,8 @@ const defaultProps = {
   skills: ['A', 'B', 'C'],
   goal: 'Goal',
   points: 0,
-  mode: 'PLAYING'
+  mode: 'PLAYING',
+  hasAcceptedThirdSkill: false
 };
 
 const render = (props = defaultProps) => {
@@ -64,7 +65,8 @@ test('it renders a SkillList component', t => {
   const {skills} = defaultProps;
   const expected = {
     frozen: undefined,
-    skills
+    skills,
+    hasAccepted: false
   };
 
   t.is(list.length, 1);

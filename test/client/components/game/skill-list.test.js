@@ -7,9 +7,14 @@ import {MockSocket} from '../../../server/mocks/socket';
 import {DEBOUNCE_AMOUNT} from '../../../../client/constants/sockets';
 
 const socket = new MockSocket();
+const dispatch = stub();
+const store = {
+  dispatch
+};
 
 const SkillList = proxyquire('../../../../client/components/game/skill-list', {
-  '../../socket': {default: socket}
+  '../../socket': {default: socket},
+  '../../store': {store}
 }).default;
 
 const render = (props = {}) => shallow(<SkillList {...props}/>);
@@ -183,7 +188,7 @@ test('it does not update the state of a textbox if it has focus when the props a
   const getInput = () => {
     const skills = wrapper.find('[data-type="skills"]');
     const lis = skills.find('li');
-    return lis.at(2).find('input').shallow();
+    return lis.at(1).find('input').shallow();
   };
 
   let input = getInput();
@@ -203,4 +208,65 @@ test('it does not update the state of a textbox if it has focus when the props a
 
   t.is(input.props().value, value);
   global.document.hasFocus = hasFocus;
+});
+
+test('it renders a prompt for the 3rd skill if you have entered two skills', t => {
+  const props = {
+    skills: ['a', 'b']
+  };
+  const wrapper = render(props);
+  const skills = wrapper.find('[data-type="skills"]');
+  const lis = skills.find('li');
+  const prompt = lis.at(2);
+
+  t.is(prompt.length, 1);
+  t.true(prompt.text().startsWith('Add a 3rd skill for 3 willpower?'));
+});
+
+test('the willpower prompt renders a plus icon', t => {
+  const props = {
+    skills: ['a', 'b']
+  };
+  const wrapper = render(props);
+  const skills = wrapper.find('[data-type="skills"]');
+  const prompt = skills.find('li').at(2);
+
+  const icon = prompt.find('FontAwesomeIcon');
+
+  t.is(icon.length, 1);
+});
+
+test('the plus icon, when clicked, dipatches a request to set the accepted value', t => {
+  const props = {
+    skills: ['a', 'b']
+  };
+  const wrapper = render(props);
+  const skills = wrapper.find('[data-type="skills"]');
+  const prompt = skills.find('li').at(2);
+  const icon = prompt.find('FontAwesomeIcon');
+
+  icon.simulate('click');
+
+  t.true(dispatch.calledWith({
+    type: 'SET_PLAYER_INFO',
+    payload: {
+      hasAcceptedThirdSkill: true
+    }
+  }));
+});
+
+test('when the third skill is accepted, a third textbox is rendered instead of the prompt', t => {
+  const props = {
+    skills: ['a', 'b'],
+    hasAccepted: true
+  };
+  const wrapper = render(props);
+  const skills = wrapper.find('[data-type="skills"]');
+  const lastLi = skills.find('li').at(2);
+
+  const textbox = lastLi.find('input');
+  const icon = lastLi.find('FontAwesomeIcon');
+
+  t.is(textbox.length, 1);
+  t.is(icon.length, 0);
 });

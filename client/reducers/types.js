@@ -8,7 +8,8 @@ export type PlayerStateType = {
   skills: Array<string>,
   goal: string,
   goalLevel: number,
-  frozen: boolean
+  frozen: boolean,
+  hasAcceptedThirdSkill: boolean
 };
 
 export type GameModeType = 'SETUP' | 'VOTING' | 'PLAYING';
