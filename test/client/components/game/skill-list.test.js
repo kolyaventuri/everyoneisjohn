@@ -270,3 +270,16 @@ test('when the third skill is accepted, a third textbox is rendered instead of t
   t.is(textbox.length, 1);
   t.is(icon.length, 0);
 });
+
+test('it does not render the prompt if editing is frozen', t => {
+  const props = {
+    skills: ['a', 'b'],
+    frozen: true
+  };
+  const wrapper = render(props);
+  const skills = wrapper.find('[data-type="skills"]');
+  const lastLi = skills.find('li').at(2);
+  const prompt = lastLi.find('FontAwesomeIcon');
+
+  t.is(prompt.length, 0);
+});

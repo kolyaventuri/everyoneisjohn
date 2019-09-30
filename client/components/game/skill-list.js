@@ -167,10 +167,12 @@ export default class SkillList extends React.Component<Props, State> {
   };
 
   renderOptional = () => {
-    const {hasAccepted} = this.props;
+    const {hasAccepted, frozen} = this.props;
     const {skills} = this.state;
 
-    if (skills.length === 2 && !hasAccepted) {
+    const canRender = skills.length === 2 && !hasAccepted && !frozen;
+
+    if (canRender) {
       return (
         <li>
           <div className={styles.question}>
