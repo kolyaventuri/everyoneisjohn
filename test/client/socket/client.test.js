@@ -2,7 +2,7 @@ import test from 'ava';
 import proxyquire from 'proxyquire';
 import {stub} from 'sinon';
 
-import {MAX_RECONNECTS} from '../../../client/constants/settings';
+import {MAX_RECONNECTS, RECONNECT_DELAY} from '../../../client/constants/settings';
 
 const socket = {
   on: stub().callsFake((_, fn) => fn()),
@@ -42,7 +42,10 @@ test('it initializes the socket with reconnectionAttempts', t => {
   client();
 
   t.true(_ioSetup.calledWith({
-    reconnectionAttempts: MAX_RECONNECTS
+    reconnectionAttempts: MAX_RECONNECTS,
+    reconnectionDelay: RECONNECT_DELAY,
+    reconnectionDelayMax: RECONNECT_DELAY * 2,
+    randomizationFactor: 0
   }));
 });
 
