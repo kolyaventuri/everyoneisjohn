@@ -2,6 +2,7 @@ import test from 'ava';
 import proxyquire from 'proxyquire';
 import {stub} from 'sinon';
 
+import {CONNECTED} from '../../../client/constants/connection-status';
 import {MAX_RECONNECTS, RECONNECT_DELAY} from '../../../client/constants/settings';
 
 const socket = {
@@ -9,6 +10,7 @@ const socket = {
   emit: stub()
 };
 
+const setConn = stub();
 const _ioSetup = stub();
 const io = (...args) => {
   _ioSetup(...args);
@@ -25,7 +27,8 @@ proxyquire.noCallThru();
 proxyquire.noPreserveCache();
 const common = {
   'socket.io-client': io,
-  './handlers': {applyHandlers}
+  './handlers': {applyHandlers},
+  '../actions/set-connection-status': setConn
 };
 
 const client = proxyquire('../../../client/socket/client', {
@@ -71,4 +74,14 @@ test('it emits an initPlayer event without an id if none exists', t => {
   client();
 
   t.true(socket.emit.calledWith('initPlayer', undefined));
+});
+
+test('the connect handler sets the connection status to connected', t => {
+  client();
+
+  const {lastCall} = socket.on;
+  const fn = lastCall.args[1];
+  fn();
+
+  t.true(setConn.calledWith(CONNECTED));
 });

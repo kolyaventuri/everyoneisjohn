@@ -5,6 +5,8 @@ import io from 'socket.io-client';
 import {get} from '../utils/local-storage';
 import {EIJ_PID} from '../constants/storage-keys';
 import {MAX_RECONNECTS, RECONNECT_DELAY} from '../constants/settings';
+import {CONNECTED} from '../constants/connection-status';
+import setConnectionStatus from '../actions/set-connection-status';
 import {applyHandlers} from './handlers';
 
 import type {SocketType} from '.';
@@ -28,6 +30,7 @@ const clientBuilder = (): SocketType => {
   socket.on('connect', () => {
     applyHandlers(socket);
     socket.emit('initPlayer', id || undefined);
+    setConnectionStatus(CONNECTED);
   });
 
   return socket;

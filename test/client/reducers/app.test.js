@@ -1,6 +1,7 @@
 import test from 'ava';
 
 import reducer, {defaultState} from '../../../client/reducers/app';
+import {CONNECTING, FAILED} from '../../../client/constants/connection-status';
 
 test('it should return the default state', t => {
   const result = reducer(undefined, {});
@@ -17,6 +18,9 @@ test('SET_ERROR should be able to set the game GM', t => {
     error: {
       error,
       type
+    },
+    connection: {
+      status: CONNECTING
     }
   };
 
@@ -57,6 +61,25 @@ test('SET_SOUND should set the sound value', t => {
   }, {
     type: 'SET_SOUND',
     payload: {sound: true}
+  });
+
+  t.deepEqual(result, expected);
+});
+
+test('SET_CONNECTION_STATUS sets the connection status', t => {
+  const expected = {
+    connection: {
+      status: FAILED
+    }
+  };
+
+  const result = reducer({
+    connection: {
+      status: CONNECTING
+    }
+  }, {
+    type: 'SET_CONNECTION_STATUS',
+    payload: {status: FAILED}
   });
 
   t.deepEqual(result, expected);
