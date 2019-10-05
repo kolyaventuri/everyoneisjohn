@@ -2,13 +2,19 @@ import test from 'ava';
 import proxyquire from 'proxyquire';
 import {stub} from 'sinon';
 
+import {MAX_RECONNECTS} from '../../../client/constants/settings';
+
 const socket = {
   on: stub().callsFake((_, fn) => fn()),
   emit: stub()
 };
 
-const io = {
-  connect: stub().returns(socket)
+const _ioSetup = stub();
+const io = (...args) => {
+  _ioSetup(...args);
+  return {
+    connect: stub().returns(socket)
+  };
 };
 
 const applyHandlers = stub();
@@ -31,6 +37,14 @@ const clientWithId = proxyquire('../../../client/socket/client', {
   ...common,
   '../utils/local-storage': {get: stub().returns(id)}
 }).default;
+
+test('it initializes the socket with reconnectionAttempts', t => {
+  client();
+
+  t.true(_ioSetup.calledWith({
+    reconnectionAttempts: MAX_RECONNECTS
+  }));
+});
 
 test('it registers an on connect handler', t => {
   client();

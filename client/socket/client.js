@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 
 import {get} from '../utils/local-storage';
 import {EIJ_PID} from '../constants/storage-keys';
+import {MAX_RECONNECTS} from '../constants/settings';
 import {applyHandlers} from './handlers';
 
 import type {SocketType} from '.';
@@ -15,7 +16,9 @@ const clientBuilder = (): SocketType => {
     return socket;
   }
 
-  socket = io.connect();
+  socket = io({
+    reconnectionAttempts: MAX_RECONNECTS
+  }).connect();
 
   const id = get(EIJ_PID);
 

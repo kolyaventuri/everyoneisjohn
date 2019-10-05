@@ -18,7 +18,7 @@ const events = [
   {name: 'gameJoinSuccess', handler: gameJoinSuccess},
   {name: 'setGameMode', handler: setGameMode},
   {name: 'gameError', handler: gameError},
-  {name: 'disconnect', handler: disconnect},
+  {name: 'reconnect_failed', handler: disconnect},
   {name: 'gameKick', handler: gameKick},
   {name: 'setSkills', handler: setSkills},
 
