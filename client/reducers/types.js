@@ -1,5 +1,7 @@
 // @flow
 
+export type ConnectionStatus = 'connecting' | 'connected' | 'failing' | 'failed';
+
 export type PlayerStateType = {
   name: string,
   id: string,
@@ -32,7 +34,11 @@ export type ErrorType = {
 };
 
 export type AppStateType = {
-  error: ErrorType | null
+  error: ErrorType | null,
+  sound: boolean,
+  connection: {
+    status: ConnectionStatus
+  }
 };
 
 export type ApplicationStateType = {

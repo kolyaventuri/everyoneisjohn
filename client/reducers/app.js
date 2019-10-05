@@ -1,12 +1,16 @@
 // @flow
 
 import {SOUND, ON} from '../constants/settings';
+import {CONNECTING} from '../constants/connection-status';
 import {get} from '../utils/local-storage';
 import {AppStateType, ActionType} from './types';
 
 export const defaultState = {
   error: null,
-  sound: get(SOUND) === ON
+  sound: get(SOUND) === ON,
+  connection: {
+    status: CONNECTING
+  }
 };
 
 const AppReducer = (state: AppStateType = defaultState, action: ActionType): AppStateType => {
@@ -30,6 +34,13 @@ const AppReducer = (state: AppStateType = defaultState, action: ActionType): App
       return {
         ...state,
         sound: payload.sound
+      };
+    case 'SET_CONNECTION_STATUS':
+      return {
+        ...state,
+        connection: {
+          status: payload.status
+        }
       };
     default:
       return state;

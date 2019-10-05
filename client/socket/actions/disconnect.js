@@ -1,7 +1,8 @@
 // @flow
 
-import gameError from './game-error';
+import {FAILING} from '../../constants/connection-status';
+import setConnectionStatus from '../../actions/set-connection-status';
 
-const disconnect = () => gameError('error.app.socketDisconnect');
+const disconnect = () => setConnectionStatus(FAILING);
 
 export default disconnect;

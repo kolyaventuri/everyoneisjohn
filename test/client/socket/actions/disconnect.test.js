@@ -1,15 +1,16 @@
 import test from 'ava';
 import {stub} from 'sinon';
 import proxyquire from 'proxyquire';
+import {FAILING} from '../../../../client/constants/connection-status';
 
-const gameError = stub();
+const setConn = stub();
 
 const disconnect = proxyquire('../../../../client/socket/actions/disconnect', {
-  './game-error': {default: gameError}
+  '../../actions/set-connection-status': {default: setConn}
 }).default;
 
-test('calls the gameError action', t => {
+test('sets the connection status to failing', t => {
   disconnect();
 
-  t.true(gameError.calledWith('error.app.socketDisconnect'));
+  t.true(setConn.calledWith(FAILING));
 });
