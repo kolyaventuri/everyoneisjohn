@@ -7,12 +7,14 @@ import React from 'react';
 
 const Player = () => <div/>;
 const GameControls = () => <div/>;
+const Header = () => <div/>;
 
 const GMPanel = proxyquire('../../../../client/routes/game/gm-panel', {
   'react-router-dom': {withRouter: stub().returnsArg(0)},
   'react-redux': {connect: stub().returns(stub().returnsArg(0))},
   '../../components/gm/player': {default: Player},
-  '../../components/gm/game-controls': {default: GameControls}
+  '../../components/gm/game-controls': {default: GameControls},
+  '../../components/header': {default: Header}
 }).default;
 
 const render = (props = {}) => {

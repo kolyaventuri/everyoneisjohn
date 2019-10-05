@@ -8,9 +8,11 @@ import Audio from '../../../helpers/mock-audio';
 
 global.Audio = Audio;
 
-const Game = proxyquire('../../../../client/routes/game/index.js', {
+const Header = () => <div/>;
+const Game = proxyquire.noCallThru()('../../../../client/routes/game/index.js', {
   'react-router-dom': {withRouter: stub().returnsArg(0)},
-  'react-redux': {connect: stub().returns(stub().returnsArg(0))}
+  'react-redux': {connect: stub().returns(stub().returnsArg(0))},
+  '../../components/header': Header
 }).default;
 
 const match = {params: {id: 'ABCDE'}};
