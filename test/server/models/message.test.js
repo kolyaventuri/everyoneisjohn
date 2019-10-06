@@ -45,3 +45,21 @@ test('has a timestamp', t => {
 
   clock.restore();
 });
+
+test('can be serialized', t => {
+  const timestamp = new Date();
+  const clock = sinon.useFakeTimers(timestamp);
+
+  const sender = 'abc123';
+  const content = '999111';
+
+  const msg = new Message(sender, content);
+
+  t.deepEqual(msg.serialize(), {
+    sender,
+    content,
+    timestamp
+  });
+
+  clock.restore();
+});

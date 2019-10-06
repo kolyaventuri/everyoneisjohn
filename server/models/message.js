@@ -2,6 +2,12 @@
 
 import uuid from 'uuid/v4';
 
+type Serialized = {|
+  sender: string,
+  content: string,
+  timestamp: Date
+|};
+
 class Message {
   /* eslint-disable lines-between-class-members */
   _id: string;
@@ -15,6 +21,16 @@ class Message {
     this._sender = sender;
     this._content = content;
     this._timestamp = new Date();
+  }
+
+  serialize(): Serialized {
+    const {sender, content, timestamp} = this;
+
+    return {
+      sender,
+      content,
+      timestamp
+    };
   }
 
   get id() {
