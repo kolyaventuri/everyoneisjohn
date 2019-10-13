@@ -354,3 +354,38 @@ test('#emitGameMode emits to the GM room if specificed', t => {
     payload: 'SETUP'
   }));
 });
+
+test('#createChat creates a new chat instance', t => {
+  const {game} = setup();
+  const [p1, p2] = genPlayers(2);
+
+  game.addPlayer(p1);
+  game.addPlayer(p2);
+
+  game.createChat(p1, p2);
+
+  const keys = Object.keys(game.chats);
+  const chat = game.chats[keys[0]];
+
+  t.is(chat.player1, p1);
+  t.is(chat.player2, p2);
+});
+
+test('#createChat does not allow duplicate chats', t => {
+  const {game} = setup();
+  const [p1, p2] = genPlayers(2);
+
+  game.addPlayer(p1);
+  game.addPlayer(p2);
+
+  playerRepository.find = stub();
+  playerRepository.find.withArgs(p1.id).returns(p1);
+  playerRepository.find.withArgs(p2.id).returns(p2);
+
+  game.createChat(p1, p2);
+  game.createChat(p2, p1);
+
+  const keys = Object.keys(game.chats);
+
+  t.is(keys.length, 1);
+});
