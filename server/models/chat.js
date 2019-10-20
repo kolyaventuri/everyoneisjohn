@@ -21,10 +21,17 @@ class Chat {
     this._messages = [];
   }
 
-  postMessage({id}: Player, content: string) {
+  postMessage(sender: Player, content: string) {
+    const {id} = sender;
     const msg = new Message(id, content);
 
     this._messages.push(msg);
+
+    const receiver = this.player1.id === sender.id ? this.player1 : this.player2;
+    receiver.emitToMe({
+      event: 'chatReceive',
+      payload: msg.serialize()
+    });
   }
 
   get id(): string {

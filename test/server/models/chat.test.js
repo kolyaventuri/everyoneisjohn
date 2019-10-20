@@ -12,6 +12,12 @@ class Message {
     _setupMessage(...args);
     this.content = args[1];
   }
+
+  serialize() {
+    return {
+      content: this.content
+    };
+  }
 }
 
 const Chat = proxyquire.noCallThru()('../../../server/models/chat', {
@@ -69,4 +75,25 @@ test('can post a message', t => {
 
   t.is(chat.messages.length, 1);
   t.is(chat.messages[0].content, message);
+});
+
+test('emits a socket event to the receiving player when message is posted', t => {
+  const player1 = genPlayer();
+  const player2 = genPlayer();
+  const chat = genChat(player1, player2);
+
+  playerRepository.find = stub();
+  playerRepository.find = stub().withArgs(player1.id).returns(player1);
+  playerRepository.find = stub().withArgs(player2.id).returns(player2);
+
+  const p2 = chat.player2;
+  p2.emitToMe = stub();
+
+  chat.postMessage(player1, 'abc123');
+  const message = chat.messages[0];
+
+  t.true(p2.emitToMe.calledWith({
+    event: 'chatReceive',
+    payload: message.serialize()
+  }));
 });
