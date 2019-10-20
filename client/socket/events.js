@@ -9,6 +9,7 @@ import disconnect from './actions/disconnect';
 import reconnectFailed from './actions/reconnect-failed';
 import gameKick from './actions/game-kick';
 import setSkills from './actions/set-skills';
+import chatReceive from './actions/chat-receive';
 
 import setPlayers from './actions/set-players';
 
@@ -23,6 +24,7 @@ const events = [
   {name: 'setSkills', handler: setSkills},
   {name: 'disconnect', handler: disconnect},
   {name: 'reconnect_failed', handler: reconnectFailed},
+  {name: 'chatReceive', handler: chatReceive},
 
   // GM Events
   {name: 'setPlayers', handler: setPlayers}

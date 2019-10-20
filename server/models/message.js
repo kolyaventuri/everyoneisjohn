@@ -2,7 +2,7 @@
 
 import uuid from 'uuid/v4';
 
-type Serialized = {|
+export type SerializedMssage = {|
   sender: string,
   content: string,
   timestamp: Date
@@ -23,7 +23,7 @@ class Message {
     this._timestamp = new Date();
   }
 
-  serialize(): Serialized {
+  serialize(): SerializedMessage {
     const {sender, content, timestamp} = this;
 
     return {
