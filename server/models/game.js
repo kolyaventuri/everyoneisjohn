@@ -29,6 +29,7 @@ type EmitPayload = {|
 |};
 
 const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+const orEquals = (original, ...variants) => variants.indexOf(original) > -1;
 
 export default class Game {
   __STATICS__: StaticsType;
@@ -164,8 +165,18 @@ export default class Game {
   }
 
   createChat(player1: Player, player2: Player): Chat {
+    const chatId = this.getChatId(player1, player2);
+    const chat = chatId ? this._chats[chatId] : new Chat(player1, player2);
+
+    if (!chatId) {
+      this._chats[chat.id] = chat;
+    }
+
+    return chat;
+  }
+
+  getChatId(player1: Player, player2: Player): ?String {
     const keys = Object.keys(this._chats);
-    const orEquals = (original, ...variants) => variants.indexOf(original) > -1;
 
     const chatId = keys.find(key => {
       const chat = this._chats[key];
@@ -174,13 +185,13 @@ export default class Game {
         orEquals(chat.player2.id, player1.id, player2.id);
     });
 
-    const chat = chatId ? this._chats[chatId] : new Chat(player1, player2);
+    return chatId || null;
+  }
 
-    if (!chatId) {
-      this._chats[chat.id] = chat;
-    }
+  getChat(player1: Player, player2: Player): ?Chat {
+    const chatId = this.getChatId(player1, player2);
 
-    return chat;
+    return chatId ? this._chats[chatId] : null;
   }
 
   get chats(): {[string]: Chat} {

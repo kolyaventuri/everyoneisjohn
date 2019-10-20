@@ -391,3 +391,40 @@ test('#createChat does not allow duplicate chats', t => {
   t.is(keys.length, 1);
   t.is(res1, res2);
 });
+
+test('#getChat finds the chat between two players', t => {
+  const {game} = setup();
+  const [p1, p2, p3] = genPlayers(3);
+
+  game.addPlayer(p1);
+  game.addPlayer(p2);
+  game.addPlayer(p3);
+
+  playerRepository.find = stub();
+  playerRepository.find.withArgs(p1.id).returns(p1);
+  playerRepository.find.withArgs(p2.id).returns(p2);
+  playerRepository.find.withArgs(p3.id).returns(p3);
+
+  const expectedChat = game.createChat(p1, p3);
+  game.createChat(p1, p2);
+
+  const res = game.getChat(p1, p3);
+
+  t.is(res, expectedChat);
+});
+
+test('#getChat returns null if no chat exists', t => {
+  const {game} = setup();
+  const [p1, p2] = genPlayers(2);
+
+  game.addPlayer(p1);
+  game.addPlayer(p2);
+
+  playerRepository.find = stub();
+  playerRepository.find.withArgs(p1.id).returns(p1);
+  playerRepository.find.withArgs(p2.id).returns(p2);
+
+  const res = game.getChat(p1, p2);
+
+  t.is(res, null);
+});
