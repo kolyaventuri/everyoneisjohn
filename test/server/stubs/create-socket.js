@@ -30,7 +30,8 @@ const gameMethods = [
   'gmEmitPlayers',
   'emitToGm',
   'gmInitGame',
-  'emitToAll'
+  'emitToAll',
+  'createChat'
 ];
 
 const mockPromise = {
