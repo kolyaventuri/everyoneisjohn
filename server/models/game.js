@@ -163,24 +163,24 @@ export default class Game {
     this.mode = GameModes.PLAYING;
   }
 
-  createChat(player1: Player, player2: Player) {
+  createChat(player1: Player, player2: Player): Chat {
     const keys = Object.keys(this._chats);
     const orEquals = (original, ...variants) => variants.indexOf(original) > -1;
 
-    const chatExists = keys.some(key => {
+    const chatId = keys.find(key => {
       const chat = this._chats[key];
 
       return orEquals(chat.player1.id, player1.id, player2.id) ||
         orEquals(chat.player2.id, player1.id, player2.id);
     });
 
-    if (chatExists) {
-      return;
+    const chat = chatId ? this._chats[chatId] : new Chat(player1, player2);
+
+    if (!chatId) {
+      this._chats[chat.id] = chat;
     }
 
-    const chat = new Chat(player1, player2);
-
-    this._chats[chat.id] = chat;
+    return chat;
   }
 
   get chats(): {[string]: Chat} {
