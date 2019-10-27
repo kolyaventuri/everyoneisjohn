@@ -111,7 +111,9 @@ export default class Game {
   gmEmitPlayers() {
     this.emitToGm({
       event: 'setPlayers',
-      payload: this.players.map(p => p && p.serialize && p.serialize()).filter(p => p !== null)
+      payload: this.players
+        .map(p => p && p.serialize && p.serialize())
+        .filter(p => p !== null)
     });
   }
 
@@ -181,8 +183,10 @@ export default class Game {
     const chatId = keys.find(key => {
       const chat = this._chats[key];
 
-      return orEquals(chat.player1.id, player1.id, player2.id) ||
-        orEquals(chat.player2.id, player1.id, player2.id);
+      return (
+        orEquals(chat.player1.id, player1.id, player2.id) ||
+        orEquals(chat.player2.id, player1.id, player2.id)
+      );
     });
 
     return chatId || null;
@@ -252,7 +256,10 @@ export default class Game {
     const payload = {
       channel: this.__STATICS__.rooms[rooms.ALL],
       event: 'setGameMode',
-      payload: this.mode.toString().toString().slice(7, -1)
+      payload: this.mode
+        .toString()
+        .toString()
+        .slice(7, -1)
     };
     let emitFn = emit;
 
