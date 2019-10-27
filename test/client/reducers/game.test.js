@@ -131,3 +131,22 @@ test('SET_GAME_PLAYER_INFO, when passed a skill array, should not merge the arra
 
   t.deepEqual(result, expected);
 });
+
+test('ADD_MESSAGE should append the serialized message to the state', t => {
+  const message = {
+    timestamp: new Date(),
+    content: 'abc123'
+  };
+
+  const messages = [message];
+  const expected = {
+    messages
+  };
+
+  const result = reducer({messages: []}, {
+    type: 'ADD_MESSAGE',
+    payload: {message}
+  });
+
+  t.deepEqual(result, expected);
+});

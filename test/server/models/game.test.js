@@ -108,10 +108,12 @@ test('emits a gameKick event to the player when kicked', t => {
 
   game.removePlayer(player);
 
-  t.true(emit.calledWith({
-    channel: player.rooms.private,
-    event: 'gameKick'
-  }));
+  t.true(
+    emit.calledWith({
+      channel: player.rooms.private,
+      event: 'gameKick'
+    })
+  );
 });
 
 test('does not emit a gameKick event to the player if silent is true', t => {
@@ -121,10 +123,12 @@ test('does not emit a gameKick event to the player if silent is true', t => {
 
   game.removePlayer(player, true);
 
-  t.false(emit.calledWith({
-    channel: player.rooms.private,
-    event: 'gameKick'
-  }));
+  t.false(
+    emit.calledWith({
+      channel: player.rooms.private,
+      event: 'gameKick'
+    })
+  );
 });
 
 test('gets stored in the game repository during the constructor', t => {
@@ -312,10 +316,12 @@ test('#emitToGm emits to the GMs private channel', t => {
   const payload = 'payload';
   game.emitToGm({event, payload});
 
-  t.true(owner.emitToMe.calledWith({
-    event,
-    payload
-  }));
+  t.true(
+    owner.emitToMe.calledWith({
+      event,
+      payload
+    })
+  );
 });
 
 test('#emitToAll emits to the GAME room', t => {
@@ -325,11 +331,13 @@ test('#emitToAll emits to the GAME room', t => {
   const payload = 'payload';
   game.emitToAll({event, payload});
 
-  t.true(emit.calledWith({
-    channel: owner.rooms.game,
-    event,
-    payload
-  }));
+  t.true(
+    emit.calledWith({
+      channel: owner.rooms.game,
+      event,
+      payload
+    })
+  );
 });
 
 test('#emitGameMode emits to the ALL room by default', t => {
@@ -337,11 +345,13 @@ test('#emitGameMode emits to the ALL room by default', t => {
 
   game.emitGameMode();
 
-  t.true(emit.calledWith({
-    channel: game.__STATICS__.rooms[rooms.ALL],
-    event: 'setGameMode',
-    payload: 'SETUP'
-  }));
+  t.true(
+    emit.calledWith({
+      channel: game.__STATICS__.rooms[rooms.ALL],
+      event: 'setGameMode',
+      payload: 'SETUP'
+    })
+  );
 });
 
 test('#emitGameMode emits to the GM room if specificed', t => {
@@ -349,8 +359,86 @@ test('#emitGameMode emits to the GM room if specificed', t => {
 
   game.emitGameMode(rooms.GM);
 
-  t.true(game.emitToGm.calledWith({
-    event: 'setGameMode',
-    payload: 'SETUP'
-  }));
+  t.true(
+    game.emitToGm.calledWith({
+      event: 'setGameMode',
+      payload: 'SETUP'
+    })
+  );
+});
+
+test('#createChat creates a new chat instance', t => {
+  const {game} = setup();
+  const [p1, p2] = genPlayers(2);
+
+  game.addPlayer(p1);
+  game.addPlayer(p2);
+
+  game.createChat(p1, p2);
+
+  const keys = Object.keys(game.chats);
+  const chat = game.chats[keys[0]];
+
+  t.is(chat.player1, p1);
+  t.is(chat.player2, p2);
+});
+
+test('#createChat does not allow duplicate chats', t => {
+  const {game} = setup();
+  const [p1, p2] = genPlayers(2);
+
+  game.addPlayer(p1);
+  game.addPlayer(p2);
+
+  playerRepository.find = stub();
+  playerRepository.find.withArgs(p1.id).returns(p1);
+  playerRepository.find.withArgs(p2.id).returns(p2);
+
+  const res1 = game.createChat(p1, p2);
+  const res2 = game.createChat(p2, p1);
+
+  const keys = Object.keys(game.chats);
+
+  t.is(keys.length, 1);
+  t.is(res1, res2);
+});
+
+test('#getChat finds the chat between two players', t => {
+  const {game} = setup();
+  const [p1, p2, p3] = genPlayers(3);
+
+  game.addPlayer(p1);
+  game.addPlayer(p2);
+  game.addPlayer(p3);
+
+  playerRepository.find = stub();
+  playerRepository.find.withArgs(p1.id).returns(p1);
+  playerRepository.find.withArgs(p2.id).returns(p2);
+  playerRepository.find.withArgs(p3.id).returns(p3);
+
+  game.createChat(p1, p3);
+  const keys = Object.keys(game.chats);
+  game.createChat(p1, p2);
+
+  const expectedChat = game.chats[keys[0]];
+
+  const res = game.getChat(p1, p3);
+
+  t.is(res, expectedChat);
+});
+
+test('#getChat returns null if no chat exists', t => {
+  const {game} = setup();
+  const [p1, p2] = genPlayers(2);
+
+  game.addPlayer(p1);
+  game.addPlayer(p2);
+
+  playerRepository.find = stub();
+  playerRepository.find.withArgs(p1.id).returns(p1);
+  playerRepository.find.withArgs(p2.id).returns(p2);
+
+  const res = game.getChat(p1, p2);
+
+  t.is(res, null);
 });

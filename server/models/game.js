@@ -11,6 +11,7 @@ import type {RoomsType, Rooms} from '../constants/types';
 import {emit} from '../socket/emitter';
 import Player from './player';
 import Auction from './auction';
+import Chat from './chat';
 
 const chance = new Chance();
 
@@ -28,6 +29,7 @@ type EmitPayload = {|
 |};
 
 const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+const orEquals = (original, ...variants) => variants.indexOf(original) > -1;
 
 export default class Game {
   __STATICS__: StaticsType;
@@ -37,6 +39,8 @@ export default class Game {
   __mode: GameMode;
 
   __auction: Auction | null;
+
+  _chats: {[string]: Chat};
 
   constructor(owner: Player, init: boolean = true) {
     const id = chance.string({length: 5, pool});
@@ -56,6 +60,7 @@ export default class Game {
     this.__players = [];
     this.__mode = GameModes.SETUP;
     this.__auction = null;
+    this._chats = {};
 
     gameRepository.insert(this);
     if (init) {
@@ -106,7 +111,9 @@ export default class Game {
   gmEmitPlayers() {
     this.emitToGm({
       event: 'setPlayers',
-      payload: this.players.map(p => p && p.serialize && p.serialize()).filter(p => p !== null)
+      payload: this.players
+        .map(p => p && p.serialize && p.serialize())
+        .filter(p => p !== null)
     });
   }
 
@@ -157,6 +164,42 @@ export default class Game {
     winner.stats.winner = true;
 
     this.mode = GameModes.PLAYING;
+  }
+
+  createChat(player1: Player, player2: Player): Chat {
+    const chatId = this.getChatId(player1, player2);
+    const chat = chatId ? this._chats[chatId] : new Chat(player1, player2);
+
+    if (!chatId) {
+      this._chats[chat.id] = chat;
+    }
+
+    return chat;
+  }
+
+  getChatId(player1: Player, player2: Player): ?String {
+    const keys = Object.keys(this._chats);
+
+    const chatId = keys.find(key => {
+      const chat = this._chats[key];
+
+      return (
+        orEquals(chat.player1.id, player1.id, player2.id) ||
+        orEquals(chat.player2.id, player1.id, player2.id)
+      );
+    });
+
+    return chatId || null;
+  }
+
+  getChat(player1: Player, player2: Player): ?Chat {
+    const chatId = this.getChatId(player1, player2);
+
+    return chatId ? this._chats[chatId] : null;
+  }
+
+  get chats(): {[string]: Chat} {
+    return this._chats;
   }
 
   get id(): string {
@@ -213,7 +256,10 @@ export default class Game {
     const payload = {
       channel: this.__STATICS__.rooms[rooms.ALL],
       event: 'setGameMode',
-      payload: this.mode.toString().toString().slice(7, -1)
+      payload: this.mode
+        .toString()
+        .toString()
+        .slice(7, -1)
     };
     let emitFn = emit;
 

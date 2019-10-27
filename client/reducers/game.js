@@ -22,6 +22,17 @@ const setSpecificPlayer = (state: GameStateType, {payload}: ActionType) => {
   };
 };
 
+const addMessage = (state: GameStateType, {payload}: ActionType) => {
+  const {messages} = state;
+
+  messages.push(payload.message);
+
+  return {
+    ...state,
+    messages
+  };
+};
+
 const GameReducer = (state: GameStateType = {}, action: ActionType): GameStateType => {
   const {type, payload} = action;
 
@@ -50,6 +61,8 @@ const GameReducer = (state: GameStateType = {}, action: ActionType): GameStateTy
         ...state,
         mode: payload.mode
       };
+    case 'ADD_MESSAGE':
+      return addMessage(state, action);
     default:
       return state;
   }

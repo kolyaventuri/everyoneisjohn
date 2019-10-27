@@ -4,6 +4,7 @@ import initPlayer from './actions/init-player';
 import disconnect from './actions/disconnect';
 import updatePlayer from './actions/update-player';
 import joinGame from './actions/join-game';
+import sendMessage from './actions/send-message';
 
 import createGame from './actions/create-game';
 import joinGm from './actions/join-gm';
@@ -26,6 +27,7 @@ const events = [
   {name: 'disconnect', handler: disconnect},
   {name: 'updatePlayer', handler: updatePlayer},
   {name: 'joinGame', handler: joinGame},
+  {name: 'sendMessage', handler: sendMessage},
 
   // GM Events
   {name: 'createGame', handler: createGame},
