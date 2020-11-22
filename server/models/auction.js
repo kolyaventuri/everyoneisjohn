@@ -38,18 +38,13 @@ export default class Auction {
 
   determineWinner = () => {
     const bids = this.bids.sort((a, b) => {
-      if (a.amount < b.amount) {
-        return 1;
-      }
-
-      if (a.amount > b.amount) {
-        return -1;
-      }
-
-      return 0;
+      return b - a;
     });
+    const winningAmount = bids[0].amount;
 
-    const {player: winner, amount} = bids[0];
+    const rolloffBids = bids.filter(bid => bid.amount === winningAmount);
+    const winnerIndex = Math.floor(Math.random() * rolloffBids.length);
+    const {player: winner, amount} = rolloffBids[winnerIndex];
 
     this.__STATICS__.game.endAuction(winner, amount);
   }
