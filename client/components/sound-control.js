@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faVolume, faVolumeMute} from '@fortawesome/free-regular-svg-icons';
+import {faVolumeOff, faVolumeMute} from '@fortawesome/free-solid-svg-icons';
 import {connect} from 'react-redux';
 
 import {store} from '../store';
@@ -25,7 +25,7 @@ const setSound = (sound: boolean) => {
 };
 
 const SoundControl = ({soundOn}: Props) => {
-  const icon = soundOn ? faVolume : faVolumeMute;
+  const icon = soundOn ? faVolumeOff : faVolumeMute;
   const onClick = () => setSound(!soundOn);
 
   return (

@@ -2,7 +2,7 @@ import test from 'ava';
 import React from 'react';
 import {shallow} from 'enzyme';
 import {stub} from 'sinon';
-import {faTimes} from '@fortawesome/free-regular-svg-icons';
+import {faTimes} from '@fortawesome/free-solid-svg-icons';
 
 import Reject from '../../../client/components/reject';
 

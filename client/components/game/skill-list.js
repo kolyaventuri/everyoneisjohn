@@ -5,7 +5,7 @@ import uuid from 'uuid/v4';
 import debounce from 'debounce';
 import {addedDiff, updatedDiff, deletedDiff} from 'deep-object-diff';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faPlus} from '@fortawesome/free-regular-svg-icons';
+import {faPlus} from '@fortawesome/free-solid-svg-icons';
 
 import {DEBOUNCE_AMOUNT} from '../../constants/sockets';
 

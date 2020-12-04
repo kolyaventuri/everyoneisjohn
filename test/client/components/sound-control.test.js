@@ -3,7 +3,7 @@ import React from 'react';
 import {stub} from 'sinon';
 import proxyquire from 'proxyquire';
 import {shallow} from 'enzyme';
-import {faVolume, faVolumeMute} from '@fortawesome/free-regular-svg-icons';
+import {faVolumeOff, faVolumeMute} from '@fortawesome/free-solid-svg-icons';
 import {SOUND, ON, OFF} from '../../../client/constants/settings';
 
 const store = {dispatch: stub()};
@@ -26,7 +26,7 @@ test('it renders the volume icon if the sound is on', t => {
 
   const props = icon.props();
 
-  t.is(props.icon, faVolume);
+  t.is(props.icon, faVolumeOff);
 });
 
 test('it renders the volume-mute icon if the sound is on', t => {

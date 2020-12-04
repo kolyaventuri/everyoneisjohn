@@ -1,7 +1,7 @@
 import test from 'ava';
 import React from 'react';
 import {shallow} from 'enzyme';
-import {faSpinner} from '@fortawesome/free-regular-svg-icons';
+import {faSpinner} from '@fortawesome/free-solid-svg-icons';
 
 import Spinner from '../../../client/components/spinner';
 
