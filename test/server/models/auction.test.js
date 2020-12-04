@@ -44,3 +44,32 @@ test('determines winner after all bids placed', t => {
 
   t.true(game.endAuction.calledWith(players[1], 3));
 });
+
+function testRolloffRandomness(t, randomValue, expectedWinner) {
+  // Set up Math.random to return randomValue and then
+  // validate that the expectedWinner won
+  const realRandom = Math.random;
+  Math.random = () => randomValue;
+
+  const {game, players, auction} = genAuction();
+  game.endAuction = stub();
+
+  auction.bid(players[0], 2);
+  auction.bid(players[1], 2);
+  auction.bid(players[2], 2);
+
+  t.true(game.endAuction.calledWith(players[expectedWinner], 2));
+  Math.random = realRandom;
+}
+
+test('Ties should be resolved based on Math.random (greatest)', t => {
+  testRolloffRandomness(t, 0.99, 2);
+});
+
+test('Ties should be resolved based on Math.random (lowest)', t => {
+  testRolloffRandomness(t, 0, 0);
+});
+
+test('Ties should be resolved based on Math.random (middle)', t => {
+  testRolloffRandomness(t, 0.5, 1);
+});
