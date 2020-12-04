@@ -38,7 +38,7 @@ export default class Auction {
 
   determineWinner = () => {
     const bids = this.bids.sort((a, b) => {
-      return b - a;
+      return b.amount - a.amount;
     });
     const winningAmount = bids[0].amount;
 
