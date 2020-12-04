@@ -3,7 +3,7 @@ import React from 'react';
 import {stub} from 'sinon';
 import proxyquire from 'proxyquire';
 import {shallow} from 'enzyme';
-import {faVolume, faVolumeMute} from '@fortawesome/pro-regular-svg-icons';
+import {faVolume, faVolumeMute} from '@fortawesome/free-regular-svg-icons';
 import {SOUND, ON, OFF} from '../../../client/constants/settings';
 
 const store = {dispatch: stub()};

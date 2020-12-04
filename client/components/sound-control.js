@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faVolume, faVolumeMute} from '@fortawesome/pro-regular-svg-icons';
+import {faVolume, faVolumeMute} from '@fortawesome/free-regular-svg-icons';
 import {connect} from 'react-redux';
 
 import {store} from '../store';
