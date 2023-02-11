@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/kolyaventuri/everyoneisjohn#readme",
   "devDependencies": {
-    "ava": "^2.4.0",
+    "ava": "^5.2.0",
     "babel-eslint": "^10.0.1",
     "browser-env": "^3.2.6",
     "coveralls": "^3.0.6",
